@@ -1,9 +1,14 @@
 import React, { useCallback } from "react";
-import { Box, Text, Static } from "ink";
-import { TextInput } from "@inkjs/ui";
+import { Box } from "ink";
+import { useApp } from "ink";
 import { useWebSocket } from "../hooks/useWebSocket.js";
 import { useChat } from "../hooks/useChat.js";
+import { useSlashCommands } from "../hooks/useSlashCommands.js";
 import { createChatSendMessage } from "../lib/gateway-client.js";
+import { MessageList } from "./MessageList.js";
+import { StreamingResponse } from "./StreamingResponse.js";
+import { InputBar } from "./InputBar.js";
+import { StatusBar } from "./StatusBar.js";
 
 interface ChatProps {
 	wsUrl: string;
@@ -12,21 +17,27 @@ interface ChatProps {
 }
 
 /**
- * Minimal chat shell component. Connects to the gateway via WebSocket,
- * displays messages, and accepts user input. Plan 03-02 replaces these
- * raw renderings with proper MessageBubble, StatusBar, etc.
+ * Full chat interface component. Wires together StatusBar, MessageList,
+ * StreamingResponse, InputBar, and slash command dispatch.
  */
 export function Chat({ wsUrl, initialModel, resumeSessionId }: ChatProps) {
+	const { exit } = useApp();
+
 	const {
 		messages,
 		streamingText,
+		isStreaming,
 		sessionId,
 		model,
 		connected,
 		usage,
 		handleServerMessage,
 		addUserMessage,
+		addMessage,
+		clearMessages,
 		setConnected,
+		setModel,
+		setSessionId,
 	} = useChat({ initialModel, resumeSessionId });
 
 	const { send } = useWebSocket({
@@ -35,76 +46,82 @@ export function Chat({ wsUrl, initialModel, resumeSessionId }: ChatProps) {
 		onClose: useCallback(() => setConnected(false), [setConnected]),
 	});
 
-	// Sync WebSocket connected state into chat state
-	// The useWebSocket hook tracks its own connected state, but we also
-	// need to update the chat hook's connected state for rendering
-	const handleSubmit = useCallback(
-		(value: string) => {
-			const trimmed = value.trim();
-			if (!trimmed) return;
+	const { processInput } = useSlashCommands();
 
-			addUserMessage(trimmed);
-			send(createChatSendMessage(trimmed, { sessionId: sessionId ?? undefined, model }));
+	const handleSubmit = useCallback(
+		(input: string) => {
+			const result = processInput(input, { sessionId, model });
+
+			if (result.handled) {
+				// Add any result message to the chat
+				if (result.message) {
+					addMessage(result.message);
+				}
+
+				// Send any WebSocket message
+				if (result.wsMessage) {
+					send(result.wsMessage);
+				}
+
+				// Handle actions
+				if (result.action === "quit") {
+					exit();
+					return;
+				}
+				if (result.action === "clear") {
+					clearMessages();
+					return;
+				}
+				if (result.action === "model-switch" && result.modelName) {
+					setModel(result.modelName);
+					return;
+				}
+				if (input.startsWith("/session") && input.includes("new")) {
+					setSessionId(null);
+					return;
+				}
+				return;
+			}
+
+			// Regular chat message
+			addUserMessage(input);
+			send(
+				createChatSendMessage(input, {
+					sessionId: sessionId ?? undefined,
+					model,
+				}),
+			);
 		},
-		[addUserMessage, send, sessionId, model],
+		[
+			processInput,
+			sessionId,
+			model,
+			addMessage,
+			addUserMessage,
+			send,
+			exit,
+			clearMessages,
+			setModel,
+			setSessionId,
+		],
 	);
 
 	return (
 		<Box flexDirection="column" padding={1}>
-			{/* Connection status */}
-			<Box marginBottom={1}>
-				<Text color={connected ? "green" : "red"}>
-					{connected ? "Connected" : "Disconnected"}
-				</Text>
-				{sessionId && (
-					<Text dimColor> | Session: {sessionId}</Text>
-				)}
-				{usage.totalTokens > 0 && (
-					<Text dimColor>
-						{" "}| Tokens: {usage.totalTokens} | Cost: $
-						{usage.totalCost.toFixed(4)}
-					</Text>
-				)}
-			</Box>
+			<StatusBar
+				connected={connected}
+				sessionId={sessionId}
+				model={model}
+				usage={usage}
+			/>
 
-			{/* Message history */}
-			<Static items={messages}>
-				{(msg) => (
-					<Box key={msg.id}>
-						<Text
-							color={
-								msg.type === "text" && msg.role === "user"
-									? "blue"
-									: msg.type === "text" && msg.role === "assistant"
-										? "green"
-										: "yellow"
-							}
-						>
-							{msg.type === "text" ? msg.role : msg.type}:{" "}
-						</Text>
-						<Text>{msg.type === "text" || msg.type === "reasoning" ? msg.content : msg.type === "tool_call" ? msg.toolName : msg.type === "bash_command" ? msg.command : ""}</Text>
-					</Box>
-				)}
-			</Static>
+			<MessageList messages={messages} />
 
-			{/* Streaming response */}
-			{streamingText ? (
-				<Box>
-					<Text color="green">assistant: </Text>
-					<Text>{streamingText}</Text>
-				</Box>
-			) : null}
+			{isStreaming && (
+				<StreamingResponse text={streamingText} model={model} />
+			)}
 
-			{/* Input */}
-			<Box marginTop={1}>
-				<Text bold color="blue">
-					{">"}{" "}
-				</Text>
-				<TextInput
-					placeholder="Type a message..."
-					onSubmit={handleSubmit}
-				/>
-			</Box>
+			<InputBar onSubmit={handleSubmit} isStreaming={isStreaming} />
 		</Box>
 	);
 }
