@@ -18,7 +18,8 @@
   "dependencies": {
     "@agentspace/core": "workspace:*",
     "better-sqlite3": "^11.0.0",
-    "drizzle-orm": "^0.45.0"
+    "drizzle-orm": "^0.45.0",
+    "sqlite-vec": "^0.1.6"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.0",

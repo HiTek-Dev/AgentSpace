@@ -1,5 +1,6 @@
 import { mkdirSync } from "node:fs";
 import Database from "better-sqlite3";
+import * as sqliteVec from "sqlite-vec";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { eq, desc } from "drizzle-orm";
 import { CONFIG_DIR, DB_PATH } from "@agentspace/core";
@@ -29,6 +30,9 @@ export function getDb() {
 
 	const sqlite = new Database(DB_PATH);
 	sqlite.pragma("journal_mode = WAL");
+
+	// Load sqlite-vec extension for vector similarity search
+	sqliteVec.load(sqlite);
 
 	// Ensure all tables exist
 	sqlite.exec(`
@@ -69,6 +73,38 @@ export function getDb() {
 			total_tokens INTEGER NOT NULL,
 			cost REAL NOT NULL,
 			timestamp TEXT NOT NULL
+		);
+
+		CREATE TABLE IF NOT EXISTS threads (
+			id TEXT PRIMARY KEY,
+			title TEXT NOT NULL,
+			system_prompt TEXT,
+			archived INTEGER DEFAULT 0,
+			created_at TEXT NOT NULL,
+			last_active_at TEXT NOT NULL
+		);
+
+		CREATE TABLE IF NOT EXISTS memories (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			thread_id TEXT,
+			content TEXT NOT NULL,
+			memory_type TEXT NOT NULL,
+			source TEXT,
+			created_at TEXT NOT NULL
+		);
+
+		CREATE TABLE IF NOT EXISTS global_prompts (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			name TEXT NOT NULL,
+			content TEXT NOT NULL,
+			is_active INTEGER DEFAULT 1,
+			priority INTEGER DEFAULT 0,
+			created_at TEXT NOT NULL
+		);
+
+		CREATE VIRTUAL TABLE IF NOT EXISTS vec_memories USING vec0(
+			memory_id INTEGER PRIMARY KEY,
+			content_embedding FLOAT[1536] distance_metric=cosine
 		);
 	`);
 
