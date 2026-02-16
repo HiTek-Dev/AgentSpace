@@ -40,12 +40,63 @@ const ChatRouteConfirmSchema = z.object({
 		.optional(), // present when accept=false
 });
 
+// ── Memory & Thread Client Messages ────────────────────────────────────
+
+const MemorySearchSchema = z.object({
+	type: z.literal("memory.search"),
+	id: z.string(),
+	query: z.string(),
+	topK: z.number().optional(),
+	threadId: z.string().optional(),
+});
+
+const ThreadCreateSchema = z.object({
+	type: z.literal("thread.create"),
+	id: z.string(),
+	title: z.string(),
+	systemPrompt: z.string().optional(),
+});
+
+const ThreadListSchema = z.object({
+	type: z.literal("thread.list"),
+	id: z.string(),
+	includeArchived: z.boolean().optional(),
+});
+
+const ThreadUpdateSchema = z.object({
+	type: z.literal("thread.update"),
+	id: z.string(),
+	threadId: z.string(),
+	title: z.string().optional(),
+	systemPrompt: z.string().optional(),
+	archived: z.boolean().optional(),
+});
+
+const PromptSetSchema = z.object({
+	type: z.literal("prompt.set"),
+	id: z.string(),
+	name: z.string(),
+	content: z.string(),
+	priority: z.number().optional(),
+});
+
+const PromptListSchema = z.object({
+	type: z.literal("prompt.list"),
+	id: z.string(),
+});
+
 export const ClientMessageSchema = z.discriminatedUnion("type", [
 	ChatSendSchema,
 	ContextInspectSchema,
 	UsageQuerySchema,
 	SessionListSchema,
 	ChatRouteConfirmSchema,
+	MemorySearchSchema,
+	ThreadCreateSchema,
+	ThreadListSchema,
+	ThreadUpdateSchema,
+	PromptSetSchema,
+	PromptListSchema,
 ]);
 
 export type ClientMessage = z.infer<typeof ClientMessageSchema>;
@@ -54,6 +105,12 @@ export type ContextInspect = z.infer<typeof ContextInspectSchema>;
 export type UsageQuery = z.infer<typeof UsageQuerySchema>;
 export type SessionList = z.infer<typeof SessionListSchema>;
 export type ChatRouteConfirm = z.infer<typeof ChatRouteConfirmSchema>;
+export type MemorySearch = z.infer<typeof MemorySearchSchema>;
+export type ThreadCreate = z.infer<typeof ThreadCreateSchema>;
+export type ThreadList = z.infer<typeof ThreadListSchema>;
+export type ThreadUpdate = z.infer<typeof ThreadUpdateSchema>;
+export type PromptSet = z.infer<typeof PromptSetSchema>;
+export type PromptList = z.infer<typeof PromptListSchema>;
 
 // ── Server Messages (outbound) ─────────────────────────────────────────
 
@@ -177,6 +234,74 @@ const SessionListResponseSchema = z.object({
 	),
 });
 
+// ── Memory & Thread Server Messages ────────────────────────────────────
+
+const MemorySearchResultSchema = z.object({
+	type: z.literal("memory.search.result"),
+	id: z.string(),
+	results: z.array(
+		z.object({
+			content: z.string(),
+			memoryType: z.string(),
+			distance: z.number(),
+			createdAt: z.string(),
+		}),
+	),
+});
+
+const ThreadCreatedSchema = z.object({
+	type: z.literal("thread.created"),
+	id: z.string(),
+	thread: z.object({
+		id: z.string(),
+		title: z.string(),
+		systemPrompt: z.string().optional(),
+		createdAt: z.string(),
+	}),
+});
+
+const ThreadListResultSchema = z.object({
+	type: z.literal("thread.list.result"),
+	id: z.string(),
+	threads: z.array(
+		z.object({
+			id: z.string(),
+			title: z.string(),
+			systemPrompt: z.string().nullable(),
+			archived: z.boolean().nullable(),
+			createdAt: z.string(),
+			lastActiveAt: z.string(),
+		}),
+	),
+});
+
+const ThreadUpdatedSchema = z.object({
+	type: z.literal("thread.updated"),
+	id: z.string(),
+	threadId: z.string(),
+});
+
+const PromptSetResultSchema = z.object({
+	type: z.literal("prompt.set.result"),
+	id: z.string(),
+	promptId: z.number(),
+});
+
+const PromptListResultSchema = z.object({
+	type: z.literal("prompt.list.result"),
+	id: z.string(),
+	prompts: z.array(
+		z.object({
+			id: z.number(),
+			name: z.string(),
+			content: z.string(),
+			isActive: z.boolean().nullable(),
+			priority: z.number().nullable(),
+			createdAt: z.string(),
+		}),
+	),
+});
+
 export const ServerMessageSchema = z.discriminatedUnion("type", [
 	ChatStreamStartSchema,
 	ChatStreamDeltaSchema,
@@ -187,6 +312,12 @@ export const ServerMessageSchema = z.discriminatedUnion("type", [
 	ErrorSchema,
 	SessionCreatedSchema,
 	SessionListResponseSchema,
+	MemorySearchResultSchema,
+	ThreadCreatedSchema,
+	ThreadListResultSchema,
+	ThreadUpdatedSchema,
+	PromptSetResultSchema,
+	PromptListResultSchema,
 ]);
 
 export type ServerMessage = z.infer<typeof ServerMessageSchema>;
@@ -199,3 +330,9 @@ export type UsageReport = z.infer<typeof UsageReportSchema>;
 export type ErrorMessage = z.infer<typeof ErrorSchema>;
 export type SessionCreated = z.infer<typeof SessionCreatedSchema>;
 export type SessionListResponse = z.infer<typeof SessionListResponseSchema>;
+export type MemorySearchResult = z.infer<typeof MemorySearchResultSchema>;
+export type ThreadCreated = z.infer<typeof ThreadCreatedSchema>;
+export type ThreadListResult = z.infer<typeof ThreadListResultSchema>;
+export type ThreadUpdated = z.infer<typeof ThreadUpdatedSchema>;
+export type PromptSetResult = z.infer<typeof PromptSetResultSchema>;
+export type PromptListResult = z.infer<typeof PromptListResultSchema>;

@@ -6,6 +6,12 @@ import type {
 	ChatRouteConfirm,
 	ContextInspect,
 	UsageQuery,
+	MemorySearch,
+	ThreadCreate,
+	ThreadList,
+	ThreadUpdate,
+	PromptSet,
+	PromptList,
 } from "./protocol.js";
 import type { ConnectionState } from "./connection.js";
 import { sessionManager } from "../session/index.js";
@@ -20,8 +26,29 @@ import { inspectContext } from "../context/index.js";
 import type { AssembledContext } from "../context/types.js";
 import { calculateCost } from "../usage/pricing.js";
 import { usageTracker } from "../usage/index.js";
+import { MemoryManager, MemoryPressureDetector, ThreadManager } from "../memory/index.js";
 
 const logger = createLogger("ws-handlers");
+
+/** Lazy-init singletons */
+let memoryManagerInstance: MemoryManager | null = null;
+let threadManagerInstance: ThreadManager | null = null;
+let pressureDetectorInstance: MemoryPressureDetector | null = null;
+
+function getMemoryManager(): MemoryManager {
+	if (!memoryManagerInstance) memoryManagerInstance = new MemoryManager();
+	return memoryManagerInstance;
+}
+
+function getThreadManager(): ThreadManager {
+	if (!threadManagerInstance) threadManagerInstance = new ThreadManager();
+	return threadManagerInstance;
+}
+
+function getPressureDetector(): MemoryPressureDetector {
+	if (!pressureDetectorInstance) pressureDetectorInstance = new MemoryPressureDetector();
+	return pressureDetectorInstance;
+}
 
 /**
  * Send a typed server message over a WebSocket.
@@ -29,6 +56,51 @@ const logger = createLogger("ws-handlers");
 function send(ws: WebSocket, msg: ServerMessage): void {
 	if (ws.readyState === ws.OPEN) {
 		ws.send(JSON.stringify(msg));
+	}
+}
+
+/**
+ * Check memory pressure after context assembly and flush if needed.
+ * Best-effort: if flush fails, proceed anyway.
+ */
+async function checkAndFlushPressure(context: AssembledContext): Promise<void> {
+	const detector = getPressureDetector();
+	const manager = getMemoryManager();
+
+	// Compute token counts from assembled context sections
+	const systemTokens = context.sections
+		.filter((s) => ["system_prompt", "soul", "long_term_memory", "recent_activity"].includes(s.name))
+		.reduce((sum, s) => sum + s.tokenEstimate, 0);
+	const conversationTokens = context.sections
+		.filter((s) => ["history", "user_message"].includes(s.name))
+		.reduce((sum, s) => sum + s.tokenEstimate, 0);
+	const memoryTokens = context.sections
+		.filter((s) => ["skills", "tools"].includes(s.name))
+		.reduce((sum, s) => sum + s.tokenEstimate, 0);
+
+	const pressure = detector.check({
+		system: systemTokens,
+		memory: memoryTokens,
+		conversation: conversationTokens,
+	});
+
+	if (pressure.shouldFlush) {
+		logger.info(`Memory pressure at ${(pressure.usage * 100).toFixed(1)}%, flushing older messages to daily log`);
+		try {
+			// Summarize older conversation messages for flush
+			const historySection = context.sections.find((s) => s.name === "history");
+			if (historySection?.content) {
+				const lines = historySection.content.split("\n");
+				// Flush the first half of history (older messages)
+				const halfPoint = Math.floor(lines.length / 2);
+				const olderMessages = lines.slice(0, halfPoint).join("\n");
+				if (olderMessages.trim()) {
+					await manager.flushToDaily(`[Memory Pressure Flush]\n\n${olderMessages}`);
+				}
+			}
+		} catch (err) {
+			logger.error(`Memory flush failed (non-fatal): ${err instanceof Error ? err.message : "unknown"}`);
+		}
 	}
 }
 
@@ -195,6 +267,9 @@ export async function handleChatSend(
 	const sessionMessages = sessionManager.getMessages(sessionId);
 	const context = assembleContext(sessionMessages, msg.content, model);
 
+	// Check memory pressure and flush if needed (best-effort)
+	await checkAndFlushPressure(context);
+
 	// Routing decision (only when no explicit model)
 	let routingInfo: { tier: "high" | "standard" | "budget"; reason: string } | undefined;
 
@@ -357,4 +432,132 @@ export async function handleUsageQuery(
 			grandTotal: totals.grandTotal,
 		});
 	}
+}
+
+// ── Memory & Thread Handlers ───────────────────────────────────────────
+
+/**
+ * Handle memory.search: semantic search over stored memories.
+ */
+export async function handleMemorySearch(
+	socket: WebSocket,
+	msg: MemorySearch,
+): Promise<void> {
+	const manager = getMemoryManager();
+	try {
+		const results = await manager.search(msg.query, {
+			topK: msg.topK,
+			threadId: msg.threadId,
+		});
+		send(socket, {
+			type: "memory.search.result",
+			id: msg.id,
+			results: results.map((r) => ({
+				content: r.content,
+				memoryType: r.memoryType,
+				distance: r.distance,
+				createdAt: r.createdAt,
+			})),
+		});
+	} catch (err) {
+		send(socket, {
+			type: "error",
+			requestId: msg.id,
+			code: "MEMORY_SEARCH_ERROR",
+			message: err instanceof Error ? err.message : "Memory search failed",
+		});
+	}
+}
+
+/**
+ * Handle thread.create: create a new conversation thread.
+ */
+export async function handleThreadCreate(
+	socket: WebSocket,
+	msg: ThreadCreate,
+): Promise<void> {
+	const manager = getThreadManager();
+	const thread = manager.createThread(msg.title, msg.systemPrompt);
+	send(socket, {
+		type: "thread.created",
+		id: msg.id,
+		thread: {
+			id: thread.id,
+			title: thread.title,
+			systemPrompt: thread.systemPrompt ?? undefined,
+			createdAt: thread.createdAt,
+		},
+	});
+}
+
+/**
+ * Handle thread.list: list conversation threads.
+ */
+export async function handleThreadList(
+	socket: WebSocket,
+	msg: ThreadList,
+): Promise<void> {
+	const manager = getThreadManager();
+	const threads = manager.listThreads(msg.includeArchived);
+	send(socket, {
+		type: "thread.list.result",
+		id: msg.id,
+		threads,
+	});
+}
+
+/**
+ * Handle thread.update: update a conversation thread.
+ */
+export async function handleThreadUpdate(
+	socket: WebSocket,
+	msg: ThreadUpdate,
+): Promise<void> {
+	const manager = getThreadManager();
+	manager.updateThread(msg.threadId, {
+		title: msg.title,
+		systemPrompt: msg.systemPrompt,
+		archived: msg.archived,
+	});
+	send(socket, {
+		type: "thread.updated",
+		id: msg.id,
+		threadId: msg.threadId,
+	});
+}
+
+/**
+ * Handle prompt.set: add or create a global system prompt.
+ */
+export async function handlePromptSet(
+	socket: WebSocket,
+	msg: PromptSet,
+): Promise<void> {
+	const manager = getThreadManager();
+	const { id: promptId } = manager.addGlobalPrompt(
+		msg.name,
+		msg.content,
+		msg.priority,
+	);
+	send(socket, {
+		type: "prompt.set.result",
+		id: msg.id,
+		promptId,
+	});
+}
+
+/**
+ * Handle prompt.list: list all global system prompts.
+ */
+export async function handlePromptList(
+	socket: WebSocket,
+	msg: PromptList,
+): Promise<void> {
+	const manager = getThreadManager();
+	const prompts = manager.listGlobalPrompts();
+	send(socket, {
+		type: "prompt.list.result",
+		id: msg.id,
+		prompts,
+	});
 }

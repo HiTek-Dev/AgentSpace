@@ -15,6 +15,12 @@ import {
 	handleChatRouteConfirm,
 	handleContextInspect,
 	handleUsageQuery,
+	handleMemorySearch,
+	handleThreadCreate,
+	handleThreadList,
+	handleThreadUpdate,
+	handlePromptSet,
+	handlePromptList,
 } from "./handlers.js";
 
 const logger = createLogger("gateway-ws");
@@ -133,6 +139,66 @@ export async function registerGatewayWebSocket(
 							handleUsageQuery(socket, msg).catch(
 								(err: Error) => {
 									logger.error(`Unhandled usage.query error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "memory.search": {
+							logger.info(`memory.search query: "${msg.query.slice(0, 50)}"`);
+							handleMemorySearch(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled memory.search error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "thread.create": {
+							logger.info(`thread.create: "${msg.title}"`);
+							handleThreadCreate(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled thread.create error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "thread.list": {
+							logger.info("thread.list from client");
+							handleThreadList(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled thread.list error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "thread.update": {
+							logger.info(`thread.update: ${msg.threadId}`);
+							handleThreadUpdate(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled thread.update error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "prompt.set": {
+							logger.info(`prompt.set: "${msg.name}"`);
+							handlePromptSet(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled prompt.set error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "prompt.list": {
+							logger.info("prompt.list from client");
+							handlePromptList(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled prompt.list error: ${err.message}`);
 								},
 							);
 							break;
