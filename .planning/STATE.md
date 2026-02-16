@@ -5,29 +5,29 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 1: Foundation & Security
+**Current focus:** Phase 1: Foundation & Security -- COMPLETE
 
 ## Current Position
 
-Phase: 1 of 10 (Foundation & Security)
-Plan: 2 of 3 in current phase
-Status: Executing phase
-Last activity: 2026-02-16 -- Completed 01-02 (credential vault + CLI key management)
+Phase: 1 of 10 (Foundation & Security) -- COMPLETE
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-02-16 -- Completed 01-03 (security mode enforcement, key-serving API, onboarding)
 
-Progress: [██░░░░░░░░] 7%
+Progress: [███░░░░░░░] 10%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 3
 - Average duration: 3min
-- Total execution time: 0.10 hours
+- Total execution time: 0.13 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 | 2/3 | 6min | 3min |
+| 01 | 3/3 | 8min | 3min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -51,6 +51,9 @@ Recent decisions affecting current work:
 - [01-02]: Hidden input for CLI key prompts uses raw stdin, not Ink TextInput
 - [01-02]: Key prefix validation is advisory-only (warnings, not enforcement)
 - [01-02]: Vault functions are synchronous, matching better-sqlite3 sync API
+- [01-03]: Scoped bearer-auth to /keys/* routes only, leaving /health unauthenticated
+- [01-03]: Runtime.json written on server start with PID/port/timestamp, cleaned on exit
+- [01-03]: Onboarding wizard uses multi-step Ink component with state machine flow
 
 ### Pending Todos
 
@@ -63,5 +66,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 01-02-PLAN.md (credential vault + CLI key management)
+Stopped at: Completed 01-03-PLAN.md (Phase 1 complete -- security mode, key-serving API, onboarding)
 Resume file: None
