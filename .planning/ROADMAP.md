@@ -83,11 +83,11 @@ Plans:
   2. User can switch between providers and models mid-conversation
   3. Gateway automatically routes tasks to appropriate models based on complexity (planning to high-thinking, simple Q&A to budget models)
   4. User can see and override the routing decision before the request is sent
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md — Provider registry (Anthropic/OpenAI/Ollama), unified streaming, extended pricing, backward-compat model IDs
+- [ ] 04-02-PLAN.md — Complexity-based routing engine, chat.route.propose/confirm protocol, auto/manual routing modes
 
 ### Phase 5: Memory & Persistence
 **Goal**: The agent remembers past interactions, maintains an evolving personality, and users can search conversation history semantically
