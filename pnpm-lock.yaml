@@ -93,6 +93,12 @@ importers:
       '@agentspace/core':
         specifier: workspace:*
         version: link:../core
+      '@ai-sdk/openai':
+        specifier: ^3
+        version: 3.0.29(zod@4.3.6)
+      ai:
+        specifier: ^6.0.86
+        version: 6.0.86(zod@4.3.6)
       better-sqlite3:
         specifier: ^11.0.0
         version: 11.10.0

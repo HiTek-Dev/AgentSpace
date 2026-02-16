@@ -17,3 +17,11 @@ export {
 	evolveSoul,
 	getSoulPath,
 } from "./soul-manager.js";
+
+export {
+	generateEmbedding,
+	generateEmbeddings,
+	storeEmbedding,
+	embedAndStore,
+	EMBEDDING_DIMS,
+} from "./embeddings.js";
