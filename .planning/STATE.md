@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 3: CLI Interface -- COMPLETE
+**Current focus:** Phase 4: Multi-Provider Intelligence -- IN PROGRESS
 
 ## Current Position
 
-Phase: 3 of 10 (CLI Interface) -- COMPLETE
-Plan: 2 of 2 in current phase -- COMPLETE
-Status: Completed 03-02 (CLI UI components, slash commands, auto-launch)
-Last activity: 2026-02-16 -- Completed 03-02 (markdown rendering, message styling, slash commands, status bar)
+Phase: 4 of 10 (Multi-Provider Intelligence)
+Plan: 1 of 2 in current phase -- COMPLETE
+Status: Completed 04-01 (provider registry, multi-provider streaming, pricing, model switching)
+Last activity: 2026-02-16 -- Completed 04-01 (AI SDK 6 provider registry, OpenAI/Ollama support, pricing extension)
 
-Progress: [████████░░] 30%
+Progress: [█████████░] 35%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
+- Total plans completed: 9
 - Average duration: 3min
-- Total execution time: 0.37 hours
+- Total execution time: 0.44 hours
 
 **By Phase:**
 
@@ -30,6 +30,7 @@ Progress: [████████░░] 30%
 | 01 | 3/3 | 8min | 3min |
 | 02 | 3/3 | 8min | 3min |
 | 03 | 2/2 | 7min | 4min |
+| 04 | 1/2 | 4min | 4min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -71,6 +72,12 @@ Recent decisions affecting current work:
 - [03-02]: Plain text during streaming, markdown only on completion (avoids partial-parse artifacts)
 - [03-02]: Used markedTerminal() extension API with marked.use() for marked v15 compatibility
 - [03-02]: Custom type declarations for marked-terminal (no @types package available)
+- [04-01]: Singleton provider registry pattern with lazy init, consistent with SessionManager/UsageTracker
+- [04-01]: resolveModelId() prefixes bare model names with "anthropic:" for backward compatibility
+- [04-01]: Ollama always registered even without a key (local, keyless)
+- [04-01]: Provider-qualified model IDs as standard format ("provider:model")
+- [04-01]: Pricing keeps both bare and provider-prefixed Anthropic entries for backward compat
+- [04-01]: Cast model to `never` for registry.languageModel() due to dynamic registry type parameter
 
 ### Pending Todos
 
@@ -83,5 +90,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 03-02-PLAN.md (CLI UI components -- markdown, slash commands, status bar, auto-launch)
+Stopped at: Completed 04-01-PLAN.md (provider registry, multi-provider streaming, pricing, model switching)
 Resume file: None
