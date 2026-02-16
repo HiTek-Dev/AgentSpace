@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 4: Multi-Provider Intelligence -- COMPLETE
+**Current focus:** Phase 5: Memory & Persistence -- IN PROGRESS
 
 ## Current Position
 
-Phase: 4 of 10 (Multi-Provider Intelligence) -- COMPLETE
-Plan: 2 of 2 in current phase -- COMPLETE
-Status: Completed 04-02 (complexity-based routing with auto/manual modes)
-Last activity: 2026-02-16 -- Completed 04-02 (complexity classifier, routing engine, WS proposal/confirm protocol)
+Phase: 5 of 10 (Memory & Persistence) -- IN PROGRESS
+Plan: 1 of 3 in current phase -- COMPLETE
+Status: Completed 05-01 (database schemas, sqlite-vec vector store, memory file scaffolding)
+Last activity: 2026-02-16 -- Completed 05-01 (threads/memories/globalPrompts schemas, vec_memories, SOUL.md/MEMORY.md)
 
-Progress: [████████████░] 40%
+Progress: [██████████████░] 44%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 3min
-- Total execution time: 0.49 hours
+- Total execution time: 0.52 hours
 
 **By Phase:**
 
@@ -31,6 +31,7 @@ Progress: [████████████░] 40%
 | 02 | 3/3 | 8min | 3min |
 | 03 | 2/2 | 7min | 4min |
 | 04 | 2/2 | 7min | 4min |
+| 05 | 1/3 | 2min | 2min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -83,6 +84,9 @@ Recent decisions affecting current work:
 - [04-02]: streamToClient helper extracted to avoid code duplication between normal and route-confirm flows
 - [04-02]: Confidence scoring: 1.0 keyword, 0.7 length/history, 0.5 default fallback
 - [04-02]: Protocol extension pattern: add schema, add to discriminated union, wire handler in server.ts
+- [05-01]: sqlite-vec loaded before table creation in getDb() initialization sequence
+- [05-01]: vec_memories uses application-level join with memories.id (virtual tables don't support FK constraints)
+- [05-01]: 1536 dimensions for OpenAI text-embedding-3-small compatibility
 
 ### Pending Todos
 
@@ -95,5 +99,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 04-02-PLAN.md (complexity routing, auto/manual modes, WS protocol extension)
+Stopped at: Completed 05-01-PLAN.md (database schemas, sqlite-vec, memory file scaffolding)
 Resume file: None
