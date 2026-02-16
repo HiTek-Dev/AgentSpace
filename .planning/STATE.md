@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 4: Multi-Provider Intelligence -- IN PROGRESS
+**Current focus:** Phase 4: Multi-Provider Intelligence -- COMPLETE
 
 ## Current Position
 
-Phase: 4 of 10 (Multi-Provider Intelligence)
-Plan: 1 of 2 in current phase -- COMPLETE
-Status: Completed 04-01 (provider registry, multi-provider streaming, pricing, model switching)
-Last activity: 2026-02-16 -- Completed 04-01 (AI SDK 6 provider registry, OpenAI/Ollama support, pricing extension)
+Phase: 4 of 10 (Multi-Provider Intelligence) -- COMPLETE
+Plan: 2 of 2 in current phase -- COMPLETE
+Status: Completed 04-02 (complexity-based routing with auto/manual modes)
+Last activity: 2026-02-16 -- Completed 04-02 (complexity classifier, routing engine, WS proposal/confirm protocol)
 
-Progress: [█████████░] 35%
+Progress: [████████████░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 3min
-- Total execution time: 0.44 hours
+- Total execution time: 0.49 hours
 
 **By Phase:**
 
@@ -30,7 +30,7 @@ Progress: [█████████░] 35%
 | 01 | 3/3 | 8min | 3min |
 | 02 | 3/3 | 8min | 3min |
 | 03 | 2/2 | 7min | 4min |
-| 04 | 1/2 | 4min | 4min |
+| 04 | 2/2 | 7min | 4min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -78,6 +78,11 @@ Recent decisions affecting current work:
 - [04-01]: Provider-qualified model IDs as standard format ("provider:model")
 - [04-01]: Pricing keeps both bare and provider-prefixed Anthropic entries for backward compat
 - [04-01]: Cast model to `never` for registry.languageModel() due to dynamic registry type parameter
+- [04-02]: Default routing mode is auto (routes silently, shows tier in stream.start)
+- [04-02]: Explicit msg.model bypasses routing entirely (user choice takes precedence)
+- [04-02]: streamToClient helper extracted to avoid code duplication between normal and route-confirm flows
+- [04-02]: Confidence scoring: 1.0 keyword, 0.7 length/history, 0.5 default fallback
+- [04-02]: Protocol extension pattern: add schema, add to discriminated union, wire handler in server.ts
 
 ### Pending Todos
 
@@ -90,5 +95,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 04-01-PLAN.md (provider registry, multi-provider streaming, pricing, model switching)
+Stopped at: Completed 04-02-PLAN.md (complexity routing, auto/manual modes, WS protocol extension)
 Resume file: None
