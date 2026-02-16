@@ -35,12 +35,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Limited Control mode restricts the agent to a designated workspace directory; Full Control mode grants OS-level access with explicit permission grants
   4. Local-only API endpoint (127.0.0.1) serves API keys to authorized local applications with an audit log of access
   5. Only authenticated local CLI can send commands to the agent (no unauthenticated inputs accepted)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md — Scaffold monorepo, @agentspace/core (config/crypto/types), @agentspace/db (audit log schema)
+- [ ] 01-02-PLAN.md — Credential vault (OS keychain wrapper) and CLI key management commands
+- [ ] 01-03-PLAN.md — Security mode enforcement, local key-serving API, onboarding wizard, config/audit CLI
 
 ### Phase 2: Gateway Core
 **Goal**: Users can connect to the gateway and have a streaming conversation with an LLM, with full transparency into what context is being assembled and sent
