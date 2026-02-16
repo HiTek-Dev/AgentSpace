@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 5: Memory & Persistence -- IN PROGRESS
+**Current focus:** Phase 5: Memory & Persistence -- COMPLETE
 
 ## Current Position
 
-Phase: 5 of 10 (Memory & Persistence) -- IN PROGRESS
-Plan: 2 of 3 in current phase -- COMPLETE
-Status: Completed 05-02 (memory layer: daily logger, memory curator, soul manager, embeddings)
-Last activity: 2026-02-16 -- Completed 05-02 (daily logs, MEMORY.md curation, SOUL.md management, AI SDK embeddings)
+Phase: 5 of 10 (Memory & Persistence) -- COMPLETE
+Plan: 3 of 3 in current phase -- COMPLETE
+Status: Completed 05-03 (gateway memory wiring: vector search, context assembly, pressure detection, thread/prompt management)
+Last activity: 2026-02-16 -- Completed 05-03 (vector search, memory-aware context, pressure flush, thread CRUD, WS protocol extensions)
 
-Progress: [████████████████░] 48%
+Progress: [████████████████████░] 52%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 3min
-- Total execution time: 0.52 hours
+- Total execution time: 0.59 hours
 
 **By Phase:**
 
@@ -31,7 +31,7 @@ Progress: [████████████████░] 48%
 | 02 | 3/3 | 8min | 3min |
 | 03 | 2/2 | 7min | 4min |
 | 04 | 2/2 | 7min | 4min |
-| 05 | 2/3 | 4min | 2min |
+| 05 | 3/3 | 8min | 3min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -91,6 +91,10 @@ Recent decisions affecting current work:
 - [05-02]: All file-based memory operations are synchronous, consistent with better-sqlite3 sync API
 - [05-02]: Raw better-sqlite3 client via (db as any).$client for vec0 virtual table operations
 - [05-02]: embedAndStore combines memory record + vector storage in single async call
+- [05-03]: Lazy-init singletons for MemoryManager/ThreadManager consistent with SessionManager/UsageTracker pattern
+- [05-03]: Memory pressure flushes older half of conversation history to daily log (best-effort, non-blocking)
+- [05-03]: System prompt assembly: global prompts by priority desc + thread-specific prompt, soul/memory added by assembler
+- [05-03]: Vector search uses raw SQL via $client for sqlite-vec KNN MATCH queries with Drizzle metadata join
 
 ### Pending Todos
 
@@ -103,5 +107,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 05-02-PLAN.md (memory layer: daily logger, memory curator, soul manager, embeddings)
+Stopped at: Completed 05-03-PLAN.md (gateway memory wiring: vector search, context assembly, pressure detection, thread/prompt management)
 Resume file: None
