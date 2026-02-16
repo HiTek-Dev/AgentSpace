@@ -1,7 +1,7 @@
 # Requirements: AgentSpace
 
 **Defined:** 2026-02-15
-**Core Value:** Every interaction with your AI agent is transparent, secure, and under your control — you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
+**Core Value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
 
 ## v1 Requirements
 
@@ -16,7 +16,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **GATE-05**: Gateway manages sessions with per-agent isolation and transparent session keys
 - [ ] **GATE-06**: User can view the full assembled context (system prompt + memory + skills + history + tools) before it's sent to the model
 - [ ] **GATE-07**: Context inspector shows byte count, token count, and cost estimate per section
-- [ ] **GATE-08**: Gateway routes tasks to appropriate models based on complexity (planning → high-thinking, simple Q&A → budget)
+- [ ] **GATE-08**: Gateway routes tasks to appropriate models based on complexity (planning -> high-thinking, simple Q&A -> budget)
 - [ ] **GATE-09**: User can see and override the routing decision before execution
 - [ ] **GATE-10**: Gateway tracks token usage and cost per request with running totals per model/provider
 
@@ -118,7 +118,7 @@ Deferred to future release. Tracked but not in current roadmap.
 ### Advanced Workflows
 
 - **AWFL-01**: Conversational workflow creation ("describe what you want and it builds the workflow")
-- **AWFL-02**: Triple-mode workflow sync (visual ↔ code ↔ conversational bidirectional sync)
+- **AWFL-02**: Triple-mode workflow sync (visual <-> code <-> conversational bidirectional sync)
 
 ### Advanced Agent
 
@@ -148,13 +148,77 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (Populated during roadmap creation) | | |
+| GATE-01 | Phase 2: Gateway Core | Pending |
+| GATE-02 | Phase 2: Gateway Core | Pending |
+| GATE-03 | Phase 4: Multi-Provider Intelligence | Pending |
+| GATE-04 | Phase 4: Multi-Provider Intelligence | Pending |
+| GATE-05 | Phase 2: Gateway Core | Pending |
+| GATE-06 | Phase 2: Gateway Core | Pending |
+| GATE-07 | Phase 2: Gateway Core | Pending |
+| GATE-08 | Phase 4: Multi-Provider Intelligence | Pending |
+| GATE-09 | Phase 4: Multi-Provider Intelligence | Pending |
+| GATE-10 | Phase 2: Gateway Core | Pending |
+| SECR-01 | Phase 1: Foundation & Security | Pending |
+| SECR-02 | Phase 1: Foundation & Security | Pending |
+| SECR-03 | Phase 1: Foundation & Security | Pending |
+| SECR-04 | Phase 1: Foundation & Security | Pending |
+| SECR-05 | Phase 1: Foundation & Security | Pending |
+| SECR-06 | Phase 1: Foundation & Security | Pending |
+| SECR-07 | Phase 1: Foundation & Security | Pending |
+| SECR-08 | Phase 1: Foundation & Security | Pending |
+| AGNT-01 | Phase 6: Agent Capabilities | Pending |
+| AGNT-02 | Phase 6: Agent Capabilities | Pending |
+| AGNT-03 | Phase 6: Agent Capabilities | Pending |
+| AGNT-04 | Phase 6: Agent Capabilities | Pending |
+| AGNT-05 | Phase 6: Agent Capabilities | Pending |
+| AGNT-06 | Phase 7: Agent Self-Improvement | Pending |
+| AGNT-07 | Phase 7: Agent Self-Improvement | Pending |
+| AGNT-08 | Phase 7: Agent Self-Improvement | Pending |
+| AGNT-09 | Phase 6: Agent Capabilities | Pending |
+| AGNT-10 | Phase 6: Agent Capabilities | Pending |
+| CLI-01 | Phase 3: CLI Interface | Pending |
+| CLI-02 | Phase 3: CLI Interface | Pending |
+| CLI-03 | Phase 3: CLI Interface | Pending |
+| CLI-04 | Phase 3: CLI Interface | Pending |
+| CLI-05 | Phase 7: Agent Self-Improvement | Pending |
+| CLI-06 | Phase 7: Agent Self-Improvement | Pending |
+| TELE-01 | Phase 9: Telegram Channel | Pending |
+| TELE-02 | Phase 9: Telegram Channel | Pending |
+| TELE-03 | Phase 9: Telegram Channel | Pending |
+| TELE-04 | Phase 9: Telegram Channel | Pending |
+| TELE-05 | Phase 9: Telegram Channel | Pending |
+| MEMR-01 | Phase 5: Memory & Persistence | Pending |
+| MEMR-02 | Phase 5: Memory & Persistence | Pending |
+| MEMR-03 | Phase 5: Memory & Persistence | Pending |
+| MEMR-04 | Phase 5: Memory & Persistence | Pending |
+| MEMR-05 | Phase 5: Memory & Persistence | Pending |
+| MEMR-06 | Phase 5: Memory & Persistence | Pending |
+| WKFL-01 | Phase 8: Workflows & Scheduling | Pending |
+| WKFL-02 | Phase 8: Workflows & Scheduling | Pending |
+| WKFL-03 | Phase 8: Workflows & Scheduling | Pending |
+| WKFL-04 | Phase 8: Workflows & Scheduling | Pending |
+| WKFL-05 | Phase 8: Workflows & Scheduling | Pending |
+| WKFL-06 | Phase 8: Workflows & Scheduling | Pending |
+| WKFL-07 | Phase 8: Workflows & Scheduling | Pending |
+| WKFL-08 | Phase 8: Workflows & Scheduling | Pending |
+| CCDE-01 | Phase 10: Claude Code & System Skills | Pending |
+| CCDE-02 | Phase 10: Claude Code & System Skills | Pending |
+| CCDE-03 | Phase 10: Claude Code & System Skills | Pending |
+| CCDE-04 | Phase 10: Claude Code & System Skills | Pending |
+| CCDE-05 | Phase 10: Claude Code & System Skills | Pending |
+| SYST-01 | Phase 5: Memory & Persistence | Pending |
+| SYST-02 | Phase 6: Agent Capabilities | Pending |
+| SYST-03 | Phase 5: Memory & Persistence | Pending |
+| SYST-04 | Phase 10: Claude Code & System Skills | Pending |
+| SYST-05 | Phase 10: Claude Code & System Skills | Pending |
+| SYST-06 | Phase 10: Claude Code & System Skills | Pending |
+| SYST-07 | Phase 10: Claude Code & System Skills | Pending |
 
 **Coverage:**
-- v1 requirements: 54 total
-- Mapped to phases: 0
-- Unmapped: 54 ⚠️
+- v1 requirements: 65 total
+- Mapped to phases: 65
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-15*
-*Last updated: 2026-02-15 after initial definition*
+*Last updated: 2026-02-15 after roadmap creation*
