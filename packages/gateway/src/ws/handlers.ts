@@ -9,7 +9,7 @@ import type {
 import type { ConnectionState } from "./connection.js";
 import { sessionManager } from "../session/index.js";
 import { DEFAULT_MODEL } from "../session/types.js";
-import { streamChatResponse } from "../llm/index.js";
+import { streamChatResponse, resolveModelId } from "../llm/index.js";
 import { assembleContext } from "../context/index.js";
 import { inspectContext } from "../context/index.js";
 import { calculateCost } from "../usage/pricing.js";
@@ -62,11 +62,20 @@ export async function handleChatSend(
 		}
 		sessionId = session.id;
 		model = session.model;
+
+		// Mid-conversation model switching: if msg.model differs, update session
+		if (msg.model) {
+			const resolvedMsgModel = resolveModelId(msg.model);
+			if (resolvedMsgModel !== model) {
+				sessionManager.updateModel(sessionId, resolvedMsgModel);
+				model = resolvedMsgModel;
+			}
+		}
 	} else {
-		const session = sessionManager.create(
-			"default",
-			msg.model ?? DEFAULT_MODEL,
-		);
+		const requestedModel = msg.model
+			? resolveModelId(msg.model)
+			: DEFAULT_MODEL;
+		const session = sessionManager.create("default", requestedModel);
 		sessionId = session.id;
 		model = session.model;
 		send(socket, {
@@ -77,6 +86,9 @@ export async function handleChatSend(
 	}
 
 	connState.sessionId = sessionId;
+
+	// Ensure model is provider-qualified for downstream use
+	model = resolveModelId(model);
 
 	// Add user message to session
 	sessionManager.addMessage(sessionId, "user", msg.content);

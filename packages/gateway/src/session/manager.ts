@@ -5,6 +5,7 @@ import {
 	saveSession,
 	getSession,
 	updateLastActive,
+	updateSessionModel,
 	listSessions,
 	saveMessage,
 	getMessages,
@@ -42,6 +43,13 @@ export class SessionManager {
 			updateLastActive(sessionId);
 		}
 		return session;
+	}
+
+	/**
+	 * Update the model for a session (mid-conversation model switching).
+	 */
+	updateModel(sessionId: string, model: string): void {
+		updateSessionModel(sessionId, model);
 	}
 
 	/**

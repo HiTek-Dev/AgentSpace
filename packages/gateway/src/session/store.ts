@@ -54,6 +54,17 @@ export function updateLastActive(id: string): void {
 }
 
 /**
+ * Update the model for a session (for mid-conversation model switching).
+ */
+export function updateSessionModel(id: string, model: string): void {
+	const db = getDb();
+	db.update(sessions)
+		.set({ model, lastActiveAt: new Date().toISOString() })
+		.where(eq(sessions.id, id))
+		.run();
+}
+
+/**
  * List all sessions with message counts.
  */
 export function listSessions(): SessionSummary[] {

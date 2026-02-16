@@ -1,9 +1,10 @@
 import { streamText, type ModelMessage } from "ai";
-import { getAnthropicProvider } from "./provider.js";
+import { getRegistry } from "./registry.js";
 import type { StreamChunk } from "./types.js";
 
 /**
- * Stream a chat response from an Anthropic model using AI SDK 6.
+ * Stream a chat response from any provider via the unified registry.
+ * The model parameter must be provider-qualified (e.g. "anthropic:claude-sonnet-4-5-20250929").
  * Yields text deltas as they arrive, then a final 'done' chunk with usage info.
  */
 export async function* streamChatResponse(
@@ -11,10 +12,13 @@ export async function* streamChatResponse(
 	messages: ModelMessage[],
 	system?: string,
 ): AsyncGenerator<StreamChunk> {
-	const provider = getAnthropicProvider();
+	const registry = getRegistry();
+	// Registry is built dynamically so its type parameter is empty.
+	// Cast model string to satisfy the typed overload.
+	const languageModel = registry.languageModel(model as never);
 
 	const result = streamText({
-		model: provider(model),
+		model: languageModel,
 		messages,
 		system,
 	});
