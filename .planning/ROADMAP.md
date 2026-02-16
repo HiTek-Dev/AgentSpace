@@ -52,12 +52,12 @@ Plans:
   3. User can view the full assembled context (system prompt, memory, skills, history, tools) before it is sent to the model
   4. Context inspector displays byte count, token count, and cost estimate for each context section
   5. Gateway tracks and displays token usage and cost per request with running totals per model
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md — DB schemas (sessions/messages/usage), WS protocol with Zod validation, session manager, WebSocket server on existing Fastify instance
+- [ ] 02-02-PLAN.md — LLM streaming (AI SDK 6 + Anthropic), context assembly/inspection with token estimation, usage tracking with cost calculation, wire all WS handlers
+- [ ] 02-03-PLAN.md — End-to-end human verification of streaming chat, session isolation, context inspection, and usage tracking
 
 ### Phase 3: CLI Interface
 **Goal**: Users can interact with their agent through a polished terminal interface that shows every step transparently, styled after Claude Code
