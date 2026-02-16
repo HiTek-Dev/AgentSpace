@@ -1,3 +1,7 @@
+export type ProviderName = "anthropic" | "openai" | "ollama";
+
+export type ModelTier = "high" | "standard" | "budget";
+
 export interface StreamDelta {
 	type: "delta";
 	text: string;

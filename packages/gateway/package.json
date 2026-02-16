@@ -18,6 +18,8 @@
     "@agentspace/core": "workspace:*",
     "@agentspace/db": "workspace:*",
     "@ai-sdk/anthropic": "^3.0.44",
+    "@ai-sdk/openai": "^3",
+    "@ai-sdk/openai-compatible": "^2",
     "@fastify/bearer-auth": "^10.1.0",
     "@fastify/websocket": "^11.2.0",
     "ai": "^6.0.86",

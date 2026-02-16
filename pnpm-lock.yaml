@@ -121,6 +121,12 @@ importers:
       '@ai-sdk/anthropic':
         specifier: ^3.0.44
         version: 3.0.44(zod@4.3.6)
+      '@ai-sdk/openai':
+        specifier: ^3
+        version: 3.0.29(zod@4.3.6)
+      '@ai-sdk/openai-compatible':
+        specifier: ^2
+        version: 2.0.30(zod@4.3.6)
       '@fastify/bearer-auth':
         specifier: ^10.1.0
         version: 10.1.2
@@ -175,6 +181,28 @@ packages:
       '@ai-sdk/provider': 3.0.8
       '@ai-sdk/provider-utils': 4.0.15(zod@4.3.6)
       '@vercel/oidc': 3.1.0
+      zod: 4.3.6
+    dev: false
+
+  /@ai-sdk/openai-compatible@2.0.30(zod@4.3.6):
+    resolution: {integrity: sha512-iTjumHf1/u4NhjXYFn/aONM2GId3/o7J1Lp5ql8FCbgIMyRwrmanR5xy1S3aaVkfTscuDvLTzWiy1mAbGzK3nQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.15(zod@4.3.6)
+      zod: 4.3.6
+    dev: false
+
+  /@ai-sdk/openai@3.0.29(zod@4.3.6):
+    resolution: {integrity: sha512-ugVTIVpuSLKTjzSPe1F1DWiblJT/lwrrHx0OZEKjpMk/EYP6j6VD/F7SJqM1dsqOJryeBCJWFbUzLNqc99PrMA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.15(zod@4.3.6)
       zod: 4.3.6
     dev: false
 
