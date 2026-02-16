@@ -30,7 +30,7 @@ export function getDb() {
 	const sqlite = new Database(DB_PATH);
 	sqlite.pragma("journal_mode = WAL");
 
-	// Ensure audit_log table exists
+	// Ensure all tables exist
 	sqlite.exec(`
 		CREATE TABLE IF NOT EXISTS audit_log (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,7 +40,36 @@ export function getDb() {
 			source_ip TEXT,
 			source_app TEXT,
 			details TEXT
-		)
+		);
+
+		CREATE TABLE IF NOT EXISTS sessions (
+			id TEXT PRIMARY KEY,
+			session_key TEXT NOT NULL UNIQUE,
+			agent_id TEXT NOT NULL DEFAULT 'default',
+			model TEXT NOT NULL,
+			created_at TEXT NOT NULL,
+			last_active_at TEXT NOT NULL
+		);
+
+		CREATE TABLE IF NOT EXISTS messages (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			session_id TEXT NOT NULL REFERENCES sessions(id),
+			role TEXT NOT NULL,
+			content TEXT NOT NULL,
+			created_at TEXT NOT NULL,
+			token_count INTEGER
+		);
+
+		CREATE TABLE IF NOT EXISTS usage_records (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			session_id TEXT NOT NULL REFERENCES sessions(id),
+			model TEXT NOT NULL,
+			input_tokens INTEGER NOT NULL,
+			output_tokens INTEGER NOT NULL,
+			total_tokens INTEGER NOT NULL,
+			cost REAL NOT NULL,
+			timestamp TEXT NOT NULL
+		);
 	`);
 
 	dbInstance = drizzle(sqlite, { schema });
