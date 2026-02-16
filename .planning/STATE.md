@@ -10,25 +10,25 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 2 of 10 (Gateway Core)
-Plan: 1 of 3 in current phase
-Status: Plan 02-01 complete
-Last activity: 2026-02-16 -- Completed 02-01 (WebSocket gateway infrastructure)
+Plan: 2 of 3 in current phase
+Status: Plan 02-02 complete
+Last activity: 2026-02-16 -- Completed 02-02 (LLM streaming, context assembly, usage tracking)
 
-Progress: [████░░░░░░] 13%
+Progress: [█████░░░░░] 17%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 3min
-- Total execution time: 0.20 hours
+- Total execution time: 0.23 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01 | 3/3 | 8min | 3min |
-| 02 | 1/3 | 4min | 4min |
+| 02 | 2/3 | 7min | 4min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -59,6 +59,9 @@ Recent decisions affecting current work:
 - [02-01]: WeakMap for per-connection state with automatic garbage collection
 - [02-01]: DEFAULT_MODEL set to claude-sonnet-4-5-20250514
 - [02-01]: Localhost-only WebSocket access via preValidation hook
+- [02-02]: Model pricing includes fuzzy matching for versioned model IDs
+- [02-02]: Handlers dispatched from WS message handler with .catch() error boundary
+- [02-02]: UsageTracker singleton pattern consistent with SessionManager
 
 ### Pending Todos
 
@@ -71,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 02-01-PLAN.md (WebSocket gateway infrastructure with protocol, session management, DB schemas)
+Stopped at: Completed 02-02-PLAN.md (LLM streaming, context assembly, usage tracking, handler wiring)
 Resume file: None
