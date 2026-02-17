@@ -1,6 +1,7 @@
 import { Bot } from "grammy";
 import { createLogger } from "@agentspace/core";
 import { registerCommands } from "./handlers/commands.js";
+import { registerCallbackHandlers } from "./handlers/callback.js";
 import { handleTelegramMessage } from "./handlers/message.js";
 import { cleanExpiredCodes } from "./auth/pairing.js";
 
@@ -13,6 +14,7 @@ export function createTelegramBot(token: string): Bot {
 	const bot = new Bot(token);
 
 	registerCommands(bot);
+	registerCallbackHandlers(bot);
 
 	// Text message handler (after commands)
 	bot.on("message:text", (ctx) => {

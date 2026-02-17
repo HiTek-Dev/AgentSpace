@@ -1,7 +1,7 @@
-import type { Bot } from "grammy";
+import { type Bot, InlineKeyboard } from "grammy";
 import type { Transport } from "@agentspace/gateway";
 import type { ServerMessage } from "@agentspace/gateway";
-import { formatForTelegram } from "./formatter.js";
+import { formatForTelegram, escapeHtml } from "./formatter.js";
 import { TelegramResponseAccumulator } from "./streaming/accumulator.js";
 import { createLogger } from "@agentspace/core";
 
@@ -49,6 +49,29 @@ export class TelegramTransport implements Transport {
 				accumulator.finalize().catch(() => {});
 				this.accumulators.delete(msg.requestId);
 			}
+			return;
+		}
+
+		// Handle tool approval requests with inline keyboard buttons
+		if (msg.type === "tool.approval.request") {
+			const keyboard = new InlineKeyboard()
+				.text("Approve", `tool:approve:${msg.toolCallId}`)
+				.text("Deny", `tool:deny:${msg.toolCallId}`)
+				.row()
+				.text("Approve for Session", `tool:session:${msg.toolCallId}`);
+
+			const text = `<b>Tool Approval Required</b>\n\n`
+				+ `Tool: <code>${escapeHtml(msg.toolName)}</code>\n`
+				+ `Risk: ${msg.risk ?? "unknown"}\n\n`
+				+ `<pre>${escapeHtml(JSON.stringify(msg.args, null, 2).slice(0, 500))}</pre>`;
+
+			this.bot.api.sendMessage(this.chatId, text, {
+				parse_mode: "HTML",
+				reply_markup: keyboard,
+			}).catch((err: Error) => {
+				logger.error(`Failed to send tool approval: ${err.message}`);
+			});
+
 			return;
 		}
 

@@ -9,6 +9,7 @@ import {
 import type { ChatSend } from "@agentspace/gateway";
 import { TelegramTransport } from "../transport.js";
 import { getPairedUser } from "../auth/pairing.js";
+import { registerChatTransport } from "./callback.js";
 
 const logger = createLogger("telegram-message");
 
@@ -53,6 +54,7 @@ export async function handleTelegramMessage(
 
 	// Get or create transport and connection state
 	const transport = getOrCreateTransport(chatId, bot);
+	registerChatTransport(chatId, transport.transportId);
 	let connState = getConnectionState(transport.transportId);
 	if (!connState) {
 		connState = initConnection(transport.transportId);
