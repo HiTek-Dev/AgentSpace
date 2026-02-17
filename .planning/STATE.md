@@ -11,17 +11,17 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 
 Phase: 6 of 10 (Agent Capabilities)
 Plan: 2 of 4 in current phase
-Status: Completed 06-02 (skills directory system: SKILL.md discovery, gray-matter parsing, two-tier workspace/managed precedence)
-Last activity: 2026-02-16 -- Completed 06-02 (skills types, loader, directory discovery, context formatting)
+Status: Completed 06-01 (tool infrastructure: MCP client manager, filesystem/shell tools, tool registry, approval gate)
+Last activity: 2026-02-16 -- Completed 06-01 (MCP client, filesystem/shell tools, tool registry, approval gate)
 
-Progress: [████████████████████░] 52%
+Progress: [██████████████████████░] 56%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Average duration: 3min
-- Total execution time: 0.59 hours
+- Total plans completed: 14
+- Average duration: 4min
+- Total execution time: 0.72 hours
 
 **By Phase:**
 
@@ -32,7 +32,7 @@ Progress: [████████████████████░] 52%
 | 03 | 2/2 | 7min | 4min |
 | 04 | 2/2 | 7min | 4min |
 | 05 | 3/3 | 8min | 3min |
-| 06 | 1/4 | 2min | 2min |
+| 06 | 2/4 | 9min | 5min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -96,6 +96,10 @@ Recent decisions affecting current work:
 - [05-03]: Memory pressure flushes older half of conversation history to daily log (best-effort, non-blocking)
 - [05-03]: System prompt assembly: global prompts by priority desc + thread-specific prompt, soul/memory added by assembler
 - [05-03]: Vector search uses raw SQL via $client for sqlite-vec KNN MATCH queries with Drizzle metadata join
+- [06-01]: AI SDK v6 uses inputSchema (not parameters) for tool() definitions
+- [06-01]: Zod 4 z.record requires explicit key schema: z.record(z.string(), valueSchema)
+- [06-01]: MCP tools namespaced as serverName.toolName to avoid collisions with built-in tools
+- [06-01]: Approval gate stores session approvals in a Set for O(1) lookup
 - [Phase 06]: [06-02]: Used readdirSync instead of glob for flat skill directory scanning (avoids unnecessary dependency)
 - [Phase 06]: [06-02]: safeParse for SKILL.md validation to skip invalid files silently without crashing
 - [Phase 06]: [06-02]: Cast Dirent entries for Node.js v24 type compatibility with withFileTypes
@@ -111,5 +115,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 06-02-PLAN.md (skills directory system: SKILL.md discovery, gray-matter parsing, workspace/managed tiers)
+Stopped at: Completed 06-01-PLAN.md (tool infrastructure: MCP client manager, filesystem/shell tools, tool registry, approval gate)
 Resume file: None
