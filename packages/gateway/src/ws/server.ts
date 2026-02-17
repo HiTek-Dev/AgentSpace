@@ -31,6 +31,8 @@ import {
 	handleScheduleDelete,
 	handleScheduleList,
 	handleHeartbeatConfigure,
+	handleClaudeCodeStart,
+	handleClaudeCodeAbort,
 } from "./handlers.js";
 
 const logger = createLogger("gateway-ws");
@@ -327,6 +329,26 @@ export async function registerGatewayWebSocket(
 							handleHeartbeatConfigure(transport, msg, connState).catch(
 								(err: Error) => {
 									logger.error(`Unhandled heartbeat.configure error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "claude-code.start": {
+							logger.info(`claude-code.start from client (requestId: ${msg.id})`);
+							handleClaudeCodeStart(transport, msg, connState).catch(
+								(err: Error) => {
+									logger.error(`Unhandled claude-code.start error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "claude-code.abort": {
+							logger.info(`claude-code.abort for session: ${msg.sessionId}`);
+							handleClaudeCodeAbort(transport, msg, connState).catch(
+								(err: Error) => {
+									logger.error(`Unhandled claude-code.abort error: ${err.message}`);
 								},
 							);
 							break;
