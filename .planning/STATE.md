@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 10 in progress -- Claude Code System Skills
+**Current focus:** Phase 11 in progress -- Install & Update System
 
 ## Current Position
 
-Phase: 10 of 10 (Claude Code System Skills)
-Plan: 4 of 4 in current phase (10-01, 10-02, 10-03, 10-04 complete)
-Status: Completed 10-04 (Google Workspace integration)
-Last activity: 2026-02-17 -- Completed 10-04 Google Workspace integration
+Phase: 11 of 11 (Install & Update System)
+Plan: 1 of 3 in current phase (11-01 complete)
+Status: Completed 11-01 (Memory file path migration)
+Last activity: 2026-02-17 -- Completed 11-01 memory file path migration
 
-Progress: [████████████████████████████████████████] 100%
+Progress: [████████████████████████████████████████] ~93%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
+- Total plans completed: 28
 - Average duration: 3min
 - Total execution time: 1.0 hours
 
@@ -37,6 +37,7 @@ Progress: [███████████████████████
 | 08 | 5/5 | 13min | 3min |
 | 09 | 4/4 | 12min | 3min |
 | 10 | 4/4 | 7min | 2min |
+| 11 | 1/3 | 2min | 2min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -175,6 +176,9 @@ Recent decisions affecting current work:
 - [10-04]: inputSchema (AI SDK v6) not parameters for tool definitions
 - [10-04]: Conditional registration: Google tools only added when googleAuth config provided
 - [10-04]: Read ops use auto approval tier; write ops use session approval tier
+- [11-01]: Shared ensure-memory.ts utility over inline logic in each module
+- [11-01]: import.meta.url kept only in ensure-memory.ts for template path derivation
+- [11-01]: Template files retained in packages/db/memory-files/ as seeding source
 
 ### Roadmap Evolution
 
@@ -191,5 +195,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 10-02-PLAN.md -- Approval proxy, WS protocol, and workflow tool
+Stopped at: Completed 11-01-PLAN.md -- Memory file path migration to CONFIG_DIR
 Resume file: None
