@@ -162,6 +162,10 @@ Recent decisions affecting current work:
 - [10-01]: RelayCallbacks pattern (onResult/onDone) to decouple session manager from relay internals
 - [10-01]: SDK events mapped to existing ServerMessage types (no new protocol types for Claude Code)
 - [10-01]: 30-second post-completion timeout to handle known CLI hanging bug
+- [10-02]: Read-only tools (Read, Grep, Glob, WebFetch) auto-approved in approval proxy
+- [10-02]: Approval proxy reuses existing pendingApprovals Map and tool.approval.response handler
+- [10-02]: runToCompletion uses acceptEdits permission mode for workflow automation
+- [10-02]: Dynamic imports for claude-code module in handlers to avoid circular dependencies
 - [10-03]: Raw fetch for Tavily and Stability AI APIs (no SDK dependencies)
 - [10-03]: gpt-image-1.5 model for OpenAI image gen (not deprecated DALL-E 3)
 - [10-03]: Conditional tool registration: skills only registered when API keys provided
@@ -183,5 +187,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 10-04-PLAN.md -- Google Workspace integration
+Stopped at: Completed 10-02-PLAN.md -- Approval proxy, WS protocol, and workflow tool
 Resume file: None
