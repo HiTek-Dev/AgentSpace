@@ -17,6 +17,7 @@
     "@agentspace/core": "workspace:*",
     "@agentspace/db": "workspace:*",
     "@agentspace/gateway": "workspace:*",
+    "drizzle-orm": "^0.45.0",
     "grammy": "^1.40.0",
     "nanoid": "^5.1.6"
   },
