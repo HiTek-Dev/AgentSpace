@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 7 complete, ready for Phase 8
+**Current focus:** Phase 8 in progress -- Workflows & Scheduling
 
 ## Current Position
 
-Phase: 7 of 10 (Agent Self-Improvement) -- COMPLETE
-Plan: 4 of 4 in current phase (07-01, 07-02, 07-03, 07-04 complete)
-Status: Completed 07-04 (terminal agent observation)
-Last activity: 2026-02-17 -- Completed 07-04 terminal agent observation
+Phase: 8 of 10 (Workflows & Scheduling) -- IN PROGRESS
+Plan: 1 of 4 in current phase (08-01 complete)
+Status: Completed 08-01 (workflow & schedule data foundation)
+Last activity: 2026-02-17 -- Completed 08-01 workflow & schedule data foundation
 
-Progress: [████████████████████████████████] 80%
+Progress: [█████████████████████████████████░░░░░░░] 83%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
+- Total plans completed: 20
 - Average duration: 3min
-- Total execution time: 0.92 hours
+- Total execution time: 0.95 hours
 
 **By Phase:**
 
@@ -34,6 +34,7 @@ Progress: [███████████████████████
 | 05 | 3/3 | 8min | 3min |
 | 06 | 5/5 | 20min | 4min |
 | 07 | 4/4 | 11min | 3min |
+| 08 | 1/4 | 2min | 2min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -126,6 +127,9 @@ Recent decisions affecting current work:
 - [07-04]: Rolling 4000-char buffer with 500ms throttled emission for snapshots (avoids flooding)
 - [07-04]: Agent control revoke via Ctrl+backslash consumes keystroke, does not forward to PTY
 - [07-04]: Snapshot buffer and agent input both gated on agentControlActive flag
+- [08-01]: Workflow steps use action enum (tool|model|noop) for extensible step types
+- [08-01]: Branching via condition/goto pairs on steps for DAG-style workflow execution
+- [08-01]: Schedule active hours stored as JSON string columns for flexible day-of-week filtering
 
 ### Pending Todos
 
@@ -138,5 +142,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 07-04-PLAN.md -- Terminal agent observation (Phase 07 complete)
+Stopped at: Completed 08-01-PLAN.md -- Workflow & schedule data foundation
 Resume file: None
