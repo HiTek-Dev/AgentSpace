@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 5: Memory & Persistence -- COMPLETE
+**Current focus:** Phase 6: Agent Capabilities
 
 ## Current Position
 
-Phase: 5 of 10 (Memory & Persistence) -- COMPLETE
-Plan: 3 of 3 in current phase -- COMPLETE
-Status: Completed 05-03 (gateway memory wiring: vector search, context assembly, pressure detection, thread/prompt management)
-Last activity: 2026-02-16 -- Completed 05-03 (vector search, memory-aware context, pressure flush, thread CRUD, WS protocol extensions)
+Phase: 6 of 10 (Agent Capabilities)
+Plan: 2 of 4 in current phase
+Status: Completed 06-02 (skills directory system: SKILL.md discovery, gray-matter parsing, two-tier workspace/managed precedence)
+Last activity: 2026-02-16 -- Completed 06-02 (skills types, loader, directory discovery, context formatting)
 
 Progress: [████████████████████░] 52%
 
@@ -32,6 +32,7 @@ Progress: [████████████████████░] 52%
 | 03 | 2/2 | 7min | 4min |
 | 04 | 2/2 | 7min | 4min |
 | 05 | 3/3 | 8min | 3min |
+| 06 | 1/4 | 2min | 2min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -95,6 +96,9 @@ Recent decisions affecting current work:
 - [05-03]: Memory pressure flushes older half of conversation history to daily log (best-effort, non-blocking)
 - [05-03]: System prompt assembly: global prompts by priority desc + thread-specific prompt, soul/memory added by assembler
 - [05-03]: Vector search uses raw SQL via $client for sqlite-vec KNN MATCH queries with Drizzle metadata join
+- [Phase 06]: [06-02]: Used readdirSync instead of glob for flat skill directory scanning (avoids unnecessary dependency)
+- [Phase 06]: [06-02]: safeParse for SKILL.md validation to skip invalid files silently without crashing
+- [Phase 06]: [06-02]: Cast Dirent entries for Node.js v24 type compatibility with withFileTypes
 
 ### Pending Todos
 
@@ -107,5 +111,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 05-03-PLAN.md (gateway memory wiring: vector search, context assembly, pressure detection, thread/prompt management)
+Stopped at: Completed 06-02-PLAN.md (skills directory system: SKILL.md discovery, gray-matter parsing, workspace/managed tiers)
 Resume file: None
