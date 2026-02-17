@@ -52,6 +52,12 @@ export {
 } from "./agent/index.js";
 export type { ToolRegistryOptions, ApprovalPolicy } from "./agent/index.js";
 
+// Handler functions (for cross-channel use, e.g., Telegram)
+export { handleChatSend } from "./ws/handlers.js";
+export { initConnection, getConnectionState, removeConnection } from "./ws/connection.js";
+export type { ConnectionState } from "./ws/connection.js";
+export type { ChatSend } from "./ws/protocol.js";
+
 // When run directly, start the key server with WebSocket gateway
 const isDirectRun =
 	process.argv[1] &&

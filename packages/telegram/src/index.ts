@@ -1,3 +1,5 @@
+export { createTelegramBot, startTelegramBot } from "./bot.js";
 export { TelegramTransport } from "./transport.js";
 export { formatForTelegram, escapeHtml, markdownToTelegramHtml } from "./formatter.js";
 export type { FormattedMessage } from "./formatter.js";
+export { generatePairingCode, verifyPairingCode, getPairedUser } from "./auth/pairing.js";
