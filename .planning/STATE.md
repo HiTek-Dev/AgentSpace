@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 7: Agent Self-Improvement
+**Current focus:** Phase 7 complete, ready for Phase 8
 
 ## Current Position
 
-Phase: 7 of 10 (Agent Self-Improvement)
-Plan: 3 of 4 in current phase (07-01, 07-02, 07-03 complete)
-Status: Completed 07-02 (skill authoring tools)
-Last activity: 2026-02-17 -- Completed 07-02 skill authoring tools
+Phase: 7 of 10 (Agent Self-Improvement) -- COMPLETE
+Plan: 4 of 4 in current phase (07-01, 07-02, 07-03, 07-04 complete)
+Status: Completed 07-04 (terminal agent observation)
+Last activity: 2026-02-17 -- Completed 07-04 terminal agent observation
 
-Progress: [██████████████████████████████░] 76%
+Progress: [████████████████████████████████] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
+- Total plans completed: 19
 - Average duration: 3min
-- Total execution time: 0.89 hours
+- Total execution time: 0.92 hours
 
 **By Phase:**
 
@@ -33,7 +33,7 @@ Progress: [███████████████████████
 | 04 | 2/2 | 7min | 4min |
 | 05 | 3/3 | 8min | 3min |
 | 06 | 5/5 | 20min | 4min |
-| 07 | 3/4 | 9min | 3min |
+| 07 | 4/4 | 11min | 3min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -122,6 +122,10 @@ Recent decisions affecting current work:
 - [07-03]: Callback prop pattern (onProxyRequest) to pass data from Ink component to post-exit entrypoint
 - [07-03]: xterm-256color TERM for full color support in proxied terminal apps
 - [07-03]: isTTY guard on setRawMode for safety in non-interactive environments
+- [07-04]: WS connection opened separately for terminal messages (not reusing Ink's connection which unmounts)
+- [07-04]: Rolling 4000-char buffer with 500ms throttled emission for snapshots (avoids flooding)
+- [07-04]: Agent control revoke via Ctrl+backslash consumes keystroke, does not forward to PTY
+- [07-04]: Snapshot buffer and agent input both gated on agentControlActive flag
 
 ### Pending Todos
 
@@ -134,5 +138,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 07-02-PLAN.md -- Skill authoring tools
+Stopped at: Completed 07-04-PLAN.md -- Terminal agent observation (Phase 07 complete)
 Resume file: None
