@@ -14,6 +14,11 @@ import {
 	wrapToolWithApproval,
 	type ApprovalPolicy,
 } from "./approval-gate.js";
+import {
+	createWebSearchTool,
+	createImageGenTool,
+	createStabilityImageGenTool,
+} from "../skills/index.js";
 
 const logger = createLogger("tool-registry");
 
@@ -23,6 +28,9 @@ export interface ToolRegistryOptions {
 	securityMode: SecurityMode;
 	workspaceDir?: string;
 	approvalPolicy?: ApprovalPolicy;
+	tavilyApiKey?: string;
+	openaiApiKey?: string;
+	stabilityApiKey?: string;
 }
 
 /**
@@ -39,6 +47,9 @@ export async function buildToolRegistry(
 		securityMode,
 		workspaceDir,
 		approvalPolicy,
+		tavilyApiKey,
+		openaiApiKey,
+		stabilityApiKey,
 	} = options;
 
 	const tools: Record<string, unknown> = {};
@@ -119,6 +130,68 @@ export async function buildToolRegistry(
 	if (approvalPolicy) {
 		approvalPolicy.perTool.skill_register = "always";
 	}
+
+	// 5. Add system skill tools (conditionally based on API key availability)
+	let systemSkillCount = 0;
+
+	if (tavilyApiKey) {
+		const webSearch = createWebSearchTool(tavilyApiKey);
+		const webSearchName = "web_search";
+		tools[webSearchName] = approvalPolicy
+			? wrapToolWithApproval(
+					webSearchName,
+					webSearch as unknown as Record<string, unknown>,
+					approvalPolicy,
+				)
+			: webSearch;
+		// Search is read-only: use "auto" tier
+		if (approvalPolicy) {
+			approvalPolicy.perTool[webSearchName] = "auto";
+		}
+		systemSkillCount++;
+	}
+
+	if (openaiApiKey) {
+		const imageGen = createImageGenTool(openaiApiKey);
+		const imageGenName = "image_generate";
+		tools[imageGenName] = approvalPolicy
+			? wrapToolWithApproval(
+					imageGenName,
+					imageGen as unknown as Record<string, unknown>,
+					approvalPolicy,
+				)
+			: imageGen;
+		// Image gen costs money: use "session" tier
+		if (approvalPolicy) {
+			approvalPolicy.perTool[imageGenName] = "session";
+		}
+		systemSkillCount++;
+	}
+
+	if (stabilityApiKey) {
+		const stabilityImageGen = createStabilityImageGenTool(stabilityApiKey);
+		const stabilityImageGenName = "stability_image_generate";
+		tools[stabilityImageGenName] = approvalPolicy
+			? wrapToolWithApproval(
+					stabilityImageGenName,
+					stabilityImageGen as unknown as Record<string, unknown>,
+					approvalPolicy,
+				)
+			: stabilityImageGen;
+		// Image gen costs money: use "session" tier
+		if (approvalPolicy) {
+			approvalPolicy.perTool[stabilityImageGenName] = "session";
+		}
+		systemSkillCount++;
+	}
+
+	if (systemSkillCount > 0) {
+		logger.info(`Registered ${systemSkillCount} system skill(s)`);
+	}
+
+	// Note: Playwright browser automation tools are handled by the MCP tool
+	// loading loop (step 3) when "playwright" is included in mcpConfigs.
+	// Add { playwright: getPlaywrightMcpConfig() } to mcpServers to enable.
 
 	logger.info(`Tool registry built with ${Object.keys(tools).length} tools`);
 	return tools;
