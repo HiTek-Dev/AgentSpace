@@ -1,3 +1,7 @@
+// Transport abstraction
+export { WebSocketTransport } from "./transport.js";
+export type { Transport } from "./transport.js";
+
 export { createKeyServer } from "./key-server/index.js";
 export { registerGatewayWebSocket } from "./ws/index.js";
 export {

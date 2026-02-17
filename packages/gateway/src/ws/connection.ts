@@ -1,5 +1,3 @@
-import type { WebSocket } from "ws";
-
 export interface PendingRouting {
 	requestId: string;
 	sessionId: string;
@@ -31,12 +29,12 @@ export interface ConnectionState {
 	pendingWorkflowApprovals: Map<string, { executionId: string; resolve: (approved: boolean) => void }>;
 }
 
-const connections = new WeakMap<WebSocket, ConnectionState>();
+const connections = new Map<string, ConnectionState>();
 
 /**
- * Initialize connection state for a new WebSocket.
+ * Initialize connection state for a transport.
  */
-export function initConnection(ws: WebSocket): ConnectionState {
+export function initConnection(transportId: string): ConnectionState {
 	const state: ConnectionState = {
 		sessionId: null,
 		streaming: false,
@@ -50,24 +48,24 @@ export function initConnection(ws: WebSocket): ConnectionState {
 		terminalControlGranted: false,
 		pendingWorkflowApprovals: new Map(),
 	};
-	connections.set(ws, state);
+	connections.set(transportId, state);
 	return state;
 }
 
 /**
- * Get connection state for a WebSocket.
+ * Get connection state for a transport.
  */
 export function getConnectionState(
-	ws: WebSocket,
+	transportId: string,
 ): ConnectionState | undefined {
-	return connections.get(ws);
+	return connections.get(transportId);
 }
 
 /**
  * Mark a connection as actively streaming.
  */
-export function markStreaming(ws: WebSocket, requestId: string): void {
-	const state = connections.get(ws);
+export function markStreaming(transportId: string, requestId: string): void {
+	const state = connections.get(transportId);
 	if (state) {
 		state.streaming = true;
 		state.streamRequestId = requestId;
@@ -77,8 +75,8 @@ export function markStreaming(ws: WebSocket, requestId: string): void {
 /**
  * Clear the streaming flag on a connection.
  */
-export function clearStreaming(ws: WebSocket): void {
-	const state = connections.get(ws);
+export function clearStreaming(transportId: string): void {
+	const state = connections.get(transportId);
 	if (state) {
 		state.streaming = false;
 		state.streamRequestId = null;
@@ -88,14 +86,14 @@ export function clearStreaming(ws: WebSocket): void {
 /**
  * Check if a connection is currently streaming.
  */
-export function isStreaming(ws: WebSocket): boolean {
-	const state = connections.get(ws);
+export function isStreaming(transportId: string): boolean {
+	const state = connections.get(transportId);
 	return state?.streaming ?? false;
 }
 
 /**
  * Remove connection state (on close).
  */
-export function removeConnection(ws: WebSocket): void {
-	connections.delete(ws);
+export function removeConnection(transportId: string): void {
+	connections.delete(transportId);
 }
