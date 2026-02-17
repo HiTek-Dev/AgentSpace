@@ -10,16 +10,16 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 9 of 10 (Telegram Channel)
-Plan: 2 of 4 in current phase (09-01, 09-02 complete)
-Status: Completed 09-01 (Transport abstraction) and 09-02 (Telegram package scaffold)
-Last activity: 2026-02-17 -- Completed 09-01 transport abstraction
+Plan: 3 of 4 in current phase (09-01, 09-02, 09-03 complete)
+Status: Completed 09-03 (Bot + auth + message routing)
+Last activity: 2026-02-17 -- Completed 09-03 bot with pairing auth and message routing
 
-Progress: [██████████████████████████████████████░░] 94%
+Progress: [███████████████████████████████████████░] 96%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
+- Total plans completed: 24
 - Average duration: 3min
 - Total execution time: 1.0 hours
 
@@ -35,7 +35,7 @@ Progress: [███████████████████████
 | 06 | 5/5 | 20min | 4min |
 | 07 | 4/4 | 11min | 3min |
 | 08 | 5/5 | 13min | 3min |
-| 09 | 2/4 | 8min | 4min |
+| 09 | 3/4 | 10min | 3min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -149,6 +149,10 @@ Recent decisions affecting current work:
 - [09-01]: WebSocketTransport exposes raw getter for close/error event binding only
 - [09-02]: tool.result formatter uses msg.result (not msg.output) matching ToolResultNotify schema field name
 - [09-02]: HTML parse_mode over MarkdownV2 for predictable escaping in Telegram messages
+- [09-03]: drizzle-orm added as direct dependency in telegram package for pairing code DB queries
+- [09-03]: Module-level Map<number, TelegramTransport> reuses transports per chatId across messages
+- [09-03]: /pair always generates new code (supports re-pairing); /start shows code only if unpaired
+- [09-03]: handleChatSend, initConnection, getConnectionState exported from gateway for cross-channel use
 
 ### Pending Todos
 
@@ -161,5 +165,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 09-01-PLAN.md -- Transport abstraction for channel-agnostic handlers
+Stopped at: Completed 09-03-PLAN.md -- Bot with pairing auth and message routing
 Resume file: None
