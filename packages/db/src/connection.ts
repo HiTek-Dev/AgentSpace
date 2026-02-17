@@ -116,6 +116,22 @@ export function getDb() {
 			updated_at TEXT NOT NULL
 		);
 
+		CREATE TABLE IF NOT EXISTS schedules (
+			id TEXT PRIMARY KEY,
+			name TEXT NOT NULL,
+			cron_expression TEXT NOT NULL,
+			timezone TEXT,
+			active_hours_start TEXT,
+			active_hours_end TEXT,
+			active_hours_days TEXT,
+			max_runs INTEGER,
+			workflow_id TEXT REFERENCES workflows(id),
+			enabled INTEGER NOT NULL DEFAULT 1,
+			last_run_at TEXT,
+			created_at TEXT NOT NULL,
+			updated_at TEXT NOT NULL
+		);
+
 		CREATE TABLE IF NOT EXISTS workflow_executions (
 			id TEXT PRIMARY KEY,
 			workflow_id TEXT NOT NULL REFERENCES workflows(id),
