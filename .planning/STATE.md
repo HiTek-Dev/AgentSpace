@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 8 of 10 (Workflows & Scheduling) -- IN PROGRESS
-Plan: 2 of 4 in current phase (08-02 complete)
-Status: Completed 08-02 (workflow engine)
-Last activity: 2026-02-17 -- Completed 08-02 workflow engine
+Plan: 3 of 4 in current phase (08-03 complete)
+Status: Completed 08-03 (cron scheduler & heartbeat)
+Last activity: 2026-02-17 -- Completed 08-03 scheduler & heartbeat
 
-Progress: [██████████████████████████████████░░░░░░] 85%
+Progress: [████████████████████████████████████░░░░] 88%
 
 ## Performance Metrics
 
@@ -34,7 +34,7 @@ Progress: [███████████████████████
 | 05 | 3/3 | 8min | 3min |
 | 06 | 5/5 | 20min | 4min |
 | 07 | 4/4 | 11min | 3min |
-| 08 | 2/4 | 5min | 3min |
+| 08 | 3/4 | 9min | 3min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -134,6 +134,10 @@ Recent decisions affecting current work:
 - [08-02]: Durable execution: state persisted to SQLite after every step transition
 - [08-02]: Approval gates pause execution and store paused status in stepResults for resume
 - [08-02]: Template resolver only processes prompt/args fields (prevents template injection)
+- [08-03]: AI SDK v6 uses LanguageModel type import and stopWhen: stepCountIs() instead of maxSteps
+- [08-03]: Heartbeat checks run sequentially (not parallel) per research anti-pattern guidance
+- [08-03]: Croner protect=true prevents overlapping heartbeat runs
+- [08-03]: Schedule store maps ScheduleConfig to/from SQLite with JSON serialization for activeHoursDays
 
 ### Pending Todos
 
@@ -146,5 +150,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 08-02-PLAN.md -- Workflow engine
+Stopped at: Completed 08-03-PLAN.md -- Cron scheduler & heartbeat
 Resume file: None
