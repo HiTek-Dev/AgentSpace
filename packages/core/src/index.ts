@@ -18,3 +18,11 @@ export { generateAuthToken } from "./crypto/index.js";
 export { AgentSpaceError, ConfigError, VaultError, AuthError } from "./errors.js";
 
 export { createLogger } from "./logger.js";
+
+export {
+	SkillMetadataSchema,
+	discoverSkills,
+	getSkillsDirs,
+	formatSkillsForContext,
+} from "./skills/index.js";
+export type { SkillMetadata, SkillTier, LoadedSkill } from "./skills/index.js";
