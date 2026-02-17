@@ -21,7 +21,7 @@ interface ChatProps {
 	wsUrl: string;
 	initialModel?: string;
 	resumeSessionId?: string;
-	onProxyRequest?: (command: string, args: string[]) => void;
+	onProxyRequest?: (command: string, args: string[], agent: boolean) => void;
 }
 
 /**
@@ -93,7 +93,7 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, onProxyRequest }: C
 					result.proxyCommand &&
 					onProxyRequest
 				) {
-					onProxyRequest(result.proxyCommand, result.proxyArgs ?? []);
+					onProxyRequest(result.proxyCommand, result.proxyArgs ?? [], result.proxyAgent ?? false);
 					exit();
 					return;
 				}

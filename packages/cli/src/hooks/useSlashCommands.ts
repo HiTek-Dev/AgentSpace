@@ -18,6 +18,8 @@ export type SlashCommandResult = {
 	/** Proxy command and args for proxy action */
 	proxyCommand?: string;
 	proxyArgs?: string[];
+	/** Whether agent observation is enabled for proxy */
+	proxyAgent?: boolean;
 };
 
 interface SlashCommandContext {
@@ -45,7 +47,7 @@ const HELP_TEXT = [
 	"/approve <tool> <tier>  Set approval tier (auto/ask/deny)",
 	"/clear           Clear screen",
 	"/quit            Exit",
-	"/proxy <cmd>    Run interactive terminal app (vim, git rebase, etc.)",
+	"/proxy [--agent] <cmd>  Run interactive terminal app (--agent enables AI observation)",
 	"/help            Show this help",
 ].join("\n");
 
@@ -174,12 +176,14 @@ export function useSlashCommands() {
 				}
 
 				case "proxy": {
-					const cmd = args[0];
+					const agentFlag = args.includes("--agent");
+					const filteredArgs = args.filter((a) => a !== "--agent");
+					const cmd = filteredArgs[0];
 					if (!cmd) {
 						return {
 							handled: true,
 							message: systemMessage(
-								"Usage: /proxy <command> [args...]\nExample: /proxy vim file.txt",
+								"Usage: /proxy [--agent] <command> [args...]\nExample: /proxy --agent vim file.txt\n--agent enables agent terminal observation and input",
 							),
 						};
 					}
@@ -187,7 +191,8 @@ export function useSlashCommands() {
 						handled: true,
 						action: "proxy",
 						proxyCommand: cmd,
-						proxyArgs: args.slice(1),
+						proxyArgs: filteredArgs.slice(1),
+						proxyAgent: agentFlag,
 					};
 				}
 
