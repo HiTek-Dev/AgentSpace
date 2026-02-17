@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 11 of 11 (Install & Update System)
-Plan: 1 of 3 in current phase (11-01 complete)
-Status: Completed 11-01 (Memory file path migration)
-Last activity: 2026-02-17 -- Completed 11-01 memory file path migration
+Plan: 3 of 3 in current phase (11-03 complete)
+Status: Completed 11-03 (Reset script)
+Last activity: 2026-02-17 -- Completed 11-03 reset script
 
-Progress: [████████████████████████████████████████] ~93%
+Progress: [████████████████████████████████████████] ~97%
 
 ## Performance Metrics
 
@@ -37,7 +37,7 @@ Progress: [███████████████████████
 | 08 | 5/5 | 13min | 3min |
 | 09 | 4/4 | 12min | 3min |
 | 10 | 4/4 | 7min | 2min |
-| 11 | 1/3 | 2min | 2min |
+| 11 | 2/3 | 3min | 2min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -179,6 +179,9 @@ Recent decisions affecting current work:
 - [11-01]: Shared ensure-memory.ts utility over inline logic in each module
 - [11-01]: import.meta.url kept only in ensure-memory.ts for template path derivation
 - [11-01]: Template files retained in packages/db/memory-files/ as seeding source
+- [11-03]: Reset script does NOT delete keychain entries (stored in macOS Keychain, not filesystem)
+- [11-03]: Destructive scripts require explicit confirmation string (RESET), not just y/n
+- [11-03]: Reset exits 0 on cancellation (not an error condition)
 
 ### Roadmap Evolution
 
@@ -195,5 +198,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 11-01-PLAN.md -- Memory file path migration to CONFIG_DIR
+Stopped at: Completed 11-03-PLAN.md -- Reset script for fresh-start data wipe
 Resume file: None
