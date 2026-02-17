@@ -134,11 +134,13 @@ Plans:
   2. Agent can draft a new skill to address a detected failure, test it in a sandbox environment, and present it for user approval before registration
   3. User can run interactive CLI applications (vim, git rebase, debuggers) through a terminal proxy mode
   4. Agent can observe and interact with proxied terminal sessions when given explicit control
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
+- [ ] 07-01-PLAN.md — Failure pattern detection in agent tool loop (onStepFinish + classifier)
+- [ ] 07-02-PLAN.md — Skill authoring tools (draft + register) with approval gate and CLI prompt
+- [ ] 07-03-PLAN.md — Terminal proxy mode with node-pty and /proxy slash command
+- [ ] 07-04-PLAN.md — Agent PTY observation with snapshot/input WS protocol and Ctrl+\ reclaim
 
 ### Phase 8: Workflows & Scheduling
 **Goal**: Users can define automated multi-step workflows with branching logic, schedule recurring tasks, and configure heartbeat monitoring
