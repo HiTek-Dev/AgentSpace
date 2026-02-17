@@ -22,6 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 8: Workflows & Scheduling** - Multi-step workflow engine, heartbeat system, cron scheduling, and workflow approval gates
 - [ ] **Phase 9: Telegram Channel** - Telegram bot integration, message routing, inline approvals, and user authentication
 - [x] **Phase 10: Claude Code & System Skills** - Claude Code session management, web search, image generation, browser automation, and Google Workspace integration (completed 2026-02-17)
+- [ ] **Phase 11: Install & Update System** - Deploy to destination directory, update builds without losing personality/config, fresh-start option
 
 ## Phase Details
 
@@ -214,3 +215,13 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 8. Workflows & Scheduling | 0/3 | Not started | - |
 | 9. Telegram Channel | 0/2 | Not started | - |
 | 10. Claude Code & System Skills | 0/3 | Complete    | 2026-02-17 |
+| 11. Install & Update System | 0/0 | Not started | - |
+
+### Phase 11: Install & Update System
+
+**Goal**: Users can install AgentSpace to any directory, update to the latest build without losing personality/memory/config files, and optionally reset to a clean state — enabling rapid develop-test-update cycles
+**Depends on**: Phase 1
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 11 to break down)

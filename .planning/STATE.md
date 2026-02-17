@@ -176,6 +176,10 @@ Recent decisions affecting current work:
 - [10-04]: Conditional registration: Google tools only added when googleAuth config provided
 - [10-04]: Read ops use auto approval tier; write ops use session approval tier
 
+### Roadmap Evolution
+
+- Phase 11 added: Install & Update System — deploy to destination directory, update without destroying personality/config, fresh-start option
+
 ### Pending Todos
 
 None yet.
