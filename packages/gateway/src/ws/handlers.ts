@@ -13,6 +13,15 @@ import type {
 	PromptSet,
 	PromptList,
 	ToolApprovalResponse,
+	WorkflowTrigger,
+	WorkflowApproval,
+	WorkflowList,
+	WorkflowExecutionList,
+	ScheduleCreate,
+	ScheduleUpdate,
+	ScheduleDelete,
+	ScheduleList,
+	HeartbeatConfigure,
 } from "./protocol.js";
 import type { ConnectionState } from "./connection.js";
 import { sessionManager } from "../session/index.js";
@@ -832,4 +841,355 @@ export async function handlePreflightApproval(
 		// Fallback: text-only streaming
 		await streamToClient(socket, model, sessionId, requestId, context, connState, routingInfo);
 	}
+}
+
+// ── Workflow Handlers ──────────────────────────────────────────────────
+
+/**
+ * Handle workflow.trigger: execute a workflow and stream status updates.
+ */
+export async function handleWorkflowTrigger(
+	socket: WebSocket,
+	msg: WorkflowTrigger,
+	connState: ConnectionState,
+): Promise<void> {
+	const { getDb, workflows } = await import("@agentspace/db");
+	const { eq } = await import("drizzle-orm");
+	const { workflowEngine } = await import("../workflow/engine.js");
+
+	const db = getDb();
+	const workflow = db
+		.select()
+		.from(workflows)
+		.where(eq(workflows.id, msg.workflowId))
+		.get();
+
+	if (!workflow) {
+		send(socket, {
+			type: "error",
+			requestId: msg.id,
+			code: "WORKFLOW_NOT_FOUND",
+			message: `Workflow ${msg.workflowId} not found`,
+		});
+		return;
+	}
+
+	const tools = connState.tools ?? {};
+
+	const execution = await workflowEngine.execute(
+		msg.workflowId,
+		workflow.definitionPath,
+		"manual",
+		tools,
+		(executionId, stepId, step) => {
+			// Store pending approval for later resolution
+			connState.pendingWorkflowApprovals.set(
+				`${executionId}:${stepId}`,
+				{
+					executionId,
+					resolve: () => {}, // placeholder; actual resolve set below
+				},
+			);
+
+			send(socket, {
+				type: "workflow.approval.request",
+				executionId,
+				workflowId: msg.workflowId,
+				stepId,
+				stepDescription: step.prompt ?? step.id,
+				args: step.args,
+			});
+		},
+	);
+
+	send(socket, {
+		type: "workflow.status",
+		executionId: execution.id,
+		workflowId: msg.workflowId,
+		status: execution.status,
+		currentStepId: execution.currentStepId,
+		stepResults: execution.stepResults,
+	});
+}
+
+/**
+ * Handle workflow.approval: approve or deny a workflow approval gate.
+ */
+export async function handleWorkflowApproval(
+	socket: WebSocket,
+	msg: WorkflowApproval,
+	connState: ConnectionState,
+): Promise<void> {
+	const { workflowEngine } = await import("../workflow/engine.js");
+
+	const key = `${msg.executionId}:${msg.stepId}`;
+	const pending = connState.pendingWorkflowApprovals.get(key);
+
+	if (!pending) {
+		send(socket, {
+			type: "error",
+			requestId: msg.id,
+			code: "NO_PENDING_APPROVAL",
+			message: `No pending workflow approval for execution ${msg.executionId} step ${msg.stepId}`,
+		});
+		return;
+	}
+
+	connState.pendingWorkflowApprovals.delete(key);
+
+	if (!msg.approved) {
+		send(socket, {
+			type: "workflow.status",
+			executionId: msg.executionId,
+			workflowId: "",
+			status: "failed",
+			stepResults: {},
+		});
+		return;
+	}
+
+	// Resume the workflow from the approved step
+	const tools = connState.tools ?? {};
+	const execution = await workflowEngine.resume(
+		msg.executionId,
+		tools,
+		(executionId, stepId, step) => {
+			connState.pendingWorkflowApprovals.set(
+				`${executionId}:${stepId}`,
+				{
+					executionId,
+					resolve: () => {},
+				},
+			);
+
+			send(socket, {
+				type: "workflow.approval.request",
+				executionId,
+				workflowId: execution.workflowId,
+				stepId,
+				stepDescription: step.prompt ?? step.id,
+				args: step.args,
+			});
+		},
+	);
+
+	send(socket, {
+		type: "workflow.status",
+		executionId: execution.id,
+		workflowId: execution.workflowId,
+		status: execution.status,
+		currentStepId: execution.currentStepId,
+		stepResults: execution.stepResults,
+	});
+}
+
+/**
+ * Handle workflow.list: list all registered workflows.
+ */
+export async function handleWorkflowList(
+	socket: WebSocket,
+	msg: WorkflowList,
+): Promise<void> {
+	const { getDb, workflows } = await import("@agentspace/db");
+
+	const db = getDb();
+	const rows = db.select().from(workflows).all();
+
+	send(socket, {
+		type: "workflow.list.result",
+		id: msg.id,
+		workflows: rows.map((r) => ({
+			id: r.id,
+			name: r.name,
+			description: r.description ?? undefined,
+			definitionPath: r.definitionPath,
+		})),
+	});
+}
+
+/**
+ * Handle workflow.execution.list: list workflow executions with optional filters.
+ */
+export async function handleWorkflowExecutionList(
+	socket: WebSocket,
+	msg: WorkflowExecutionList,
+): Promise<void> {
+	const { listExecutions } = await import("../workflow/state.js");
+
+	const executions = listExecutions(msg.workflowId, msg.status);
+
+	send(socket, {
+		type: "workflow.execution.list.result",
+		id: msg.id,
+		executions: executions.map((e) => ({
+			id: e.id,
+			workflowId: e.workflowId,
+			status: e.status,
+			currentStepId: e.currentStepId,
+			startedAt: e.startedAt,
+			completedAt: e.completedAt,
+		})),
+	});
+}
+
+// ── Schedule Handlers ──────────────────────────────────────────────────
+
+/**
+ * Handle schedule.create: create a new schedule and optionally register with scheduler.
+ */
+export async function handleScheduleCreate(
+	socket: WebSocket,
+	msg: ScheduleCreate,
+): Promise<void> {
+	const { nanoid } = await import("nanoid");
+	const { saveSchedule } = await import("../scheduler/store.js");
+	const { cronScheduler } = await import("../scheduler/scheduler.js");
+
+	const scheduleId = nanoid();
+	const config = {
+		id: scheduleId,
+		name: msg.name,
+		cronExpression: msg.cronExpression,
+		timezone: msg.timezone,
+		activeHours: msg.activeHours,
+		maxRuns: msg.maxRuns,
+		workflowId: msg.workflowId,
+		enabled: true,
+	};
+
+	saveSchedule(config);
+
+	if (msg.workflowId) {
+		cronScheduler.scheduleWorkflow(config, {});
+	}
+
+	send(socket, {
+		type: "schedule.created",
+		id: msg.id,
+		scheduleId,
+	});
+}
+
+/**
+ * Handle schedule.update: update an existing schedule.
+ */
+export async function handleScheduleUpdate(
+	socket: WebSocket,
+	msg: ScheduleUpdate,
+): Promise<void> {
+	const { updateSchedule, getSchedule } = await import("../scheduler/store.js");
+	const { cronScheduler } = await import("../scheduler/scheduler.js");
+
+	const updates: Record<string, unknown> = {};
+	if (msg.enabled !== undefined) updates.enabled = msg.enabled;
+	if (msg.cronExpression !== undefined) updates.cronExpression = msg.cronExpression;
+	if (msg.activeHours !== undefined) updates.activeHours = msg.activeHours;
+
+	updateSchedule(msg.scheduleId, updates);
+
+	// Stop old job and re-schedule if still enabled
+	cronScheduler.stop(msg.scheduleId);
+	const updated = getSchedule(msg.scheduleId);
+	if (updated && updated.enabled && updated.workflowId) {
+		cronScheduler.scheduleWorkflow(updated, {});
+	}
+
+	send(socket, {
+		type: "schedule.updated",
+		id: msg.id,
+		scheduleId: msg.scheduleId,
+	});
+}
+
+/**
+ * Handle schedule.delete: remove a schedule.
+ */
+export async function handleScheduleDelete(
+	socket: WebSocket,
+	msg: ScheduleDelete,
+): Promise<void> {
+	const { deleteSchedule } = await import("../scheduler/store.js");
+	const { cronScheduler } = await import("../scheduler/scheduler.js");
+
+	cronScheduler.stop(msg.scheduleId);
+	deleteSchedule(msg.scheduleId);
+
+	send(socket, {
+		type: "schedule.updated",
+		id: msg.id,
+		scheduleId: msg.scheduleId,
+	});
+}
+
+/**
+ * Handle schedule.list: list all schedules with next run times.
+ */
+export async function handleScheduleList(
+	socket: WebSocket,
+	msg: ScheduleList,
+): Promise<void> {
+	const { loadSchedules } = await import("../scheduler/store.js");
+	const { cronScheduler } = await import("../scheduler/scheduler.js");
+
+	const configs = loadSchedules();
+
+	send(socket, {
+		type: "schedule.list.result",
+		id: msg.id,
+		schedules: configs.map((c) => {
+			const nextRun = cronScheduler.nextRun(c.id);
+			return {
+				id: c.id,
+				name: c.name,
+				cronExpression: c.cronExpression,
+				timezone: c.timezone,
+				enabled: c.enabled,
+				nextRun: nextRun?.toISOString(),
+				workflowId: c.workflowId,
+			};
+		}),
+	});
+}
+
+// ── Heartbeat Handler ──────────────────────────────────────────────────
+
+/**
+ * Handle heartbeat.configure: set up a heartbeat cron schedule.
+ */
+export async function handleHeartbeatConfigure(
+	socket: WebSocket,
+	msg: HeartbeatConfigure,
+	connState: ConnectionState,
+): Promise<void> {
+	const { nanoid } = await import("nanoid");
+	const { saveSchedule } = await import("../scheduler/store.js");
+	const { cronScheduler } = await import("../scheduler/scheduler.js");
+
+	const scheduleId = `heartbeat-${nanoid()}`;
+	const cronExpression = `*/${msg.interval} * * * *`;
+
+	const config = {
+		id: scheduleId,
+		name: `Heartbeat (every ${msg.interval}min)`,
+		cronExpression,
+		timezone: msg.timezone,
+		activeHours: msg.activeHours,
+		enabled: msg.enabled,
+	};
+
+	saveSchedule(config);
+
+	// Schedule heartbeat with alert callback via WebSocket
+	// Note: heartbeat scheduling requires a model and HEARTBEAT.md path;
+	// for now, register as a generic schedule. Full heartbeat scheduling
+	// requires model context which is set up during server initialization.
+	cronScheduler.schedule(config, async () => {
+		logger.info(`Heartbeat ${scheduleId} fired (configured via WS)`);
+	});
+
+	send(socket, {
+		type: "heartbeat.configured",
+		id: msg.id,
+		scheduleId,
+	});
 }

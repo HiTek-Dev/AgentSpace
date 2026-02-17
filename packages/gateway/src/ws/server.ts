@@ -23,6 +23,15 @@ import {
 	handlePromptList,
 	handleToolApprovalResponse,
 	handlePreflightApproval,
+	handleWorkflowTrigger,
+	handleWorkflowApproval,
+	handleWorkflowList,
+	handleWorkflowExecutionList,
+	handleScheduleCreate,
+	handleScheduleUpdate,
+	handleScheduleDelete,
+	handleScheduleList,
+	handleHeartbeatConfigure,
 } from "./handlers.js";
 
 const logger = createLogger("gateway-ws");
@@ -237,6 +246,96 @@ export async function registerGatewayWebSocket(
 						case "terminal.control.revoke": {
 							connState.terminalControlGranted = false;
 							logger.info("terminal.control.revoke — agent input disabled");
+							break;
+						}
+
+						case "workflow.trigger": {
+							logger.info(`workflow.trigger: ${msg.workflowId}`);
+							handleWorkflowTrigger(socket, msg, connState).catch(
+								(err: Error) => {
+									logger.error(`Unhandled workflow.trigger error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "workflow.approval": {
+							logger.info(`workflow.approval: ${msg.executionId} step ${msg.stepId}`);
+							handleWorkflowApproval(socket, msg, connState).catch(
+								(err: Error) => {
+									logger.error(`Unhandled workflow.approval error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "workflow.list": {
+							logger.info("workflow.list from client");
+							handleWorkflowList(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled workflow.list error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "workflow.execution.list": {
+							logger.info("workflow.execution.list from client");
+							handleWorkflowExecutionList(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled workflow.execution.list error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "schedule.create": {
+							logger.info(`schedule.create: ${msg.name}`);
+							handleScheduleCreate(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled schedule.create error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "schedule.update": {
+							logger.info(`schedule.update: ${msg.scheduleId}`);
+							handleScheduleUpdate(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled schedule.update error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "schedule.delete": {
+							logger.info(`schedule.delete: ${msg.scheduleId}`);
+							handleScheduleDelete(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled schedule.delete error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "schedule.list": {
+							logger.info("schedule.list from client");
+							handleScheduleList(socket, msg).catch(
+								(err: Error) => {
+									logger.error(`Unhandled schedule.list error: ${err.message}`);
+								},
+							);
+							break;
+						}
+
+						case "heartbeat.configure": {
+							logger.info(`heartbeat.configure: interval=${msg.interval}`);
+							handleHeartbeatConfigure(socket, msg, connState).catch(
+								(err: Error) => {
+									logger.error(`Unhandled heartbeat.configure error: ${err.message}`);
+								},
+							);
 							break;
 						}
 					}
