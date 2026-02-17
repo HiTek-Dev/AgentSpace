@@ -21,6 +21,7 @@ import {
 	handleThreadUpdate,
 	handlePromptSet,
 	handlePromptList,
+	handleToolApprovalResponse,
 } from "./handlers.js";
 
 const logger = createLogger("gateway-ws");
@@ -201,6 +202,18 @@ export async function registerGatewayWebSocket(
 									logger.error(`Unhandled prompt.list error: ${err.message}`);
 								},
 							);
+							break;
+						}
+
+						case "tool.approval.response": {
+							logger.info(`tool.approval.response for toolCallId: ${msg.toolCallId}`);
+							handleToolApprovalResponse(socket, msg, connState);
+							break;
+						}
+
+						case "preflight.approval": {
+							// Stub for Plan 04: preflight approval handling
+							logger.info(`preflight.approval from client (requestId: ${msg.requestId})`);
 							break;
 						}
 					}

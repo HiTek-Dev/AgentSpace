@@ -1,5 +1,11 @@
 import type { ModelMessage } from "ai";
 import { estimateTokenCount } from "tokenx";
+import {
+	loadConfig,
+	discoverSkills,
+	getSkillsDirs,
+	formatSkillsForContext,
+} from "@agentspace/core";
 import type { MessageRow } from "../session/types.js";
 import { getModelPricing } from "../usage/pricing.js";
 import type { ContextSection, AssembledContext } from "./types.js";
@@ -53,6 +59,7 @@ export function assembleContext(
 	userMessage: string,
 	model: string,
 	threadId?: string,
+	toolDescriptions?: string,
 ): AssembledContext {
 	const pricing = getModelPricing(model);
 	const sections: ContextSection[] = [];
@@ -85,11 +92,25 @@ export function assembleContext(
 		.join("\n");
 	addSection(sections, "history", historyText, pricing.inputPerMTok);
 
-	// Skills (stub for Phase 6)
-	addSection(sections, "skills", "", pricing.inputPerMTok);
+	// Skills: discover and format SKILL.md files from workspace and managed dirs
+	let skillsContent = "";
+	try {
+		const config = loadConfig();
+		if (config) {
+			const skillsDirs = getSkillsDirs({
+				workspaceDir: config.workspaceDir,
+				skillsDir: config.skillsDir,
+			});
+			const skills = discoverSkills(skillsDirs);
+			skillsContent = formatSkillsForContext(skills);
+		}
+	} catch {
+		// Skills loading is best-effort; continue with empty skills
+	}
+	addSection(sections, "skills", skillsContent, pricing.inputPerMTok);
 
-	// Tools (stub for Phase 6)
-	addSection(sections, "tools", "", pricing.inputPerMTok);
+	// Tools: tool descriptions passed from handler (from tool registry)
+	addSection(sections, "tools", toolDescriptions ?? "", pricing.inputPerMTok);
 
 	// Current user message
 	addSection(sections, "user_message", userMessage, pricing.inputPerMTok);
