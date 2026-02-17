@@ -158,6 +158,7 @@ const ScheduleListSchema = z.object({
 const HeartbeatConfigureSchema = z.object({
 	type: z.literal("heartbeat.configure"),
 	id: z.string(),
+	heartbeatPath: z.string(),
 	interval: z.number().default(30),
 	timezone: z.string().optional(),
 	activeHours: ActiveHoursShape.optional(),

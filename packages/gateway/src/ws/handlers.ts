@@ -1179,13 +1179,31 @@ export async function handleHeartbeatConfigure(
 
 	saveSchedule(config);
 
-	// Schedule heartbeat with alert callback via WebSocket
-	// Note: heartbeat scheduling requires a model and HEARTBEAT.md path;
-	// for now, register as a generic schedule. Full heartbeat scheduling
-	// requires model context which is set up during server initialization.
-	cronScheduler.schedule(config, async () => {
-		logger.info(`Heartbeat ${scheduleId} fired (configured via WS)`);
-	});
+	// Obtain a model from the registry for AI-powered heartbeat checks
+	const { getRegistry } = await import("../llm/registry.js");
+	const registry = getRegistry();
+	const model = registry.languageModel("anthropic:claude-sonnet-4-5-20250514" as never);
+
+	const tools = connState.tools ?? {};
+
+	// Schedule heartbeat with real HeartbeatRunner and WebSocket alert callback
+	cronScheduler.scheduleHeartbeat(
+		config,
+		msg.heartbeatPath,
+		tools,
+		model,
+		(results) => {
+			send(socket, {
+				type: "heartbeat.alert",
+				checks: results.map((r) => ({
+					description: r.description,
+					actionNeeded: r.actionNeeded,
+					details: r.details,
+				})),
+				timestamp: new Date().toISOString(),
+			});
+		},
+	);
 
 	send(socket, {
 		type: "heartbeat.configured",
