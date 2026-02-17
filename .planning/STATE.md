@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 6: Agent Capabilities
+**Current focus:** Phase 7: Agent Self-Improvement
 
 ## Current Position
 
-Phase: 6 of 10 (Agent Capabilities) -- PHASE COMPLETE
-Plan: 5 of 5 in current phase (all complete, including gap closure)
-Status: Completed 06-05 (session-approve gap closure)
-Last activity: 2026-02-17 -- Completed Phase 6 gap closure (06-05)
+Phase: 7 of 10 (Agent Self-Improvement)
+Plan: 3 of 4 in current phase (07-03 complete)
+Status: Completed 07-03 (terminal proxy mode)
+Last activity: 2026-02-17 -- Completed 07-03 terminal proxy mode
 
-Progress: [██████████████████████████░] 68%
+Progress: [█████████████████████████████░] 72%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
-- Average duration: 4min
-- Total execution time: 0.79 hours
+- Total plans completed: 17
+- Average duration: 3min
+- Total execution time: 0.84 hours
 
 **By Phase:**
 
@@ -33,6 +33,7 @@ Progress: [███████████████████████
 | 04 | 2/2 | 7min | 4min |
 | 05 | 3/3 | 8min | 3min |
 | 06 | 5/5 | 20min | 4min |
+| 07 | 1/4 | 3min | 3min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -111,6 +112,9 @@ Recent decisions affecting current work:
 - [Phase 06]: [06-04]: PendingPreflight stores full context on ConnectionState for post-approval agent loop resumption
 - [Phase 06]: [06-04]: ToolApprovalPrompt and PreflightChecklist replace InputBar when active (mutual exclusion)
 - [Phase 06]: [06-04]: /tools and /approve are local-only MVP slash commands (no server round-trip)
+- [07-03]: Callback prop pattern (onProxyRequest) to pass data from Ink component to post-exit entrypoint
+- [07-03]: xterm-256color TERM for full color support in proxied terminal apps
+- [07-03]: isTTY guard on setRawMode for safety in non-interactive environments
 
 ### Pending Todos
 
@@ -123,5 +127,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 06-05-PLAN.md -- Phase 6 gap closure (session-approve fix)
+Stopped at: Completed 07-03-PLAN.md -- Terminal proxy mode
 Resume file: None
