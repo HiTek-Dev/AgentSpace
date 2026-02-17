@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 9 in progress -- Telegram Channel
+**Current focus:** Phase 9 complete -- Telegram Channel
 
 ## Current Position
 
 Phase: 9 of 10 (Telegram Channel)
-Plan: 3 of 4 in current phase (09-01, 09-02, 09-03 complete)
-Status: Completed 09-03 (Bot + auth + message routing)
-Last activity: 2026-02-17 -- Completed 09-03 bot with pairing auth and message routing
+Plan: 4 of 4 in current phase (09-01, 09-02, 09-03, 09-04 complete)
+Status: Completed 09-04 (Streaming + tool approval)
+Last activity: 2026-02-17 -- Completed 09-04 streaming accumulator and tool approval buttons
 
-Progress: [███████████████████████████████████████░] 96%
+Progress: [████████████████████████████████████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 24
+- Total plans completed: 25
 - Average duration: 3min
 - Total execution time: 1.0 hours
 
@@ -35,7 +35,7 @@ Progress: [███████████████████████
 | 06 | 5/5 | 20min | 4min |
 | 07 | 4/4 | 11min | 3min |
 | 08 | 5/5 | 13min | 3min |
-| 09 | 3/4 | 10min | 3min |
+| 09 | 4/4 | 12min | 3min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -153,6 +153,10 @@ Recent decisions affecting current work:
 - [09-03]: Module-level Map<number, TelegramTransport> reuses transports per chatId across messages
 - [09-03]: /pair always generates new code (supports re-pairing); /start shows code only if unpaired
 - [09-03]: handleChatSend, initConnection, getConnectionState exported from gateway for cross-channel use
+- [09-04]: Accumulator edits at 2s intervals to stay within Telegram rate limits
+- [09-04]: InlineKeyboard from grammy imported directly in transport for tool approval rendering
+- [09-04]: Chat-transport map in callback module for resolving Telegram chatId to gateway transportId
+- [09-04]: Typing indicator kept alive via setInterval(4s) cleared in finally block
 
 ### Pending Todos
 
@@ -165,5 +169,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 09-03-PLAN.md -- Bot with pairing auth and message routing
+Stopped at: Completed 09-04-PLAN.md -- Streaming accumulator and tool approval buttons (Phase 09 complete)
 Resume file: None
