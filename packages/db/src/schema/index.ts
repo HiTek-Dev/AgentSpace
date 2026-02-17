@@ -5,3 +5,5 @@ export { usageRecords } from "./usage.js";
 export { threads } from "./threads.js";
 export { memories } from "./memories.js";
 export { globalPrompts } from "./global-prompts.js";
+export { workflows, workflowExecutions } from "./workflows.js";
+export { schedules } from "./schedules.js";
