@@ -1,8 +1,15 @@
-import { createLogger, type SecurityMode } from "@agentspace/core";
+import { createLogger, getSkillsDirs, type SecurityMode } from "@agentspace/core";
 import type { MCPServerConfig } from "@agentspace/core";
+import { randomUUID } from "node:crypto";
+import { join } from "node:path";
+import { homedir, tmpdir } from "node:os";
 import type { MCPClientManager } from "../mcp/client-manager.js";
 import { createFilesystemTools } from "../tools/filesystem.js";
 import { createShellTool } from "../tools/shell.js";
+import {
+	createSkillDraftTool,
+	createSkillRegisterTool,
+} from "../tools/skill.js";
 import {
 	wrapToolWithApproval,
 	type ApprovalPolicy,
@@ -73,6 +80,44 @@ export async function buildToolRegistry(
 				`Failed to load tools from MCP server '${serverName}': ${err instanceof Error ? err.message : String(err)}`,
 			);
 		}
+	}
+
+	// 4. Add skill authoring tools
+	const sandboxDir = join(
+		tmpdir(),
+		`agentspace-skill-sandbox-${randomUUID()}`,
+	);
+	const skillsDirs = getSkillsDirs({
+		workspaceDir,
+	});
+	const workspaceSkillsDir =
+		skillsDirs.workspace ??
+		join(homedir(), ".config", "agentspace", "skills");
+
+	const skillDraft = createSkillDraftTool(sandboxDir);
+	tools.skill_draft = approvalPolicy
+		? wrapToolWithApproval(
+				"skill_draft",
+				skillDraft as unknown as Record<string, unknown>,
+				approvalPolicy,
+			)
+		: skillDraft;
+
+	const skillRegister = createSkillRegisterTool(
+		sandboxDir,
+		workspaceSkillsDir,
+	);
+	tools.skill_register = approvalPolicy
+		? wrapToolWithApproval(
+				"skill_register",
+				skillRegister as unknown as Record<string, unknown>,
+				approvalPolicy,
+			)
+		: skillRegister;
+
+	// Enforce "always" approval for skill_register if policy exists
+	if (approvalPolicy) {
+		approvalPolicy.perTool.skill_register = "always";
 	}
 
 	logger.info(`Tool registry built with ${Object.keys(tools).length} tools`);
