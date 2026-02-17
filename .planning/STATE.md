@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 7 of 10 (Agent Self-Improvement)
-Plan: 3 of 4 in current phase (07-03 complete)
-Status: Completed 07-03 (terminal proxy mode)
-Last activity: 2026-02-17 -- Completed 07-03 terminal proxy mode
+Plan: 3 of 4 in current phase (07-01, 07-02, 07-03 complete)
+Status: Completed 07-02 (skill authoring tools)
+Last activity: 2026-02-17 -- Completed 07-02 skill authoring tools
 
-Progress: [█████████████████████████████░] 72%
+Progress: [██████████████████████████████░] 76%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
+- Total plans completed: 18
 - Average duration: 3min
-- Total execution time: 0.84 hours
+- Total execution time: 0.89 hours
 
 **By Phase:**
 
@@ -33,7 +33,7 @@ Progress: [███████████████████████
 | 04 | 2/2 | 7min | 4min |
 | 05 | 3/3 | 8min | 3min |
 | 06 | 5/5 | 20min | 4min |
-| 07 | 1/4 | 3min | 3min |
+| 07 | 3/4 | 9min | 3min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -115,6 +115,10 @@ Recent decisions affecting current work:
 - [07-01]: StepRecord adapts AI SDK StepResult via mapping in onStepFinish (SDK has no stepType field)
 - [07-01]: Failure detection is informational only -- emits WS message, does not stop agent loop
 - [07-01]: Used logger.info instead of logger.debug since createLogger has no debug level
+- [07-02]: Skipped custom WS protocol messages (skill.proposed/skill.registered) -- existing tool flow is sufficient for MVP
+- [07-02]: skill_register uses "always" approval tier; skill_draft uses default tier (sandbox is safe)
+- [07-02]: Per-connection sandbox temp directory via randomUUID for skill draft isolation
+- [07-02]: Tool-specific approval prompt pattern: SkillApprovalPrompt overrides generic for skill_register
 - [07-03]: Callback prop pattern (onProxyRequest) to pass data from Ink component to post-exit entrypoint
 - [07-03]: xterm-256color TERM for full color support in proxied terminal apps
 - [07-03]: isTTY guard on setRawMode for safety in non-interactive environments
@@ -130,5 +134,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 07-03-PLAN.md -- Terminal proxy mode
+Stopped at: Completed 07-02-PLAN.md -- Skill authoring tools
 Resume file: None
