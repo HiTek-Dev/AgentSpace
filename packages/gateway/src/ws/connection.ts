@@ -27,6 +27,7 @@ export interface ConnectionState {
 	lastTerminalSnapshot: string | null;
 	terminalControlGranted: boolean;
 	pendingWorkflowApprovals: Map<string, { executionId: string; resolve: (approved: boolean) => void }>;
+	claudeCodeSessions: Map<string, string>;
 }
 
 const connections = new Map<string, ConnectionState>();
@@ -47,6 +48,7 @@ export function initConnection(transportId: string): ConnectionState {
 		lastTerminalSnapshot: null,
 		terminalControlGranted: false,
 		pendingWorkflowApprovals: new Map(),
+		claudeCodeSessions: new Map(),
 	};
 	connections.set(transportId, state);
 	return state;

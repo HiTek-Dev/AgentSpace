@@ -187,6 +187,23 @@ const TerminalControlRevokeSchema = z.object({
 	sessionId: z.string(),
 });
 
+// ── Claude Code Client Messages ──────────────────────────────────────
+
+const ClaudeCodeStartSchema = z.object({
+	type: z.literal("claude-code.start"),
+	id: z.string(),
+	prompt: z.string(),
+	cwd: z.string(),
+	allowedTools: z.array(z.string()).optional(),
+	sessionId: z.string().optional(),
+});
+
+const ClaudeCodeAbortSchema = z.object({
+	type: z.literal("claude-code.abort"),
+	id: z.string(),
+	sessionId: z.string(),
+});
+
 // ── Tool & Preflight Client Messages ──────────────────────────────────
 
 const ToolApprovalResponseSchema = z.object({
@@ -225,6 +242,8 @@ export const ClientMessageSchema = z.discriminatedUnion("type", [
 	ThreadUpdateSchema,
 	PromptSetSchema,
 	PromptListSchema,
+	ClaudeCodeStartSchema,
+	ClaudeCodeAbortSchema,
 	ToolApprovalResponseSchema,
 	PreflightApprovalSchema,
 	TerminalSnapshotSchema,
@@ -253,6 +272,8 @@ export type ThreadList = z.infer<typeof ThreadListSchema>;
 export type ThreadUpdate = z.infer<typeof ThreadUpdateSchema>;
 export type PromptSet = z.infer<typeof PromptSetSchema>;
 export type PromptList = z.infer<typeof PromptListSchema>;
+export type ClaudeCodeStart = z.infer<typeof ClaudeCodeStartSchema>;
+export type ClaudeCodeAbort = z.infer<typeof ClaudeCodeAbortSchema>;
 export type ToolApprovalResponse = z.infer<typeof ToolApprovalResponseSchema>;
 export type PreflightApproval = z.infer<typeof PreflightApprovalSchema>;
 export type TerminalSnapshot = z.infer<typeof TerminalSnapshotSchema>;

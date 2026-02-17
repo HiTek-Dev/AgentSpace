@@ -11,6 +11,8 @@ import type {
 	ThreadUpdate,
 	PromptSet,
 	PromptList,
+	ClaudeCodeStart,
+	ClaudeCodeAbort,
 	ToolApprovalResponse,
 	WorkflowTrigger,
 	WorkflowApproval,
@@ -1139,6 +1141,93 @@ export async function handleScheduleList(
 			};
 		}),
 	});
+}
+
+// ── Claude Code Handlers ──────────────────────────────────────────────
+
+/**
+ * Handle claude-code.start: spawn a Claude Code session with approval proxying.
+ * Uses dynamic import to avoid circular dependencies.
+ */
+export async function handleClaudeCodeStart(
+	transport: Transport,
+	msg: ClaudeCodeStart,
+	connState: ConnectionState,
+): Promise<void> {
+	const { ClaudeCodeSessionManager } = await import("../claude-code/index.js");
+	const { createApprovalProxy } = await import("../claude-code/approval-proxy.js");
+
+	// Get or create singleton session manager (stored on module level)
+	if (!claudeCodeManagerInstance) {
+		claudeCodeManagerInstance = new ClaudeCodeSessionManager();
+	}
+
+	const approvalProxy = createApprovalProxy(transport, msg.id, connState);
+
+	const session = claudeCodeManagerInstance.spawn(
+		{
+			prompt: msg.prompt,
+			cwd: msg.cwd,
+			allowedTools: msg.allowedTools,
+			canUseTool: approvalProxy,
+		},
+		transport,
+		msg.id,
+	);
+
+	// Track session on the connection
+	connState.claudeCodeSessions.set(session.id, msg.id);
+
+	// Send stream start to indicate session has begun
+	transport.send({
+		type: "chat.stream.start",
+		requestId: msg.id,
+		sessionId: session.id,
+		model: "claude-code",
+	});
+}
+
+/**
+ * Handle claude-code.abort: abort a running Claude Code session.
+ */
+export async function handleClaudeCodeAbort(
+	transport: Transport,
+	msg: ClaudeCodeAbort,
+	connState: ConnectionState,
+): Promise<void> {
+	if (!claudeCodeManagerInstance) {
+		transport.send({
+			type: "error",
+			requestId: msg.id,
+			code: "NO_SESSION_MANAGER",
+			message: "No Claude Code session manager initialized",
+		});
+		return;
+	}
+
+	const aborted = claudeCodeManagerInstance.abort(msg.sessionId);
+	if (!aborted) {
+		transport.send({
+			type: "error",
+			requestId: msg.id,
+			code: "SESSION_NOT_FOUND",
+			message: `Claude Code session ${msg.sessionId} not found`,
+		});
+		return;
+	}
+
+	connState.claudeCodeSessions.delete(msg.sessionId);
+}
+
+/** Lazy singleton for ClaudeCodeSessionManager */
+let claudeCodeManagerInstance: InstanceType<typeof import("../claude-code/session-manager.js").ClaudeCodeSessionManager> | null = null;
+
+/**
+ * Get the singleton ClaudeCodeSessionManager (creates on first access).
+ * Exported for use by the workflow tool.
+ */
+export function getClaudeCodeManager(): typeof claudeCodeManagerInstance {
+	return claudeCodeManagerInstance;
 }
 
 // ── Heartbeat Handler ──────────────────────────────────────────────────
