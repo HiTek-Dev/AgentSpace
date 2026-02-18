@@ -211,6 +211,7 @@ Recent decisions affecting current work:
 - Phase 11 added: Install & Update System — deploy to destination directory, update without destroying personality/config, fresh-start option
 - Phase 12 added: Expanded Providers — Venice AI (text/image/video), Google AI Studio (Gemini), Ollama remote/cloud hosts, provider hot-swap
 - Phase 13 added: Rebrand to tek — rename CLI/packages/paths from agentspace to tek with centralized project name constant
+- Phase 14 added: CLI & Setup Polish — gateway subcommand, skippable setup steps, full model catalog with recommendations, tek uninstall
 
 ### Pending Todos
 

@@ -25,6 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 11: Install & Update System** - Deploy to destination directory, update builds without losing personality/config, fresh-start option (completed 2026-02-17)
 - [x] **Phase 12: Expanded Providers** - Venice AI (text/image/video), Google AI Studio (Gemini), Ollama remote/cloud hosts, provider hot-swap (completed 2026-02-18)
 - [x] **Phase 13: Rebrand to tek** - Rename CLI command and package scope from agentspace to tek, centralize project name constant, update all paths and references (completed 2026-02-18)
+- [ ] **Phase 14: CLI & Setup Polish** - Gateway subcommand, skippable setup steps, full model catalog with recommendations, tek uninstall
 
 ## Phase Details
 
@@ -220,6 +221,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 11. Install & Update System | 0/3 | Complete    | 2026-02-17 |
 | 12. Expanded Providers | 2/2 | Complete    | 2026-02-18 |
 | 13. Rebrand to tek | 2/2 | Complete    | 2026-02-18 |
+| 14. CLI & Setup Polish | 0/0 | Not started | - |
 
 ### Phase 11: Install & Update System
 
@@ -265,3 +267,25 @@ Plans:
 Plans:
 - [ ] 13-01-PLAN.md — Centralize project name constant, rename package scope @agentspace to @tek, update all import paths
 - [ ] 13-02-PLAN.md — CLI command rename, config path migration, display strings, keychain migration, script and documentation updates
+
+### Phase 14: CLI & Setup Polish
+
+**Goal**: Users can start the gateway with `tek gateway start`, run a polished skip-able setup wizard that shows previous config, choose from a complete model catalog with per-provider recommendations, and cleanly uninstall everything with `tek uninstall`
+**Depends on**: Phase 13
+**Requirements**:
+  - `tek gateway start` subcommand replaces raw `node ~/tek/packages/gateway/dist/index.js`; gateway subcommand group for future options (start, stop, status, logs)
+  - Each setup step (provider keys, model selection, security mode) is independently skippable and shows current value if previously configured
+  - Full Venice AI text model catalog from docs.venice.ai/models/overview — all models we can work with
+  - Recommended models per provider: Venice recommends minimax-m25 and llama-3.3-70b (low cost), qwen3-coder-480b-a35b-instruct (coding); best-judgment recommendations for Anthropic, OpenAI, Google, Ollama
+  - `tek uninstall` command that removes installed files, config, database, keychain entries, PATH entry, and launchd service — enabling clean reinstall for testing
+  - Update install/update scripts to work with all changes
+**Success Criteria** (what must be TRUE):
+  1. User types `tek gateway start` to launch the gateway (no raw node command needed)
+  2. Running `tek init` when already configured shows current values and lets user skip any step
+  3. Model selection during setup shows all available text models per provider with recommended models marked
+  4. Venice model list includes all text-capable models from their API
+  5. `tek uninstall` removes all traces (files, config, db, keychain, PATH) and confirms before acting
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 14 to break down)
