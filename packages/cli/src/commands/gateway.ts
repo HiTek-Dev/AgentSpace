@@ -1,10 +1,20 @@
 import { Command } from "commander";
 import { spawn } from "node:child_process";
-import { realpathSync } from "node:fs";
+import {
+	openSync,
+	closeSync,
+	createReadStream,
+	existsSync,
+	statSync,
+	realpathSync,
+} from "node:fs";
+import { createInterface } from "node:readline";
 import { resolve, dirname } from "node:path";
 import { homedir } from "node:os";
 import chalk from "chalk";
+import { LOG_PATH } from "@tek/core";
 import { discoverGateway } from "../lib/discovery.js";
+import { formatLogLine } from "../lib/log-formatter.js";
 
 function getInstallDir(): string {
 	try {
@@ -46,7 +56,17 @@ gatewayCommand
 
 		if (options.foreground) {
 			const child = spawn(process.execPath, [entryPoint], {
-				stdio: "inherit",
+				stdio: ["ignore", "inherit", "pipe"],
+			});
+			if (child.stderr) {
+				const rl = createInterface({ input: child.stderr });
+				rl.on("line", (line) => {
+					console.log(formatLogLine(line));
+				});
+			}
+			// Handle Ctrl+C gracefully
+			process.on("SIGINT", () => {
+				child.kill("SIGTERM");
 			});
 			child.on("exit", (code) => {
 				process.exit(code ?? 1);
@@ -54,12 +74,14 @@ gatewayCommand
 			return;
 		}
 
-		// Background mode
+		// Background mode — redirect stdout/stderr to log file
+		const logFd = openSync(LOG_PATH, "a");
 		const child = spawn(process.execPath, [entryPoint], {
 			detached: true,
-			stdio: "ignore",
+			stdio: ["ignore", logFd, logFd],
 		});
 		child.unref();
+		closeSync(logFd);
 
 		// Poll for gateway to become available
 		const maxWait = 10_000;
@@ -75,6 +97,7 @@ gatewayCommand
 						`Gateway started on 127.0.0.1:${info.port} (PID ${info.pid})`,
 					),
 				);
+				console.log(chalk.dim(`  Logs: tek gateway logs`));
 				return;
 			}
 		}
@@ -139,3 +162,78 @@ gatewayCommand
 			console.log(chalk.yellow("Gateway is not running."));
 		}
 	});
+
+gatewayCommand
+	.command("logs")
+	.description("Tail gateway logs with colored formatting")
+	.option("-n, --lines <count>", "Number of recent lines to show", "20")
+	.option("-f, --follow", "Follow log output (default: true)", true)
+	.option("--filter <logger>", "Filter by logger name")
+	.action(
+		async (options: { lines: string; follow: boolean; filter?: string }) => {
+			if (!existsSync(LOG_PATH)) {
+				console.log(
+					chalk.yellow("No log file found. Start the gateway first."),
+				);
+				return;
+			}
+
+			// Read last N lines first
+			const content = await import("node:fs/promises").then((fs) =>
+				fs.readFile(LOG_PATH, "utf-8"),
+			);
+			const allLines = content.split("\n").filter(Boolean);
+			const lineCount = parseInt(options.lines, 10) || 20;
+			const recentLines = allLines.slice(-lineCount);
+
+			for (const line of recentLines) {
+				if (options.filter && !line.includes(`[${options.filter}]`))
+					continue;
+				console.log(formatLogLine(line));
+			}
+
+			if (!options.follow) return;
+
+			// Tail the file for new lines
+			console.log(chalk.dim("--- following logs (Ctrl+C to stop) ---"));
+
+			const fileSize = statSync(LOG_PATH).size;
+			let position = fileSize;
+
+			const tailInterval = setInterval(async () => {
+				try {
+					const currentSize = statSync(LOG_PATH).size;
+					if (currentSize <= position) {
+						if (currentSize < position) position = 0; // file truncated
+						return;
+					}
+					const stream = createReadStream(LOG_PATH, {
+						start: position,
+						encoding: "utf-8",
+					});
+					let buffer = "";
+					for await (const chunk of stream) {
+						buffer += chunk;
+					}
+					position = currentSize;
+					const newLines = buffer.split("\n").filter(Boolean);
+					for (const line of newLines) {
+						if (
+							options.filter &&
+							!line.includes(`[${options.filter}]`)
+						)
+							continue;
+						console.log(formatLogLine(line));
+					}
+				} catch {
+					// file may have been removed
+				}
+			}, 500);
+
+			// Clean exit on Ctrl+C
+			process.on("SIGINT", () => {
+				clearInterval(tailInterval);
+				process.exit(0);
+			});
+		},
+	);
