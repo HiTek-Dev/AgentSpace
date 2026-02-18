@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 Phase: 11 of 11 (Install & Update System)
 Plan: 3 of 3 in current phase (all complete)
 Status: Completed 11-02 (Install & Update scripts) -- all phase 11 plans done
-Last activity: 2026-02-17 -- Completed 11-02 install and update scripts
+Last activity: 2026-02-18 - Completed quick task 1: Fix install.sh build order
 
 Progress: [████████████████████████████████████████] ~100%
 
@@ -197,6 +197,12 @@ None yet.
 ### Blockers/Concerns
 
 None yet.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Fix install.sh build order: cli must build before gateway | 2026-02-18 | 744d831 | [1-fix-install-sh-build-order-gateway-depen](./quick/1-fix-install-sh-build-order-gateway-depen/) |
 
 ## Session Continuity
 
