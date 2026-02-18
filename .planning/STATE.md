@@ -214,7 +214,9 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- **Daemon mode for gateway** — Add option during `tek init` to install a launchd service (macOS) so the gateway runs in the background and survives terminal close / restarts
+- **Uninstall / offboard process** — Clean uninstall that removes installed files, launchd service, PATH entry, config, keychain entries, and database. Should be a `tek uninstall` command or standalone script
+- **Verify update process end-to-end** — Ensure `update.sh` works correctly with daemon service (restart after update), config migration, and all recent changes (rebrand, model aliases, etc.)
 
 ### Blockers/Concerns
 
