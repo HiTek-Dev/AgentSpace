@@ -38,7 +38,7 @@ cd "$SOURCE_DIR" && pnpm install
 
 # Build packages individually in dependency order
 # (turbo cannot handle the cli<->gateway cyclic workspace dependency)
-for pkg in core db gateway cli telegram; do
+for pkg in core db cli gateway telegram; do
   echo "  Building $pkg..."
   (cd "$SOURCE_DIR/packages/$pkg" && npx tsc -p tsconfig.json)
 done
