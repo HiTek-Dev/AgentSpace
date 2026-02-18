@@ -42,11 +42,20 @@ echo "Building from source..."
 cd "$SOURCE_DIR" && pnpm install
 
 # Build packages individually in dependency order
-# (turbo cannot handle the cli<->gateway cyclic workspace dependency)
-for pkg in core db cli gateway telegram; do
-  echo "  Building $pkg..."
-  (cd "$SOURCE_DIR/packages/$pkg" && npx tsc -p tsconfig.json)
-done
+# cli and gateway have a cyclic dependency (cli imports gateway types,
+# gateway imports cli/vault). Two-pass build resolves this.
+echo "  Building core..."
+(cd "$SOURCE_DIR/packages/core" && npx tsc -p tsconfig.json)
+echo "  Building db..."
+(cd "$SOURCE_DIR/packages/db" && npx tsc -p tsconfig.json)
+echo "  Building gateway (pass 1)..."
+(cd "$SOURCE_DIR/packages/gateway" && npx tsc -p tsconfig.json 2>/dev/null) || true
+echo "  Building cli..."
+(cd "$SOURCE_DIR/packages/cli" && npx tsc -p tsconfig.json)
+echo "  Building gateway (pass 2)..."
+(cd "$SOURCE_DIR/packages/gateway" && npx tsc -p tsconfig.json)
+echo "  Building telegram..."
+(cd "$SOURCE_DIR/packages/telegram" && npx tsc -p tsconfig.json)
 echo "Build complete."
 
 # 4. Sync packages (excluding source files, dev artifacts, memory-files)

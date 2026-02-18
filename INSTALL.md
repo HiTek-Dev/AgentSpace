@@ -27,7 +27,7 @@ This builds from source and deploys to `~/agentspace`. You can specify any direc
 **What the script does:**
 1. Checks Node.js >= 22 and pnpm are available
 2. Runs `pnpm install` in the source repo
-3. Builds all 5 packages in dependency order (core, db, cli, gateway, telegram)
+3. Builds all 5 packages with a two-pass strategy (gateway pass 1 → cli → gateway pass 2) to resolve the cli↔gateway cyclic dependency
 4. Creates the install directory and rsyncs built artifacts (no source files, no dev configs)
 5. Copies root node_modules and per-package node_modules (native modules like better-sqlite3 work at the target)
 6. Seeds default personality (`SOUL.md`) and memory (`MEMORY.md`) to `~/.config/agentspace/memory/` if not already present

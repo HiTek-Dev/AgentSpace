@@ -165,10 +165,12 @@ scripts/reset.sh
 
 ```bash
 pnpm install
-# Build in dependency order (turbo can't handle cli↔gateway cycle)
-for pkg in core db cli gateway telegram; do
-  (cd packages/$pkg && npx tsc -p tsconfig.json)
-done
+# Two-pass build (cli↔gateway cyclic dependency)
+for pkg in core db; do (cd packages/$pkg && npx tsc -p tsconfig.json); done
+(cd packages/gateway && npx tsc -p tsconfig.json 2>/dev/null) || true
+(cd packages/cli && npx tsc -p tsconfig.json)
+(cd packages/gateway && npx tsc -p tsconfig.json)
+(cd packages/telegram && npx tsc -p tsconfig.json)
 node packages/cli/dist/index.js init    # onboarding
 node packages/gateway/dist/index.js     # start gateway
 node packages/cli/dist/index.js chat    # start chatting
