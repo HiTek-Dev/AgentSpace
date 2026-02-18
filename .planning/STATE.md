@@ -240,9 +240,10 @@ None yet.
 | 1 | Fix install.sh build order: cli must build before gateway | 2026-02-18 | 744d831 | [1-fix-install-sh-build-order-gateway-depen](./quick/1-fix-install-sh-build-order-gateway-depen/) |
 | 2 | Update install docs and source with new tek naming | 2026-02-18 | 504900a | [2-update-install-docs-with-new-tek-naming](./quick/2-update-install-docs-with-new-tek-naming/) |
 | 3 | Model selection with aliases + /swap command | 2026-02-18 | 0c8ba7c | [3-add-model-selection-with-aliases-to-setu](./quick/3-add-model-selection-with-aliases-to-setu/) |
+| 4 | Update INSTALL.md for Phase 14 CLI changes | 2026-02-18 | c8259db | [4-update-install-docs-and-scripts-for-phas](./quick/4-update-install-docs-and-scripts-for-phas/) |
 
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 14-02-PLAN.md (full model catalog & skippable setup)
+Stopped at: Completed quick task 4 (update INSTALL.md for Phase 14)
 Resume file: None
