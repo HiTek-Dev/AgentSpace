@@ -24,6 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 10: Claude Code & System Skills** - Claude Code session management, web search, image generation, browser automation, and Google Workspace integration (completed 2026-02-17)
 - [x] **Phase 11: Install & Update System** - Deploy to destination directory, update builds without losing personality/config, fresh-start option (completed 2026-02-17)
 - [x] **Phase 12: Expanded Providers** - Venice AI (text/image/video), Google AI Studio (Gemini), Ollama remote/cloud hosts, provider hot-swap (completed 2026-02-18)
+- [ ] **Phase 13: Rebrand to tek** - Rename CLI command and package scope from agentspace to tek, centralize project name constant, update all paths and references
 
 ## Phase Details
 
@@ -218,6 +219,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 10. Claude Code & System Skills | 0/3 | Complete    | 2026-02-17 |
 | 11. Install & Update System | 0/3 | Complete    | 2026-02-17 |
 | 12. Expanded Providers | 2/2 | Complete    | 2026-02-18 |
+| 13. Rebrand to tek | 0/2 | Not started | - |
 
 ### Phase 11: Install & Update System
 
@@ -246,3 +248,20 @@ Plans:
 Plans:
 - [ ] 12-01-PLAN.md — Provider registry extension (Venice AI, Google Gemini, configurable Ollama endpoints), types, pricing
 - [ ] 12-02-PLAN.md — Venice image/video skill tools, tool registry wiring, hot-swap verification
+
+### Phase 13: Rebrand to tek
+
+**Goal**: Users type `tek` to launch the app instead of `agentspace`. The project name is defined in one place and flows to all references (package scope, config paths, CLI command, scripts, docs). Deleting the install directory leaves no orphan processes.
+**Depends on**: Phase 11
+**Requirements**: CLI command rename to tek, configurable project name constant, package scope rename, config path migration, install/update script updates, documentation updates, verify clean uninstall
+**Success Criteria** (what must be TRUE):
+  1. User types `tek` in terminal to launch the app
+  2. Project name is defined in a single constant file and flows to package names, config paths, CLI command name, and display strings
+  3. Config/memory paths use `~/.config/tek` instead of `~/.config/agentspace`
+  4. Install/update/reset scripts use the new name and paths
+  5. Deleting the install directory stops all functionality with no orphan processes or services on macOS
+**Plans:** 2 plans
+
+Plans:
+- [ ] 13-01-PLAN.md — Centralize project name constant, rename package scope @agentspace to @tek, update all import paths
+- [ ] 13-02-PLAN.md — CLI command rename, config path migration, display strings, keychain migration, script and documentation updates
