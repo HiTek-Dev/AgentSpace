@@ -75,6 +75,8 @@ export const initCommand = new Command("init")
 							apiEndpoint: { port: 3271, host: "127.0.0.1" },
 							onboardingComplete: true,
 							createdAt: new Date().toISOString(),
+							defaultModel: result.defaultModel,
+							modelAliases: result.modelAliases,
 						};
 						saveConfig(config);
 
