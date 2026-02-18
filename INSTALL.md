@@ -12,8 +12,8 @@
 ### Clone the source repo
 
 ```bash
-git clone https://github.com/hitekmedia/AgentSpace.git
-cd AgentSpace
+git clone https://github.com/hitekmedia/tek.git
+cd tek
 ```
 
 ### Run the install script
@@ -76,7 +76,7 @@ tek chat
 When you've pulled new changes to the source repo:
 
 ```bash
-cd AgentSpace
+cd tek
 git pull
 scripts/update.sh ~/tek
 ```

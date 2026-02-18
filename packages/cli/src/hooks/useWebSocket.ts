@@ -15,7 +15,7 @@ export interface UseWebSocketReturn {
 }
 
 /**
- * React hook for managing a WebSocket connection to the AgentSpace gateway.
+ * React hook for managing a WebSocket connection to the Tek gateway.
  * Handles connection lifecycle, message parsing, and reconnection state.
  */
 export function useWebSocket(opts: UseWebSocketOptions): UseWebSocketReturn {

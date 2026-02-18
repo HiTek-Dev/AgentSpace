@@ -35,7 +35,7 @@ export function generatePairingCode(
 }
 
 /**
- * Verify a pairing code and link the Telegram user to AgentSpace.
+ * Verify a pairing code and link the Telegram user to Tek.
  * Returns the chatId and username if valid, null otherwise.
  * Marks the code as used and creates/updates the telegram_users record.
  */
