@@ -1,4 +1,4 @@
-# AgentSpace v1.0 — One Sheet (Updated 2026-02-17)
+# Tek v1.0 -- One Sheet (Updated 2026-02-18)
 
 ## What It Is
 
@@ -7,63 +7,65 @@ Self-hosted AI agent gateway. You own every API call, see every token, approve e
 ## Architecture
 
 ```
-┌─────────────┐     ┌──────────────────────────────────┐
-│  CLI (Ink)   │────▶│        Gateway (Fastify)          │
-└─────────────┘     │                                    │
-                    │  WebSocket (:3271/gateway)          │
-┌─────────────┐     │                                    │
-│  Telegram    │────▶│  ┌─────────┐  ┌────────────────┐  │
-│  (grammY)    │     │  │Sessions │  │ Tool Registry  │  │
-└─────────────┘     │  │Manager  │  │ (MCP+Built-in) │  │
-                    │  └─────────┘  └────────────────┘  │
-                    │  ┌─────────┐  ┌────────────────┐  │
-                    │  │ Memory  │  │  LLM Routing   │  │
-                    │  │ System  │  │ (Multi-Provider)│  │
-                    │  └─────────┘  └────────────────┘  │
-                    └──────────┬───────────────────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              ▼                ▼                ▼
-        Anthropic          OpenAI           Ollama
++---------------+     +------------------------------------+
+|  CLI (Ink)    |---->|        Gateway (Fastify)            |
++---------------+     |                                    |
+                      |  WebSocket (:3271/gateway)          |
++---------------+     |                                    |
+|  Telegram     |---->|  +---------+  +----------------+  |
+|  (grammY)     |     |  |Sessions |  | Tool Registry  |  |
++---------------+     |  |Manager  |  | (MCP+Built-in) |  |
+                      |  +---------+  +----------------+  |
+                      |  +---------+  +----------------+  |
+                      |  | Memory  |  |  LLM Routing   |  |
+                      |  | System  |  | (Multi-Provider)|  |
+                      |  +---------+  +----------------+  |
+                      +----------+------------------------+
+                                 |
+                +----------------+----------------+
+                v                v                v
+          Anthropic          OpenAI           Ollama
 ```
 
 ## 5 Packages
 
 | Package | What It Does |
 |---------|-------------|
-| `@agentspace/core` | Config schema, logger, crypto, skills types. Shared by all. |
-| `@agentspace/db` | Drizzle + SQLite + sqlite-vec. Sessions, messages, threads, memories, workflows, schedules, Telegram users. |
-| `@agentspace/cli` | Ink-based terminal UI. Chat, onboarding wizard, vault (keychain), slash commands, tool approval prompts. Entry: `agentspace` |
-| `@agentspace/gateway` | Fastify + WebSocket server. LLM streaming, routing, context assembly, agent tool loop, MCP, workflows, Claude Code, system skills. |
-| `@agentspace/telegram` | grammY bot. Pairing auth, message routing, inline tool approval buttons, streaming accumulator. |
+| `@tek/core` | Config schema, logger, crypto, skills types. Shared by all. |
+| `@tek/db` | Drizzle + SQLite + sqlite-vec. Sessions, messages, threads, memories, workflows, schedules, Telegram users. |
+| `@tek/cli` | Ink-based terminal UI. Chat, onboarding wizard, vault (keychain), slash commands, tool approval prompts. Entry: `tek` |
+| `@tek/gateway` | Fastify + WebSocket server. LLM streaming, routing, context assembly, agent tool loop, MCP, workflows, Claude Code, system skills. |
+| `@tek/telegram` | grammY bot. Pairing auth, message routing, inline tool approval buttons, streaming accumulator. |
 
-## 11 Phases — What Each Built
+## 13 Phases -- What Each Built
 
 | # | Name | What You Got |
 |---|------|-------------|
 | 1 | Foundation & Security | Monorepo scaffold, encrypted vault (OS keychain), security modes (full/limited control), onboarding wizard |
 | 2 | Gateway Core | WebSocket server, Anthropic streaming, session management, context inspector (see what's sent to the model) |
 | 3 | CLI Interface | Terminal chat UI (Claude Code style), markdown rendering, slash commands, streaming display |
-| 4 | Multi-Provider | OpenAI + Ollama support, complexity-based routing (planning→big model, Q&A→budget), user can override |
+| 4 | Multi-Provider | OpenAI + Ollama support, complexity-based routing (planning->big model, Q&A->budget), user can override |
 | 5 | Memory & Persistence | Daily memory logs, long-term MEMORY.md, SOUL.md personality, vector search (sqlite-vec), thread management |
 | 6 | Agent Capabilities | MCP tool integration, filesystem/shell tools, approval gates (auto/session/always), pre-flight checklists, skills directory |
 | 7 | Self-Improvement | Failure pattern detection, skill authoring + sandbox testing, terminal proxy (run vim/git through agent), agent PTY observation |
 | 8 | Workflows & Scheduling | YAML/TS workflow engine with branching, cron scheduler, heartbeat monitoring with active hours |
 | 9 | Telegram | Bot with pairing-code auth, message routing through gateway, inline tool approval buttons, streaming accumulator |
 | 10 | Claude Code & System Skills | Claude Code session manager (Agent SDK), approval proxying, web search (Tavily), image gen (OpenAI/Stability), browser (Playwright MCP), Google Workspace (Gmail/Drive/Calendar/Docs) |
-| 11 | Install & Update System | Memory files relocated to `~/.config/agentspace/memory/`, install/update shell scripts, fresh-start reset script |
+| 11 | Install & Update System | Memory files relocated to `~/.config/tek/memory/`, install/update shell scripts, fresh-start reset script |
+| 12 | Expanded Providers | Venice AI (text/image/video), Google AI Studio (Gemini), Ollama remote/cloud hosts, provider hot-swap |
+| 13 | Rebrand to Tek | CLI command renamed to `tek`, all packages to @tek/*, config paths to ~/.config/tek, centralized project identity constants |
 
 ## Config & Data Locations
 
 | What | Where |
 |------|-------|
-| Config file | `~/.config/agentspace/config.json` |
-| SQLite database | `~/.config/agentspace/agentspace.db` |
-| Runtime info (PID/port) | `~/.config/agentspace/runtime.json` (exists only while gateway runs) |
-| API keys | macOS Keychain (service: `agentspace`, account: `api-key:<provider>`) |
-| Auth token | macOS Keychain (service: `agentspace`, account: `api-endpoint-token`) |
-| Memory files | `~/.config/agentspace/memory/` (SOUL.md, MEMORY.md, daily/) |
-| Soul document | `~/.config/agentspace/memory/SOUL.md` |
+| Config file | `~/.config/tek/config.json` |
+| SQLite database | `~/.config/tek/tek.db` |
+| Runtime info (PID/port) | `~/.config/tek/runtime.json` (exists only while gateway runs) |
+| API keys | macOS Keychain (service: `tek`, account: `api-key:<provider>`) |
+| Auth token | macOS Keychain (service: `tek`, account: `api-endpoint-token`) |
+| Memory files | `~/.config/tek/memory/` (SOUL.md, MEMORY.md, daily/) |
+| Soul document | `~/.config/tek/memory/SOUL.md` |
 | Skills directory | Configurable via `config.json` `skillsDir` field |
 
 ## Logging
@@ -84,34 +86,34 @@ node packages/gateway/dist/index.js 2>&1 | tee gateway.log
 ```
 
 **Logger names to look for:**
-- `vault` — keychain operations
-- `gateway-ws` — WebSocket connections, message dispatch
-- `llm` — LLM provider calls, streaming
-- `session` — session create/destroy
-- `usage` — token/cost tracking
-- `context` — context assembly
-- `routing` — model routing decisions
-- `memory` — memory read/write/search
-- `tools` — tool execution, approval
-- `mcp` — MCP server connections
-- `workflow` — workflow execution
-- `scheduler` — cron job runs
-- `heartbeat` — heartbeat checks
-- `claude-code` — Claude Code sessions
-- `telegram` — Telegram bot events
+- `vault` -- keychain operations
+- `gateway-ws` -- WebSocket connections, message dispatch
+- `llm` -- LLM provider calls, streaming
+- `session` -- session create/destroy
+- `usage` -- token/cost tracking
+- `context` -- context assembly
+- `routing` -- model routing decisions
+- `memory` -- memory read/write/search
+- `tools` -- tool execution, approval
+- `mcp` -- MCP server connections
+- `workflow` -- workflow execution
+- `scheduler` -- cron job runs
+- `heartbeat` -- heartbeat checks
+- `claude-code` -- Claude Code sessions
+- `telegram` -- Telegram bot events
 
 ## UAT Testing Guide
 
 ### Tier 1: Foundation (test first)
-- [ ] **Onboarding**: Run `agentspace init` — walks through security mode + API keys
-- [ ] **Key management**: `agentspace keys list`, `agentspace keys add anthropic`
-- [ ] **Config**: `agentspace config show`
-- [ ] **Audit log**: `agentspace audit`
+- [ ] **Onboarding**: Run `tek init` -- walks through security mode + API keys
+- [ ] **Key management**: `tek keys list`, `tek keys add anthropic`
+- [ ] **Config**: `tek config show`
+- [ ] **Audit log**: `tek audit`
 
 ### Tier 2: Core Chat
-- [ ] **Start gateway + chat**: Run gateway, then `agentspace chat`
+- [ ] **Start gateway + chat**: Run gateway, then `tek chat`
 - [ ] **Streaming**: Send a message, verify streaming response appears token-by-token
-- [ ] **Markdown**: Ask for code — should render with syntax highlighting
+- [ ] **Markdown**: Ask for code -- should render with syntax highlighting
 - [ ] **Sessions**: Multiple chats should get separate sessions
 
 ### Tier 3: Multi-Provider & Routing
@@ -120,16 +122,16 @@ node packages/gateway/dist/index.js 2>&1 | tee gateway.log
 - [ ] **Ollama**: If local Ollama running, test `ollama:llama3`
 
 ### Tier 4: Context & Memory
-- [ ] **Context inspector**: Send `context.inspect` message — see full assembled context with token counts
+- [ ] **Context inspector**: Send `context.inspect` message -- see full assembled context with token counts
 - [ ] **Memory**: Have a conversation, check that daily memory log is created
 - [ ] **Threads**: Create multiple conversation threads
 - [ ] **Vector search**: Search past conversations semantically
 
 ### Tier 5: Tools & Agent
-- [ ] **File tools**: Ask agent to read/write a file — should see approval prompt
-- [ ] **Shell tools**: Ask agent to run a shell command — approval gate appears
+- [ ] **File tools**: Ask agent to read/write a file -- should see approval prompt
+- [ ] **Shell tools**: Ask agent to run a shell command -- approval gate appears
 - [ ] **MCP**: Configure an MCP server in config, verify tools appear
-- [ ] **Pre-flight**: Ask for a complex multi-step task — checklist should appear
+- [ ] **Pre-flight**: Ask for a complex multi-step task -- checklist should appear
 - [ ] **Auto-approve**: Set tool tier to "auto" and verify it skips approval
 
 ### Tier 6: Advanced
@@ -140,22 +142,22 @@ node packages/gateway/dist/index.js 2>&1 | tee gateway.log
 - [ ] **Telegram**: Configure bot token, pair via `/pair`, send messages
 
 ### Tier 7: System Skills (need API keys)
-- [ ] **Web search**: Needs `TAVILY_API_KEY` — agent can search the web
-- [ ] **Image gen**: Needs `OPENAI_API_KEY` — agent can generate images
-- [ ] **Stability AI**: Needs `STABILITY_API_KEY` — alternative image gen
-- [ ] **Browser**: Needs `npx @playwright/mcp@latest` — browser automation
-- [ ] **Google Workspace**: Needs OAuth credentials — Gmail/Drive/Calendar/Docs
+- [ ] **Web search**: Needs `TAVILY_API_KEY` -- agent can search the web
+- [ ] **Image gen**: Needs `OPENAI_API_KEY` -- agent can generate images
+- [ ] **Stability AI**: Needs `STABILITY_API_KEY` -- alternative image gen
+- [ ] **Browser**: Needs `npx @playwright/mcp@latest` -- browser automation
+- [ ] **Google Workspace**: Needs OAuth credentials -- Gmail/Drive/Calendar/Docs
 
 ## Install & Update
 
 See **INSTALL.md** for the full procedure. Quick reference:
 
 ```bash
-# First-time install (builds from source, deploys to ~/agentspace)
-scripts/install.sh ~/agentspace
+# First-time install (builds from source, deploys to ~/tek)
+scripts/install.sh ~/tek
 
-# Update (stops gateway, rebuilds, syncs code — user data untouched)
-scripts/update.sh ~/agentspace
+# Update (stops gateway, rebuilds, syncs code -- user data untouched)
+scripts/update.sh ~/tek
 
 # Fresh start (wipes all user data, requires typing RESET)
 scripts/reset.sh
@@ -165,7 +167,7 @@ scripts/reset.sh
 
 ```bash
 pnpm install
-# Two-pass build (cli↔gateway cyclic dependency)
+# Two-pass build (cli<->gateway cyclic dependency)
 for pkg in core db; do (cd packages/$pkg && npx tsc -p tsconfig.json); done
 (cd packages/gateway && npx tsc -p tsconfig.json 2>/dev/null) || true
 (cd packages/cli && npx tsc -p tsconfig.json)
@@ -178,8 +180,8 @@ node packages/cli/dist/index.js chat    # start chatting
 
 ## Known Issues / Notes
 
-- **Circular dependency**: `cli` ↔ `gateway` — vault functions (getKey) live in cli but are used by gateway. Turborepo can't auto-build; use manual build order above.
+- **Circular dependency**: `cli` <-> `gateway` -- vault functions (getKey) live in cli but are used by gateway. Turborepo can't auto-build; use manual build order above.
 - **No test suite**: Infrastructure exists (vitest configured) but no test files written yet.
 - **Logs to stderr only**: No persistent log files; pipe to file if needed.
 - **sqlite-vec**: Requires native binary; should auto-install via npm but may need platform-specific troubleshooting.
-- **Claude Code**: Requires `@anthropic-ai/claude-agent-sdk` — spawns actual Claude Code CLI sessions, so needs Anthropic API key or Claude.ai subscription.
+- **Claude Code**: Requires `@anthropic-ai/claude-agent-sdk` -- spawns actual Claude Code CLI sessions, so needs Anthropic API key or Claude.ai subscription.

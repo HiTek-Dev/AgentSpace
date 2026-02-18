@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-CONFIG_DIR="$HOME/.config/agentspace"
+CONFIG_DIR="$HOME/.config/tek"
 RUNTIME="$CONFIG_DIR/runtime.json"
 
-echo "WARNING: This will delete ALL AgentSpace user data:"
+echo "WARNING: This will delete ALL Tek user data:"
 echo "  - Configuration ($CONFIG_DIR/config.json)"
-echo "  - Database ($CONFIG_DIR/agentspace.db)"
+echo "  - Database ($CONFIG_DIR/tek.db)"
 echo "  - Memory files ($CONFIG_DIR/memory/)"
 echo "  - Runtime state ($CONFIG_DIR/runtime.json)"
 echo ""
@@ -31,6 +31,6 @@ echo ""
 echo "All user data removed."
 echo ""
 echo "Note: Keychain credentials (API keys) are stored separately in the OS keychain."
-echo "To remove them, run: agentspace keys remove <provider>"
+echo "To remove them, run: tek keys remove <provider>"
 echo ""
-echo "To set up AgentSpace from scratch, run: agentspace init"
+echo "To set up Tek from scratch, run: tek init"

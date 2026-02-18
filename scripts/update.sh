@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# AgentSpace Update Script
+# Tek Update Script
 # Rebuilds from source and syncs updated code to install directory.
-# Does NOT touch user data in ~/.config/agentspace/ (except reading runtime.json to stop gateway).
+# Does NOT touch user data in ~/.config/tek/ (except reading runtime.json to stop gateway).
 # Usage: scripts/update.sh [INSTALL_DIR]
 
-INSTALL_DIR="${1:-$HOME/agentspace}"
+INSTALL_DIR="${1:-$HOME/tek}"
 SOURCE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CONFIG_DIR="$HOME/.config/agentspace"
+CONFIG_DIR="$HOME/.config/tek"
 RUNTIME="$CONFIG_DIR/runtime.json"
 
-echo "AgentSpace Updater"
-echo "=================="
+echo "Tek Updater"
+echo "==========="
 echo "Source:  $SOURCE_DIR"
 echo "Target:  $INSTALL_DIR"
 echo ""
@@ -117,5 +117,5 @@ cat > "$INSTALL_DIR/.version" <<VEOF
 VEOF
 
 echo ""
-echo "AgentSpace updated successfully."
+echo "Tek updated successfully."
 echo "Start with: node $INSTALL_DIR/packages/gateway/dist/index.js"
