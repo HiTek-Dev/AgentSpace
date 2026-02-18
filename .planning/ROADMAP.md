@@ -23,6 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 9: Telegram Channel** - Telegram bot integration, message routing, inline approvals, and user authentication
 - [x] **Phase 10: Claude Code & System Skills** - Claude Code session management, web search, image generation, browser automation, and Google Workspace integration (completed 2026-02-17)
 - [x] **Phase 11: Install & Update System** - Deploy to destination directory, update builds without losing personality/config, fresh-start option (completed 2026-02-17)
+- [ ] **Phase 12: Expanded Providers** - Venice AI (text/image/video), Google AI Studio (Gemini), Ollama remote/cloud hosts, provider hot-swap
 
 ## Phase Details
 
@@ -216,6 +217,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 9. Telegram Channel | 0/2 | Not started | - |
 | 10. Claude Code & System Skills | 0/3 | Complete    | 2026-02-17 |
 | 11. Install & Update System | 0/3 | Complete    | 2026-02-17 |
+| 12. Expanded Providers | 0/2 | Not started | - |
 
 ### Phase 11: Install & Update System
 
@@ -227,3 +229,20 @@ Plans:
 - [ ] 11-01-PLAN.md — Relocate memory file paths from package tree to ~/.config/agentspace/memory/
 - [ ] 11-02-PLAN.md — Install and update shell scripts (build, deploy, sync node_modules, version tracking)
 - [ ] 11-03-PLAN.md — Fresh-start reset script with confirmation and cleanup
+
+### Phase 12: Expanded Providers
+
+**Goal**: Users can connect to Venice AI (text, image, video models including MiniMax), Google AI Studio (Gemini), and Ollama on remote/cloud hosts — with reliable hot-swapping between any provider mid-conversation
+**Depends on**: Phase 4
+**Requirements**: Extended provider registry, Venice API integration, Google AI Studio/Gemini integration, Ollama remote host configuration, model switching verification
+**Success Criteria** (what must be TRUE):
+  1. User can send messages through Venice AI provider using their API key, accessing text models (MiniMax, etc.) and image/video generation models
+  2. User can send messages through Google AI Studio using a Gemini API key
+  3. User can configure Ollama endpoints beyond localhost (LAN hosts, cloud instances) and connect to any of them
+  4. User can hot-swap between any configured provider mid-conversation without errors or state loss
+  5. Venice image/video models are accessible as tool calls for future skill integration
+**Plans:** 2 plans
+
+Plans:
+- [ ] 12-01-PLAN.md — Provider registry extension (Venice AI, Google Gemini, configurable Ollama endpoints), types, pricing
+- [ ] 12-02-PLAN.md — Venice image/video skill tools, tool registry wiring, hot-swap verification
