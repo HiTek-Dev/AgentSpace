@@ -225,9 +225,10 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Fix install.sh build order: cli must build before gateway | 2026-02-18 | 744d831 | [1-fix-install-sh-build-order-gateway-depen](./quick/1-fix-install-sh-build-order-gateway-depen/) |
+| 2 | Update install docs and source with new tek naming | 2026-02-18 | 504900a | [2-update-install-docs-with-new-tek-naming](./quick/2-update-install-docs-with-new-tek-naming/) |
 
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 13-02-PLAN.md
+Stopped at: Completed quick task 2 (update install docs with new tek naming)
 Resume file: None
