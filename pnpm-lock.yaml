@@ -136,6 +136,9 @@ importers:
       '@ai-sdk/anthropic':
         specifier: ^3.0.44
         version: 3.0.44(zod@4.3.6)
+      '@ai-sdk/google':
+        specifier: ^3
+        version: 3.0.29(zod@4.3.6)
       '@ai-sdk/mcp':
         specifier: ^1.0.21
         version: 1.0.21(zod@4.3.6)
@@ -248,6 +251,17 @@ packages:
       '@ai-sdk/provider': 3.0.8
       '@ai-sdk/provider-utils': 4.0.15(zod@4.3.6)
       '@vercel/oidc': 3.1.0
+      zod: 4.3.6
+    dev: false
+
+  /@ai-sdk/google@3.0.29(zod@4.3.6):
+    resolution: {integrity: sha512-x0hcU10AA+i1ZUQHloGD5qXWsB+Y8qnxlmFUef6Ly4rB53MGVbQExkI9nOKiCO3mu2TGiiNoQMeKWSeQVLfRUA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.15(zod@4.3.6)
       zod: 4.3.6
     dev: false
 

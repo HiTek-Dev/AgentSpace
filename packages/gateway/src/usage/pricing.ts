@@ -34,6 +34,16 @@ export const MODEL_PRICING: Record<
 	"openai:gpt-4.1": { inputPerMTok: 2, outputPerMTok: 8 },
 	"openai:gpt-4.1-mini": { inputPerMTok: 0.4, outputPerMTok: 1.6 },
 	"openai:gpt-4.1-nano": { inputPerMTok: 0.1, outputPerMTok: 0.4 },
+
+	// Venice AI
+	"venice:llama-3.3-70b": { inputPerMTok: 0.4, outputPerMTok: 0.4 },
+	"venice:deepseek-r1-671b": { inputPerMTok: 2.0, outputPerMTok: 2.0 },
+	"venice:minimax-m1-80k": { inputPerMTok: 0.5, outputPerMTok: 0.5 },
+
+	// Google Gemini
+	"google:gemini-2.5-pro": { inputPerMTok: 1.25, outputPerMTok: 10 },
+	"google:gemini-2.5-flash": { inputPerMTok: 0.15, outputPerMTok: 0.6 },
+	"google:gemini-2.0-flash": { inputPerMTok: 0.1, outputPerMTok: 0.4 },
 };
 
 /**
@@ -60,11 +70,16 @@ export function getModelPricing(
 	}
 
 	// 3. Ollama models are free (local compute)
-	if (model.startsWith("ollama:")) {
+	if (model.startsWith("ollama:") || model.startsWith("ollama-")) {
 		return { inputPerMTok: 0, outputPerMTok: 0 };
 	}
 
-	// 4. Default to Sonnet pricing
+	// 4. Venice wildcard — default pricing for unknown Venice models
+	if (model.startsWith("venice:")) {
+		return { inputPerMTok: 0.5, outputPerMTok: 0.5 };
+	}
+
+	// 5. Default to Sonnet pricing
 	return { inputPerMTok: 3, outputPerMTok: 15 };
 }
 
