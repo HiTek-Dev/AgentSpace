@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 13 — Rebrand to tek
+**Current focus:** Phase 14 — CLI & Setup Polish
 
 ## Current Position
 
-Phase: 13 of 13 (Rebrand to tek)
-Plan: 2 of 2 in current phase
-Status: Phase 13 complete -- all plans executed
-Last activity: 2026-02-18 - Completed quick task 3: Model selection with aliases + /swap command
+Phase: 14 of 14 (CLI & Setup Polish)
+Plan: 1 of 2 in current phase
+Status: Plan 14-01 complete -- gateway subcommand and uninstall command
+Last activity: 2026-02-18 - Completed 14-01: Gateway subcommand & uninstall
 
-Progress: [████████████████████████████████████████] 100%
+Progress: [████████████████████████████████████████] 97%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 33
+- Total plans completed: 34
 - Average duration: 3min
 - Total execution time: 1.25 hours
 
@@ -40,6 +40,7 @@ Progress: [███████████████████████
 | 11 | 3/3 | 7min | 2min |
 | 12 | 2/2 | 6min | 3min |
 | 13 | 2/2 | 8min | 4min |
+| 14 | 1/2 | 2min | 2min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -50,6 +51,7 @@ Progress: [███████████████████████
 | Phase 12 P02 | 3min | 2 tasks | 5 files |
 | Phase 13 P01 | 2min | 2 tasks | 68 files |
 | Phase 13 P02 | 6min | 2 tasks | 23 files |
+| Phase 14 P01 | 2min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -205,6 +207,9 @@ Recent decisions affecting current work:
 - [Phase 13]: [13-02]: Keychain migration runs once on first keychainGet() call using module-level flag
 - [Phase 13]: [13-02]: Config dir migration runs at CLI startup before configExists() check
 - [Phase 13]: [13-02]: SERVICE_NAME typed as string (not literal) to allow comparison with old service name
+- [Phase 14]: [14-01]: Derive install dir at runtime via realpathSync(process.argv[1]) with ~/tek fallback
+- [Phase 14]: [14-01]: Uninstall uses readline createInterface for UNINSTALL confirmation prompt
+- [Phase 14]: [14-01]: Uninstall prints PATH removal instructions rather than editing shell profile
 
 ### Roadmap Evolution
 
@@ -234,5 +239,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed quick task 2 (update install docs with new tek naming)
+Stopped at: Completed 14-01-PLAN.md (gateway subcommand & uninstall)
 Resume file: None

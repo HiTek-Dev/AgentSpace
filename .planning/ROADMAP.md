@@ -221,7 +221,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 11. Install & Update System | 0/3 | Complete    | 2026-02-17 |
 | 12. Expanded Providers | 2/2 | Complete    | 2026-02-18 |
 | 13. Rebrand to tek | 2/2 | Complete    | 2026-02-18 |
-| 14. CLI & Setup Polish | 0/2 | Not started | - |
+| 14. CLI & Setup Polish | 1/2 | In Progress|  |
 
 ### Phase 11: Install & Update System
 
@@ -285,7 +285,7 @@ Plans:
   3. Model selection during setup shows all available text models per provider with recommended models marked
   4. Venice model list includes all text-capable models from their API
   5. `tek uninstall` removes all traces (files, config, db, keychain, PATH) and confirms before acting
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 14-01-PLAN.md — Gateway subcommand group (start/stop/status), uninstall command, script updates
