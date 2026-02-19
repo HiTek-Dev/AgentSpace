@@ -8,9 +8,13 @@ export {
 	ToolApprovalConfigSchema,
 	OllamaEndpointSchema,
 	ModelAliasSchema,
+	AgentDefinitionSchema,
+	AgentsConfigSchema,
 } from "./schema.js";
 export type {
 	AppConfig,
+	AgentDefinition,
+	AgentsConfig,
 	ModelAlias,
 	MCPServerConfig,
 	ToolApprovalConfig,

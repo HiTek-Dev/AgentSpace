@@ -41,6 +41,18 @@ export const ModelAliasSchema = z.object({
 	modelId: z.string(),
 });
 
+export const AgentDefinitionSchema = z.object({
+	id: z.string(),
+	name: z.string().optional(),
+	model: z.string().optional(),
+	description: z.string().optional(),
+});
+
+export const AgentsConfigSchema = z.object({
+	list: z.array(AgentDefinitionSchema).default([]),
+	defaultAgentId: z.string().default("default"),
+});
+
 export const AppConfigSchema = z.object({
 	securityMode: SecurityModeSchema,
 	workspaceDir: z.string().optional(),
@@ -55,9 +67,12 @@ export const AppConfigSchema = z.object({
 	modelAliases: z.array(ModelAliasSchema).optional(),
 	agentName: z.string().optional(),
 	userDisplayName: z.string().optional(),
+	agents: AgentsConfigSchema.optional(),
 });
 
 export type AppConfig = z.infer<typeof AppConfigSchema>;
+export type AgentDefinition = z.infer<typeof AgentDefinitionSchema>;
+export type AgentsConfig = z.infer<typeof AgentsConfigSchema>;
 export type ModelAlias = z.infer<typeof ModelAliasSchema>;
 export type MCPServerConfig = z.infer<typeof MCPServerConfigSchema>;
 export type ToolApprovalConfig = z.infer<typeof ToolApprovalConfigSchema>;
