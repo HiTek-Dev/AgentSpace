@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 16 of 18 (Agent Personality System)
-Plan: 3 of 5 in current phase
-Status: Executing phase 16
-Last activity: 2026-02-19 - Completed 16-03: Migration + context assembly
+Plan: 5 of 5 in current phase
+Status: Phase 16 complete
+Last activity: 2026-02-19 - Completed 16-05: Agent-aware identity wiring
 
-Progress: [████████████████████████░░░░░░░░░░░░░░░░] 60%
+Progress: [████████████████████████████████████████] 100%
 
 ## Performance Metrics
 
@@ -60,6 +60,8 @@ Progress: [███████████████████████
 | Phase 16 P01 | 2min | 2 tasks | 7 files |
 | Phase 16 P02 | 1min | 2 tasks | 4 files |
 | Phase 16 P03 | 2min | 2 tasks | 5 files |
+| Phase 16 P04 | 3min | 2 tasks | 5 files |
+| Phase 16 P05 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -234,6 +236,7 @@ Recent decisions affecting current work:
 - [Phase 16]: [16-02]: Default agent (undefined or 'default') uses global memory directory for backward compatibility
 - [Phase 16]: [16-03]: Migration conservative: only extracts Communication Style to STYLE.md, does not rewrite SOUL.md
 - [Phase 16]: [16-03]: Token budget threshold at 3000 tokens for combined soul+identity+style with warn-only logging
+- [Phase 16]: [16-05]: loadUser/loadAgentsConfig remain global-only; AGENTS.md conditional on agents.list > 1; migration runs once per process via module flag
 
 ### Roadmap Evolution
 
@@ -275,5 +278,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 16-03-PLAN.md
+Stopped at: Completed 16-05-PLAN.md (Phase 16 complete)
 Resume file: None
