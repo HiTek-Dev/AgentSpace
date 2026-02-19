@@ -271,6 +271,8 @@ Recent decisions affecting current work:
 - [Phase 19]: [19-05]: process.emit override to suppress punycode DeprecationWarning for Node.js v24 grammY compatibility
 - [Phase 19]: [19-05]: Dynamic import of @tek/telegram in gateway for conditional auto-start when token configured
 - [Phase 19]: [19-03]: Default agent maps to ~/.config/tek/memory/ for backward compat; three-view state machine for AgentsPage; agent IDs from lowercase hyphenated names
+- [Phase 19]: [19-04]: Inline SVG icons via Record<string, ReactNode> instead of icon library (zero new dependencies)
+- [Phase 19]: [19-04]: Role labels and colored left borders for chat message user/assistant distinction
 
 ### Roadmap Evolution
 
