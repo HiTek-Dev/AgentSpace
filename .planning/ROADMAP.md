@@ -322,12 +322,18 @@ Plans:
 
 ### Phase 17: Desktop Frontend (Tauri)
 
-**Goal:** [To be planned]
+**Goal:** Users have a native macOS desktop GUI that manages gateway lifecycle (start/stop/status), provides a chat interface connected via WebSocket, allows editing agent identity files, and displays/edits configuration -- all in a Tauri v2 + React app
 **Depends on:** Phase 16
-**Plans:** 0 plans
+**Requirements**: DESK-01, DESK-02, DESK-03, DESK-04, DESK-05
+**Plans:** 6 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 17 to break down)
+- [ ] 17-01-PLAN.md — Scaffold Tauri v2 app with React + Vite frontend, Rust plugins, navigation shell
+- [ ] 17-02-PLAN.md — Gateway discovery, lifecycle management (start/stop), Dashboard page
+- [ ] 17-03-PLAN.md — Chat interface with WebSocket connection, streaming, message history
+- [ ] 17-04-PLAN.md — Agent identity file viewer/editor (SOUL.md, IDENTITY.md, USER.md, STYLE.md)
+- [ ] 17-05-PLAN.md — Settings and configuration management page
+- [ ] 17-06-PLAN.md — Human verification of complete desktop application
 
 ### Phase 18: Onboarding Research
 
