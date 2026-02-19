@@ -56,47 +56,35 @@ DMG_NAME=$(basename "$DMG_FILE")
 # 4. Upload artifacts
 UPLOAD_BASE="$BUNNY_STORAGE_URL/$BUNNYCDN_STORAGE_ZONE/$BUNNY_UPLOAD_BASE_PATH"
 
-echo "Uploading version.json..."
-curl --fail -X PUT \
-  -H "AccessKey: $BUNNYCDN_API_KEY" \
-  -H "Content-Type: application/octet-stream" \
-  --data-binary @"$DIST_DIR/version.json" \
-  "$UPLOAD_BASE/version.json"
-echo " OK"
+upload_file() {
+  local file="$1"
+  local name="$2"
+  local size
+  size=$(du -h "$file" | cut -f1)
+  echo -n "Uploading $name ($size)..."
+  HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --fail -X PUT \
+    -H "AccessKey: $BUNNYCDN_API_KEY" \
+    -H "Content-Type: application/octet-stream" \
+    --data-binary @"$file" \
+    "$UPLOAD_BASE/$name")
+  echo " $HTTP_CODE OK"
+}
 
-echo "Uploading tek-backend-arm64.tar.gz..."
-curl --fail -X PUT \
-  -H "AccessKey: $BUNNYCDN_API_KEY" \
-  -H "Content-Type: application/octet-stream" \
-  --data-binary @"$DIST_DIR/tek-backend-arm64.tar.gz" \
-  "$UPLOAD_BASE/tek-backend-arm64.tar.gz"
-echo " OK"
+upload_file "$DIST_DIR/version.json" "version.json"
+upload_file "$DIST_DIR/tek-backend-arm64.tar.gz" "tek-backend-arm64.tar.gz"
+upload_file "$DMG_FILE" "$DMG_NAME"
+upload_file "$SOURCE_DIR/scripts/remote-install.sh" "install.sh"
 
-echo "Uploading $DMG_NAME..."
-curl --fail -X PUT \
-  -H "AccessKey: $BUNNYCDN_API_KEY" \
-  -H "Content-Type: application/octet-stream" \
-  --data-binary @"$DMG_FILE" \
-  "$UPLOAD_BASE/$DMG_NAME"
-echo " OK"
-
-# 5. Upload remote installer script
-echo "Uploading install.sh..."
-curl --fail -X PUT \
-  -H "AccessKey: $BUNNYCDN_API_KEY" \
-  -H "Content-Type: application/octet-stream" \
-  --data-binary @"$SOURCE_DIR/scripts/remote-install.sh" \
-  "$UPLOAD_BASE/install.sh"
-echo " OK"
-
-# 6. Print success
+# 5. Print success
 PULL_ZONE="${BUNNY_PULL_ZONE_URL:-https://tekpartner.b-cdn.net}"
 echo ""
-echo "Artifacts uploaded to CDN:"
+echo "Upload complete!"
+echo ""
+echo "CDN URLs:"
 echo "  $PULL_ZONE/$BUNNY_UPLOAD_BASE_PATH/version.json"
 echo "  $PULL_ZONE/$BUNNY_UPLOAD_BASE_PATH/tek-backend-arm64.tar.gz"
 echo "  $PULL_ZONE/$BUNNY_UPLOAD_BASE_PATH/$DMG_NAME"
 echo "  $PULL_ZONE/$BUNNY_UPLOAD_BASE_PATH/install.sh"
 echo ""
-echo "Install command:"
+echo "Install command for users:"
 echo "  curl -fsSL $PULL_ZONE/$BUNNY_UPLOAD_BASE_PATH/install.sh | bash"

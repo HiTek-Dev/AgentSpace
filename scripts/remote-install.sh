@@ -4,11 +4,15 @@ set -euo pipefail
 # Tek Remote Installer
 # Downloads pre-built artifacts from CDN and installs on ARM64 Mac.
 # Usage: curl -fsSL https://tekpartner.b-cdn.net/tek/dist/install.sh | bash
+#   or:  curl -fsSL https://tekpartner.b-cdn.net/tek/dist/install.sh | bash -s -- /custom/path
 
 CDN_BASE="https://tekpartner.b-cdn.net/tek/dist"
 
-echo "Tek Installer"
-echo "============="
+echo ""
+echo "  ╔════════════════════════════════════════╗"
+echo "  ║          Tek Installer                 ║"
+echo "  ║  AI Agent Gateway Platform             ║"
+echo "  ╚════════════════════════════════════════╝"
 echo ""
 
 # 1. Platform check
@@ -22,97 +26,224 @@ if [ "$ARCH" != "arm64" ]; then
   echo "Error: Tek currently supports Apple Silicon (ARM64) only. Detected: $ARCH"
   exit 1
 fi
+echo "  Platform: macOS ARM64 ✓"
 
 # 2. Check Node.js >= 22
 if ! command -v node &>/dev/null; then
+  echo ""
   echo "Error: Node.js is not installed."
   echo "Install Node.js 22 or later: https://nodejs.org/"
+  echo ""
+  echo "Quick install with Homebrew:"
+  echo "  brew install node@22"
   exit 1
 fi
-node -e "if(parseInt(process.version.slice(1))<22){console.error('Error: Node.js 22+ required, found '+process.version);process.exit(1)}"
-echo "Node.js $(node -v) OK"
+NODE_MAJOR=$(node -e "console.log(parseInt(process.version.slice(1)))")
+if [ "$NODE_MAJOR" -lt 22 ]; then
+  echo ""
+  echo "Error: Node.js 22+ required, found $(node -v)"
+  echo "Upgrade: brew install node@22"
+  exit 1
+fi
+echo "  Node.js:  $(node -v) ✓"
 
-# 3. Ask for install directory
-if [ -t 0 ]; then
-  printf "Install directory [%s/tek]: " "$HOME"
+# 3. Determine install directory
+# Accept path as argument, prompt interactively, or use default
+if [ $# -gt 0 ]; then
+  INSTALL_DIR="$1"
+elif [ -t 0 ]; then
+  printf "\n  Install directory [%s/tek]: " "$HOME"
   read -r INSTALL_DIR
   INSTALL_DIR="${INSTALL_DIR:-$HOME/tek}"
 else
   INSTALL_DIR="$HOME/tek"
 fi
 
+# Expand ~ if user typed it
+INSTALL_DIR="${INSTALL_DIR/#\~/$HOME}"
+
+CONFIG_DIR="$HOME/.config/tek"
+
 echo ""
-echo "Installing to: $INSTALL_DIR"
+echo "  Install to: $INSTALL_DIR"
+echo "  Config at:  $CONFIG_DIR"
 
-# 4. Create temp dir with cleanup trap
-TMPDIR=$(mktemp -d)
-trap 'rm -rf "$TMPDIR"' EXIT
+# 4. Check for existing install
+if [ -d "$INSTALL_DIR" ] && [ -f "$INSTALL_DIR/.version" ]; then
+  EXISTING_VER=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$INSTALL_DIR/.version','utf-8')).version)" 2>/dev/null || echo "unknown")
+  echo ""
+  echo "  ⚠  Existing installation found (v$EXISTING_VER)"
+  echo "     This will overwrite the backend files."
+  echo "     Config and data in ~/.config/tek/ will be preserved."
+  if [ -t 0 ]; then
+    printf "\n  Continue? [Y/n]: "
+    read -r CONFIRM
+    CONFIRM="${CONFIRM:-Y}"
+    if [[ ! "$CONFIRM" =~ ^[Yy] ]]; then
+      echo "  Cancelled."
+      exit 0
+    fi
+  fi
+fi
 
-# 5. Download artifacts
+# 5. Create temp dir with cleanup trap
+TMPDIR_INSTALL=$(mktemp -d)
+trap 'rm -rf "$TMPDIR_INSTALL"' EXIT
+
+# 6. Download version info
 echo ""
-echo "Downloading version info..."
-curl -fsSL "$CDN_BASE/version.json" -o "$TMPDIR/version.json"
-VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$TMPDIR/version.json','utf-8')).version)")
-echo "Installing Tek v$VERSION..."
+echo "  Downloading version info..."
+curl -fsSL "$CDN_BASE/version.json" -o "$TMPDIR_INSTALL/version.json"
+VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$TMPDIR_INSTALL/version.json','utf-8')).version)")
+COMMIT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$TMPDIR_INSTALL/version.json','utf-8')).commit)")
+DMG_NAME=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$TMPDIR_INSTALL/version.json','utf-8')).dmgFilename)")
+echo "  Installing Tek v$VERSION (${COMMIT})..."
 
-echo "Downloading backend packages..."
-curl -fSL --progress-bar "$CDN_BASE/tek-backend-arm64.tar.gz" -o "$TMPDIR/tek-backend-arm64.tar.gz"
-
-echo "Downloading desktop app..."
-curl -fSL --progress-bar "$CDN_BASE/Tek_0.1.0_aarch64.dmg" -o "$TMPDIR/Tek.dmg"
-
-# 6. Extract backend
+# 7. Download backend
 echo ""
-echo "Extracting backend..."
+echo "  Downloading backend packages..."
+curl -fSL --progress-bar "$CDN_BASE/tek-backend-arm64.tar.gz" -o "$TMPDIR_INSTALL/tek-backend-arm64.tar.gz"
+
+# 8. Download desktop app DMG
+echo "  Downloading desktop app..."
+curl -fSL --progress-bar "$CDN_BASE/$DMG_NAME" -o "$TMPDIR_INSTALL/Tek.dmg"
+
+# 9. Stop gateway if running (existing install)
+if [ -f "$CONFIG_DIR/runtime.json" ]; then
+  GW_PID=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$CONFIG_DIR/runtime.json','utf-8')).pid)" 2>/dev/null || echo "")
+  if [ -n "$GW_PID" ] && kill -0 "$GW_PID" 2>/dev/null; then
+    echo ""
+    echo "  Stopping running gateway (PID $GW_PID)..."
+    kill "$GW_PID" 2>/dev/null || true
+    sleep 2
+  fi
+  rm -f "$CONFIG_DIR/runtime.json"
+fi
+
+# 10. Extract backend
+echo ""
+echo "  Extracting backend..."
 mkdir -p "$INSTALL_DIR"
-tar -xzf "$TMPDIR/tek-backend-arm64.tar.gz" -C "$INSTALL_DIR"
+tar -xzf "$TMPDIR_INSTALL/tek-backend-arm64.tar.gz" -C "$INSTALL_DIR"
 
-# 7. Create bin symlink
+# 11. Create bin symlink
 mkdir -p "$INSTALL_DIR/bin"
 ln -sf "../packages/cli/dist/index.js" "$INSTALL_DIR/bin/tek"
 chmod +x "$INSTALL_DIR/packages/cli/dist/index.js"
 
-# 8. Seed memory files
-CONFIG_DIR="$HOME/.config/tek"
+# 12. Seed memory files (first install only)
 mkdir -p "$CONFIG_DIR/memory/daily"
-if [ ! -f "$CONFIG_DIR/memory/SOUL.md" ]; then
+if [ ! -f "$CONFIG_DIR/memory/SOUL.md" ] && [ -d "$INSTALL_DIR/memory-files" ]; then
   cp "$INSTALL_DIR/memory-files/SOUL.md" "$CONFIG_DIR/memory/"
   cp "$INSTALL_DIR/memory-files/MEMORY.md" "$CONFIG_DIR/memory/"
-  echo "Seeded default personality and memory files."
+  echo "  Seeded default personality and memory files."
 fi
 
-# 9. Write .version file
-COMMIT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$TMPDIR/version.json','utf-8')).commit)")
+# 13. Write .version file
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# Preserve installedAt from existing install
+if [ -f "$INSTALL_DIR/.version" ]; then
+  INSTALLED_AT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$INSTALL_DIR/.version','utf-8')).installedAt)" 2>/dev/null || echo "$NOW")
+else
+  INSTALLED_AT="$NOW"
+fi
 
 cat > "$INSTALL_DIR/.version" <<VEOF
 {
   "version": "$VERSION",
   "sourceCommit": "$COMMIT",
-  "installedAt": "$NOW",
+  "installedAt": "$INSTALLED_AT",
   "updatedAt": "$NOW",
   "nodeVersion": "$(node -v)"
 }
 VEOF
 
-# 10. Install DMG
+# 14. Install desktop app
 echo ""
-echo "Installing Tek desktop app..."
-MOUNT_POINT=$(hdiutil attach "$TMPDIR/Tek.dmg" -nobrowse -quiet | grep "/Volumes" | sed 's/.*\(\/Volumes\/.*\)/\1/')
-if [ -z "$MOUNT_POINT" ]; then
-  echo "Warning: Could not mount DMG. You can install the desktop app manually from $TMPDIR/Tek.dmg"
-else
-  cp -R "$MOUNT_POINT/Tek.app" /Applications/
-  hdiutil detach "$MOUNT_POINT" -quiet 2>/dev/null || true
-  echo "Tek.app installed to /Applications/"
+echo "  Installing Tek desktop app..."
+MOUNT_POINT=""
+if hdiutil attach "$TMPDIR_INSTALL/Tek.dmg" -nobrowse -quiet -mountpoint "/Volumes/Tek-Install" 2>/dev/null; then
+  MOUNT_POINT="/Volumes/Tek-Install"
 fi
 
-# 11. Print success
+if [ -z "$MOUNT_POINT" ]; then
+  # Fallback: find mount point from hdiutil output
+  MOUNT_POINT=$(hdiutil attach "$TMPDIR_INSTALL/Tek.dmg" -nobrowse 2>/dev/null | grep "/Volumes" | sed 's/.*\(\/Volumes\/.*\)/\1/' | xargs)
+fi
+
+if [ -n "$MOUNT_POINT" ] && [ -d "$MOUNT_POINT" ]; then
+  # Remove existing app first for clean install
+  if [ -d "/Applications/Tek.app" ]; then
+    rm -rf "/Applications/Tek.app"
+  fi
+  cp -R "$MOUNT_POINT/Tek.app" /Applications/
+  hdiutil detach "$MOUNT_POINT" -quiet 2>/dev/null || true
+  echo "  Tek.app installed to /Applications/ ✓"
+else
+  echo "  ⚠  Could not mount DMG automatically."
+  echo "     The DMG is at: $TMPDIR_INSTALL/Tek.dmg"
+  echo "     Open it manually to drag Tek.app to Applications."
+  # Keep temp dir alive so user can access the DMG
+  trap '' EXIT
+fi
+
+# 15. Set up PATH
 echo ""
-echo "Tek v$VERSION installed successfully!"
+PATH_LINE="export PATH=\"$INSTALL_DIR/bin:\$PATH\""
+SHELL_RC="$HOME/.zshrc"
+PATH_ALREADY_SET=false
+
+if grep -q "$INSTALL_DIR/bin" "$SHELL_RC" 2>/dev/null; then
+  PATH_ALREADY_SET=true
+fi
+
+if [ "$PATH_ALREADY_SET" = false ]; then
+  if [ -t 0 ]; then
+    printf "  Add tek to PATH automatically? [Y/n]: "
+    read -r ADD_PATH
+    ADD_PATH="${ADD_PATH:-Y}"
+    if [[ "$ADD_PATH" =~ ^[Yy] ]]; then
+      echo "" >> "$SHELL_RC"
+      echo "# Tek AI Agent Gateway" >> "$SHELL_RC"
+      echo "$PATH_LINE" >> "$SHELL_RC"
+      echo "  Added to $SHELL_RC ✓"
+      export PATH="$INSTALL_DIR/bin:$PATH"
+    else
+      echo "  Skipped. Add this to $SHELL_RC manually:"
+      echo "    $PATH_LINE"
+    fi
+  else
+    # Non-interactive: just print instructions
+    echo "  Add this to your ~/.zshrc:"
+    echo "    $PATH_LINE"
+  fi
+else
+  echo "  PATH already configured ✓"
+  export PATH="$INSTALL_DIR/bin:$PATH"
+fi
+
+# 16. Success!
 echo ""
-echo "Add to PATH (add to ~/.zshrc):"
-echo "  export PATH=\"$INSTALL_DIR/bin:\$PATH\""
+echo "  ╔════════════════════════════════════════╗"
+echo "  ║  Tek v$VERSION installed! ✓              "
+echo "  ╚════════════════════════════════════════╝"
 echo ""
-echo "Then run:"
-echo "  tek init"
+echo "  Next steps:"
+echo ""
+echo "  1. Open a new terminal (or run: source ~/.zshrc)"
+echo ""
+echo "  2. Run the setup wizard:"
+echo "     tek init"
+echo ""
+echo "  3. Start the gateway:"
+echo "     tek gateway start"
+echo ""
+echo "  4. Start chatting:"
+echo "     tek chat"
+echo ""
+echo "  5. Open the desktop app:"
+echo "     Open Tek from /Applications or Spotlight"
+echo ""
+echo "  Uninstall anytime with: tek uninstall"
+echo ""

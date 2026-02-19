@@ -77,7 +77,7 @@ for pkg in core db cli gateway telegram; do
   fi
 done
 
-# Copy memory template files
+# Copy memory template files (so remote installer can seed them)
 mkdir -p "$SOURCE_DIR/dist/staging/memory-files"
 cp "$SOURCE_DIR/packages/db/memory-files/"*.md "$SOURCE_DIR/dist/staging/memory-files/"
 
@@ -95,7 +95,7 @@ fi
 DMG_NAME=$(basename "$DMG_FILE")
 cp "$DMG_FILE" "$SOURCE_DIR/dist/$DMG_NAME"
 
-# 7. Create version.json
+# 7. Create version.json (includes DMG filename for remote installer)
 VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$SOURCE_DIR/package.json','utf-8')).version || '0.0.0')")
 COMMIT=$(cd "$SOURCE_DIR" && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -106,7 +106,9 @@ cat > "$SOURCE_DIR/dist/version.json" <<VEOF
   "commit": "$COMMIT",
   "date": "$NOW",
   "arch": "aarch64",
-  "platform": "darwin"
+  "platform": "darwin",
+  "dmgFilename": "$DMG_NAME",
+  "backendFilename": "tek-backend-arm64.tar.gz"
 }
 VEOF
 
@@ -124,3 +126,5 @@ rm -rf "$SOURCE_DIR/dist/staging"
 
 echo ""
 echo "Done! Artifacts in $SOURCE_DIR/dist/"
+echo ""
+echo "Next: scripts/upload-cdn.sh"

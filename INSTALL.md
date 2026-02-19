@@ -2,66 +2,62 @@
 
 ## Prerequisites
 
+- **macOS** with Apple Silicon (M1/M2/M3/M4)
 - **Node.js >= 22** (`node -v` to check)
-- **pnpm 9.x** (`npm install -g pnpm`)
-- **Git** (for cloning the source repo)
 - **API key** for at least one LLM provider (Anthropic recommended)
 
-## 1. Fresh Install
+## 1. Quick Install (Recommended)
 
-### Clone the source repo
+One command to download and install everything:
+
+```bash
+curl -fsSL https://tekpartner.b-cdn.net/tek/dist/install.sh | bash
+```
+
+This will:
+
+1. Check you're on an ARM64 Mac with Node.js 22+
+2. Ask where to install (default: `~/tek`)
+3. Download pre-built backend packages and desktop app
+4. Extract backend, create `bin/tek` symlink
+5. Install Tek.app to `/Applications`
+6. Seed default personality and memory files
+7. Offer to add `tek` to your PATH automatically
+
+After install, follow the on-screen instructions:
+
+```bash
+# Open a new terminal, then:
+tek init          # Setup wizard (API keys, model selection, security mode)
+tek gateway start # Start the gateway server
+tek chat          # Start chatting
+```
+
+Open the **Tek desktop app** from `/Applications` or Spotlight for the GUI experience.
+
+### Custom install directory
+
+```bash
+curl -fsSL https://tekpartner.b-cdn.net/tek/dist/install.sh | bash -s -- /custom/path
+```
+
+## 2. Install from Source (Development)
+
+For contributing or building from source:
 
 ```bash
 git clone https://github.com/HiTek-Dev/tek.git
 cd tek
-```
-
-### Run the install script
-
-```bash
+pnpm install
 scripts/install.sh ~/tek
 ```
 
-This builds from source and deploys to `~/tek`. You can specify any directory.
-
-**What the script does:**
-
-1. Checks Node.js >= 22 and pnpm are available
-2. Runs `pnpm install` in the source repo
-3. Builds all 5 packages with a two-pass strategy (gateway pass 1 -> cli -> gateway pass 2) to resolve the cli<->gateway cyclic dependency
-4. Creates the install directory and rsyncs built artifacts (no source files, no dev configs)
-5. Copies root node_modules and per-package node_modules (native modules like better-sqlite3 work at the target)
-6. Migrates config from `~/.config/agentspace/` to `~/.config/tek/` if upgrading from a previous version
-7. Seeds default personality (`SOUL.md`) and memory (`MEMORY.md`) to `~/.config/tek/memory/` if not already present
-8. Creates a `bin/tek` symlink
-9. Writes a `.version` file with commit hash and timestamps
-
 ### Add to your PATH
-
-Add the following line to your shell profile so the `tek` command is available in every new terminal:
-
-**For zsh (default on macOS):**
 
 ```bash
 echo 'export PATH="$HOME/tek/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
-
-**For bash:**
-
-```bash
-echo 'export PATH="$HOME/tek/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-To verify it worked, open a **new** terminal and run:
-
-```bash
-which tek
-# Should output: /Users/<you>/tek/bin/tek
-```
-
-If you installed to a custom directory, replace `$HOME/tek` with your install path.
 
 ### Run onboarding
 
@@ -93,13 +89,20 @@ Use `tek gateway stop` to shut it down, or `tek gateway status` to check if it's
 ### Start chatting
 
 ```bash
-# Terminal 2:
 tek chat
 ```
 
-## 2. Updating
+## 3. Updating
 
-When you've pulled new changes to the source repo:
+### From CDN (recommended)
+
+Re-run the same install command. It detects the existing install, preserves your config/data, and updates the backend + desktop app:
+
+```bash
+curl -fsSL https://tekpartner.b-cdn.net/tek/dist/install.sh | bash
+```
+
+### From source
 
 ```bash
 cd tek
@@ -107,81 +110,58 @@ git pull
 scripts/update.sh ~/tek
 ```
 
-**What the script does:**
-
-1. Checks the install directory exists (errors if not -- run install.sh first)
-2. Stops the gateway if it's running (reads PID from `~/.config/tek/runtime.json`)
-3. Runs `pnpm install` and rebuilds all packages from source
-4. Rsyncs updated built artifacts to the install directory
-5. Syncs node_modules (picks up new/updated dependencies)
-6. Updates `.version` file (preserves original `installedAt` date, updates `updatedAt`)
-
-**What it does NOT touch:**
+**What updates preserve:**
 
 - `~/.config/tek/config.json` (your settings)
 - `~/.config/tek/tek.db` (your conversations, threads, memories)
 - `~/.config/tek/memory/` (SOUL.md, MEMORY.md, daily logs)
 - macOS Keychain entries (API keys)
 
-After updating, restart the gateway:
+## 4. Fresh Start (Reset)
 
-```bash
-tek gateway start
-```
-
-## 3. Fresh Start (Reset)
-
-To wipe all user data and start from scratch:
+To wipe all user data and start from scratch (keeps the installed code):
 
 ```bash
 scripts/reset.sh
 ```
 
-**What it does:**
+Requires you to type `RESET` to confirm. Then run `tek init` again.
 
-1. Shows a warning listing everything that will be deleted
-2. Requires you to type `RESET` to confirm (any other input cancels)
-3. Stops the gateway if running
-4. Removes the entire `~/.config/tek/` directory
-
-**What it does NOT remove:**
-
-- The installed code (`~/tek/` stays intact)
-- API keys in macOS Keychain (remove manually with `tek keys remove <provider>`)
-
-After resetting, run onboarding again: `tek init`
-
-## 4. Uninstalling
-
-The recommended way to uninstall is with the built-in command:
+## 5. Uninstalling
 
 ```bash
 tek uninstall
 ```
 
-This removes:
+This removes **everything**:
 
-- The install directory (`~/tek` or wherever you installed)
-- The config/data directory (`~/.config/tek/`)
-- API keys from macOS Keychain (service: `tek`)
-- The launchd plist, if present (stops daemon mode)
+- Install directory (`~/tek` or wherever you installed)
+- Config/data directory (`~/.config/tek/`)
+- API keys from macOS Keychain
+- Desktop app (`/Applications/Tek.app`)
+- Launchd plist, if present
+- PATH entry from `~/.zshrc`
 
-You will be asked to type `UNINSTALL` to confirm. The command does not edit your shell profile, so remember to remove the PATH entry manually (see below).
+Type `UNINSTALL` to confirm.
 
 ### Manual uninstall
 
-If the CLI is already deleted or broken, you can uninstall manually:
+If the CLI is already deleted or broken:
 
-1. Delete the install directory: `rm -rf ~/tek` (or wherever you installed)
-2. Delete config/data: `rm -rf ~/.config/tek`
-3. Remove API keys from Keychain: use Keychain Access.app to find and delete entries with service "tek"
-4. Remove from PATH: edit `~/.zshrc` or `~/.bashrc` and delete the line containing `tek/bin`
+```bash
+rm -rf ~/tek                    # Install directory
+rm -rf ~/.config/tek            # Config and data
+rm -rf /Applications/Tek.app    # Desktop app
+# Edit ~/.zshrc and remove the line containing tek/bin
+# Open Keychain Access.app and delete entries with service "tek"
+```
 
 ## File Locations
 
 | What             | Where                                                  |
 | ---------------- | ------------------------------------------------------ |
 | Installed code   | `~/tek/` (or your chosen directory)                    |
+| Desktop app      | `/Applications/Tek.app`                                |
 | Config file      | `~/.config/tek/config.json`                            |
 | SQLite database  | `~/.config/tek/tek.db`                                 |
 | Personality      | `~/.config/tek/memory/SOUL.md`                         |
@@ -220,3 +200,18 @@ Check that the update script ran successfully. Look for errors in the build outp
 
 **Memory files not found:**
 On first run after the Phase 11 update, memory files auto-migrate from the old location (inside the package tree) to `~/.config/tek/memory/`. If you see a migration notice on stderr, this is expected and only happens once.
+
+## Distribution (Developers)
+
+Build and upload new releases:
+
+```bash
+# Build all artifacts (backend tarball + Tauri DMG)
+scripts/dist.sh
+
+# Upload to CDN
+scripts/upload-cdn.sh
+
+# Users can then install/update with:
+# curl -fsSL https://tekpartner.b-cdn.net/tek/dist/install.sh | bash
+```

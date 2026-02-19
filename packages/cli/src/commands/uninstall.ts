@@ -25,6 +25,7 @@ const KEYCHAIN_ACCOUNTS = [
 	"api-key:ollama",
 	"api-key:venice",
 	"api-key:google",
+	"api-key:telegram",
 	"api-endpoint-token",
 ];
 
@@ -49,6 +50,9 @@ export const uninstallCommand = new Command("uninstall")
 		console.log(`  - Keychain entries:  ${chalk.dim("All provider API keys + auth token")}`);
 		if (existsSync(launchdPlist)) {
 			console.log(`  - Launchd plist:     ${chalk.dim(launchdPlist)}`);
+		}
+		if (existsSync("/Applications/Tek.app")) {
+			console.log(`  - Desktop app:       ${chalk.dim("/Applications/Tek.app")}`);
 		}
 		console.log();
 
@@ -125,20 +129,46 @@ export const uninstallCommand = new Command("uninstall")
 			console.log("Removed config directory.");
 		}
 
-		// 5. Remove install directory
+		// 5. Remove desktop app
+		if (existsSync("/Applications/Tek.app")) {
+			rmSync("/Applications/Tek.app", { recursive: true, force: true });
+			console.log("Removed desktop app.");
+		}
+
+		// 6. Remove install directory
 		if (existsSync(installDir)) {
 			rmSync(installDir, { recursive: true, force: true });
 			console.log("Removed install directory.");
 		}
 
-		// 6. PATH removal instructions
+		// 7. Try to remove PATH from .zshrc
+		const zshrc = join(homedir(), ".zshrc");
+		if (existsSync(zshrc)) {
+			try {
+				const { readFileSync, writeFileSync } = await import("node:fs");
+				const content = readFileSync(zshrc, "utf-8");
+				const filtered = content
+					.split("\n")
+					.filter(
+						(line) =>
+							!line.includes(`${installDir}/bin`) &&
+							line.trim() !== "# Tek AI Agent Gateway",
+					)
+					.join("\n");
+				if (filtered !== content) {
+					writeFileSync(zshrc, filtered);
+					console.log("Removed PATH entry from ~/.zshrc.");
+				}
+			} catch {
+				console.log(
+					"Remove this line from your shell profile (~/.zshrc or ~/.bashrc):",
+				);
+				console.log(
+					chalk.cyan(`  export PATH="${installDir}/bin:$PATH"`),
+				);
+			}
+		}
+
 		console.log();
-		console.log(
-			"Remove this line from your shell profile (~/.zshrc or ~/.bashrc):",
-		);
-		console.log(
-			chalk.cyan(`  export PATH="${installDir}/bin:$PATH"`),
-		);
-		console.log();
-		console.log(chalk.green("Tek uninstalled."));
+		console.log(chalk.green("Tek uninstalled completely."));
 	});
