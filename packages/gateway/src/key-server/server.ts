@@ -94,14 +94,23 @@ export async function createServer(opts?: { port?: number }): Promise<{
 			}
 		};
 
-		process.on("SIGTERM", () => {
+		const shutdown = async (signal: string) => {
+			logger.info(`Received ${signal}, shutting down gracefully`);
+			try {
+				await server.close();
+			} catch {
+				// Server close may fail if already closed
+			}
 			cleanup();
 			process.exit(0);
+		};
+
+		process.on("SIGTERM", () => {
+			shutdown("SIGTERM");
 		});
 
 		process.on("SIGINT", () => {
-			cleanup();
-			process.exit(0);
+			shutdown("SIGINT");
 		});
 
 		return server;
