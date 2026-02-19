@@ -223,7 +223,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 13. Rebrand to tek | 2/2 | Complete    | 2026-02-18 |
 | 14. CLI & Setup Polish | 2/2 | Complete    | 2026-02-18 |
 | 15. Init & Onboarding Polish | 3/3 | Complete    | 2026-02-19 |
-| 16. Agent Personality System | 5/5 | Complete   | 2026-02-19 |
+| 16. Agent Personality System | 5/5 | Complete    | 2026-02-19 |
 | 17. Desktop Frontend (Tauri) | 0/0 | Not started | - |
 | 18. Onboarding Research | 1/1 | Complete    | 2026-02-19 |
 
