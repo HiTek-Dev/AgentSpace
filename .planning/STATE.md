@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 17 — Desktop Frontend (Tauri)
+**Current focus:** Phase 19 — Desktop & Integration Polish
 
 ## Current Position
 
-Phase: 17 of 18 (Desktop Frontend - Tauri)
-Plan: 5 of 6 in current phase
-Status: Executing phase 17
-Last activity: 2026-02-19 - Completed 17-05: Settings page with config management
+Phase: 19 of 19 (Desktop & Integration Polish)
+Plan: 2 of 6 in current phase
+Status: Executing phase 19
+Last activity: 2026-02-19 - Completed 19-01: Gateway stop and stale detection fix
 
-Progress: [████████████████████████████████████████] 100%
+Progress: [██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 17%
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [███████████████████████
 | Phase 17 P02 | 2min | 2 tasks | 7 files |
 | Phase 17 P05 | 2min | 2 tasks | 4 files |
 | Phase 17 P03 | 2min | 2 tasks | 8 files |
+| Phase 19 P01 | 1min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -259,6 +260,8 @@ Recent decisions affecting current work:
 - [Phase 17]: crypto.randomUUID() instead of nanoid for message IDs (avoids extra dependency in browser context)
 - [Phase 17]: Local ClientMessage type instead of importing from @tek/gateway (lighter, no Zod in browser bundle)
 - [Phase 17]: Handler registration pattern (add/removeMessageHandler) for flexible WebSocket message dispatch
+- [Phase 19]: server.close() called before cleanup/exit in signal handlers for proper TCP teardown
+- [Phase 19]: 2-second AbortController timeout for desktop health check to avoid hanging on unresponsive gateways
 
 ### Roadmap Evolution
 
@@ -270,6 +273,7 @@ Recent decisions affecting current work:
 - Phase 16 added: Agent Personality System — multi-agent support with individual soul/memory/personality, personality onboarding wizard, humor/tone settings, OpenClaw-inspired patterns
 - Phase 17 added: Desktop Frontend (Tauri) — Tauri-based desktop app for install/update/reset, gateway management, agent management, chat interface
 - Phase 18 added: Onboarding Research — deep research on OpenClaw (Peter Steinberger's soul files/agents) and other systems to improve personality and onboarding flows
+- Phase 19 added: Desktop & Integration Polish — fix gateway stop, chat agent defaults, settings crash, agent workspace isolation, desktop UI/UX, Telegram bot, end-to-end verification
 - [Phase 18]: [18-01]: Two-phase onboarding: infrastructure wizard then conversational Hatch step for personality
 - [Phase 18]: [18-01]: 5 personality presets (Professional/Friendly/Technical/Opinionated/Custom) as markdown templates
 - [Phase 18]: [18-01]: Multi-file identity architecture: SOUL.md + IDENTITY.md + USER.md + STYLE.md + AGENTS.md
@@ -301,5 +305,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed quick task 7
+Stopped at: Completed 19-01-PLAN.md
 Resume file: None
