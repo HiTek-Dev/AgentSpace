@@ -5,6 +5,10 @@ import {
 	searchMemories,
 	embedAndStore,
 	appendDailyLog,
+	loadIdentity,
+	loadStyle,
+	loadUser,
+	loadAgentsConfig,
 } from "@tek/db";
 import type { SearchResult } from "@tek/db";
 
@@ -15,15 +19,23 @@ import type { SearchResult } from "@tek/db";
 export class MemoryManager {
 	/**
 	 * Build memory context for the assembler.
-	 * Loads soul personality, long-term memory facts, and recent daily logs.
+	 * Loads soul personality, all identity files, long-term memory facts, and recent daily logs.
 	 */
-	getMemoryContext(): {
+	getMemoryContext(agentId?: string): {
 		soul: string;
+		identity: string;
+		style: string;
+		user: string;
+		agents: string;
 		longTermMemory: string;
 		recentLogs: string;
 	} {
 		return {
-			soul: loadSoul(),
+			soul: loadSoul(agentId),
+			identity: loadIdentity(),
+			style: loadStyle(),
+			user: loadUser(),
+			agents: loadAgentsConfig(),
 			longTermMemory: loadLongTermMemory(),
 			recentLogs: loadRecentLogs(),
 		};

@@ -5,6 +5,7 @@ import {
 	discoverSkills,
 	getSkillsDirs,
 	formatSkillsForContext,
+	createLogger,
 } from "@tek/core";
 import type { MessageRow } from "../session/types.js";
 import { getModelPricing } from "../usage/pricing.js";
@@ -13,6 +14,7 @@ import { MemoryManager } from "../memory/memory-manager.js";
 import { ThreadManager } from "../memory/thread-manager.js";
 
 const DEFAULT_SYSTEM_PROMPT = "You are a helpful AI assistant.";
+const logger = createLogger("assembler");
 
 /** Lazy-init singleton instances (matches SessionManager/UsageTracker pattern) */
 let memoryManagerInstance: MemoryManager | null = null;
@@ -72,17 +74,32 @@ export function assembleContext(
 	const memoryManager = getMemoryManager();
 	const memoryCtx = memoryManager.getMemoryContext();
 
-	// Compose full system prompt: user prompt + soul + memory + recent logs
+	// Compose full system prompt: user prompt + identity files + memory + recent logs
 	const systemParts = [
 		userSystemPrompt,
-		memoryCtx.soul ? `\n\n# Your Identity\n${memoryCtx.soul}` : "",
+		memoryCtx.soul     ? `\n\n# Your Identity\n${memoryCtx.soul}` : "",
+		memoryCtx.identity ? `\n\n# Your Presentation\n${memoryCtx.identity}` : "",
+		memoryCtx.style    ? `\n\n# Communication Style\n${memoryCtx.style}` : "",
+		memoryCtx.user     ? `\n\n# About the User\n${memoryCtx.user}` : "",
+		memoryCtx.agents   ? `\n\n# Agent Coordination\n${memoryCtx.agents}` : "",
 		memoryCtx.longTermMemory ? `\n\n# Long-Term Memory\n${memoryCtx.longTermMemory}` : "",
-		memoryCtx.recentLogs ? `\n\n# Recent Activity\n${memoryCtx.recentLogs}` : "",
+		memoryCtx.recentLogs     ? `\n\n# Recent Activity\n${memoryCtx.recentLogs}` : "",
 	].filter(Boolean).join("");
+
+	// Token budget warning for identity files
+	const identityTokens = [memoryCtx.soul, memoryCtx.identity, memoryCtx.style]
+		.reduce((sum, content) => sum + (content ? estimateTokenCount(content) : 0), 0);
+	if (identityTokens > 3000) {
+		logger.warn(`Identity files exceed 3000 token budget (${identityTokens} tokens). Consider trimming SOUL.md, IDENTITY.md, or STYLE.md.`);
+	}
 
 	// Measured sections for context inspection
 	addSection(sections, "system_prompt", userSystemPrompt, pricing.inputPerMTok);
 	addSection(sections, "soul", memoryCtx.soul, pricing.inputPerMTok);
+	addSection(sections, "identity", memoryCtx.identity, pricing.inputPerMTok);
+	addSection(sections, "style", memoryCtx.style, pricing.inputPerMTok);
+	addSection(sections, "user_context", memoryCtx.user, pricing.inputPerMTok);
+	addSection(sections, "agents", memoryCtx.agents, pricing.inputPerMTok);
 	addSection(sections, "long_term_memory", memoryCtx.longTermMemory, pricing.inputPerMTok);
 	addSection(sections, "recent_activity", memoryCtx.recentLogs, pricing.inputPerMTok);
 
