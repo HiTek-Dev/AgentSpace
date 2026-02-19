@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 17 of 18 (Desktop Frontend - Tauri)
-Plan: 4 of 6 in current phase
+Plan: 5 of 6 in current phase
 Status: Executing phase 17
-Last activity: 2026-02-19 - Completed 17-04: Identity file editor
+Last activity: 2026-02-19 - Completed 17-05: Settings page with config management
 
 Progress: [████████████████████████████████████████] 100%
 
@@ -249,6 +249,9 @@ Recent decisions affecting current work:
 - [Phase 17]: Tailwind v4 via @import 'tailwindcss' (no config file needed)
 - [Phase 17]: Tauri FS plugin for gateway discovery instead of Node.js fs (no process.kill PID check in browser context)
 - [Phase 17]: Zustand store centralizes gateway state and page navigation (replaces useState in App.tsx)
+- [Phase 17]: [17-04]: Added fs:allow-mkdir Tauri capability for config dir creation
+- [Phase 17]: [17-04]: Map<string, FileState> for per-file loading/modified/content state tracking
+- [Phase 17]: [17-04]: Plain textarea editor for identity files (no rich markdown preview for MVP)
 
 ### Roadmap Evolution
 
