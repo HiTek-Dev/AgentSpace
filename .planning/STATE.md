@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 15 of 18 (Init & Onboarding Polish)
-Plan: 3 of 3 in current phase
-Status: Executing phase 15
-Last activity: 2026-02-18 - Completed 15-02: MultiSelect model alias flow
+Plan: 3 of 3 in current phase (COMPLETE)
+Status: Phase 15 complete
+Last activity: 2026-02-18 - Completed 15-03: Telegram + Hatch wizard steps
 
 Progress: [████████████████████████████████████████] 100%
 
@@ -56,6 +56,7 @@ Progress: [███████████████████████
 | Phase 18 P01 | 2min | 2 tasks | 2 files |
 | Phase 15 P01 | 1min | 2 tasks | 8 files |
 | Phase 15 P02 | 2min | 1 tasks | 1 files |
+| Phase 15 P03 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -221,6 +222,8 @@ Recent decisions affecting current work:
 - [Phase 15]: [15-01]: Custom personality preset mirrors existing SOUL.md; telegram vault provider uses null key prefix
 - [Phase 15]: Split model-alias into model-alias-select (MultiSelect) and model-alias-name (keyed TextInput) steps
 - [Phase 15]: React key prop on TextInput forces unmount/remount to clear internal state between alias entries
+- [Phase 15]: Filter telegram from keys-provider list since it has a dedicated step
+- [Phase 15]: hatchSubStep counter for sequential name inputs; applyPersonalityPreset in @tek/db for preset-to-SOUL.md copy
 
 ### Roadmap Evolution
 
@@ -262,5 +265,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 15-02-PLAN.md
+Stopped at: Completed 15-03-PLAN.md (Phase 15 complete)
 Resume file: None
