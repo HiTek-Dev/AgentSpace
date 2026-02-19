@@ -70,7 +70,7 @@ export function ChatPage() {
 			{/* Message list */}
 			<div
 				ref={scrollRef}
-				className="flex-1 overflow-y-auto px-4 py-4 space-y-0"
+				className="flex-1 overflow-y-auto px-4 py-4 space-y-4"
 			>
 				{chat.messages.length === 0 && !chat.isStreaming && (
 					<div className="flex items-center justify-center h-full">

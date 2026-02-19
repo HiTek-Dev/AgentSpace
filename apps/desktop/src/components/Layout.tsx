@@ -12,7 +12,7 @@ export function Layout({ currentPage, onNavigate, children }: LayoutProps) {
   return (
     <div className="flex h-full">
       <Sidebar currentPage={currentPage} onNavigate={onNavigate} />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-y-auto">
         {children}
       </main>
     </div>

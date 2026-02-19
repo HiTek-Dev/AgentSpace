@@ -52,7 +52,7 @@ export function GatewayStatus({ status, port, pid, startedAt, onStart, onStop }:
   }
 
   return (
-    <div className="bg-gray-800 rounded-xl p-6">
+    <div className="bg-gray-800 border border-gray-700/50 rounded-xl p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-white">Gateway</h2>
         <div className="flex items-center gap-2">
