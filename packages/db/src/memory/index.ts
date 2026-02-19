@@ -39,3 +39,5 @@ export {
 } from "./identity-manager.js";
 
 export { resolveIdentityFile, resolveAgentDir, AGENTS_DIR } from "./agent-resolver.js";
+
+export { migrateToMultiFile } from "./migration.js";

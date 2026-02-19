@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { CONFIG_DIR } from "@tek/core";
 import { ensureMemoryFile } from "./ensure-memory.js";
+import { resolveIdentityFile } from "./agent-resolver.js";
 
 /** Path to the soul identity document */
 const SOUL_PATH = join(CONFIG_DIR, "memory", "SOUL.md");
@@ -17,8 +18,17 @@ export function getSoulPath(): string {
  * Load the contents of SOUL.md.
  * Seeds from template on first run, migrates from old location if needed.
  * Returns empty string if the file doesn't exist and no template is available.
+ *
+ * When agentId is provided and not "default", uses cascade resolution
+ * (agent-specific > shared > global) instead of the global path.
  */
-export function loadSoul(): string {
+export function loadSoul(agentId?: string): string {
+	// Per-agent resolution via cascade
+	if (agentId && agentId !== "default") {
+		return resolveIdentityFile(agentId, "SOUL.md");
+	}
+
+	// Default/global path
 	ensureMemoryFile("SOUL.md", "SOUL.md");
 	if (!existsSync(SOUL_PATH)) {
 		return "";
