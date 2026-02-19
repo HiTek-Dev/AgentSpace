@@ -16,6 +16,7 @@
   "dependencies": {
     "@tek/cli": "workspace:*",
     "@tek/core": "workspace:*",
+    "@tek/telegram": "workspace:*",
     "@tek/db": "workspace:*",
     "@ai-sdk/anthropic": "^3.0.44",
     "@ai-sdk/google": "^3",

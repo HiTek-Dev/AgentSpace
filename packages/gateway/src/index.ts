@@ -85,4 +85,23 @@ if (isDirectRun) {
 	const { server, start } = await createServer();
 	await registerGatewayWebSocket(server);
 	await start();
+
+	// Optionally start Telegram bot if token is configured
+	try {
+		const { getKey } = await import("@tek/cli/vault");
+		const telegramToken = getKey("telegram");
+		if (telegramToken) {
+			const { startTelegramBot } = await import("@tek/telegram");
+			await startTelegramBot(telegramToken);
+			const { createLogger } = await import("@tek/core");
+			const logger = createLogger("gateway");
+			logger.info("Telegram bot auto-started");
+		}
+	} catch (err) {
+		const { createLogger } = await import("@tek/core");
+		const logger = createLogger("gateway");
+		logger.warn(
+			`Telegram bot not started: ${err instanceof Error ? err.message : String(err)}`,
+		);
+	}
 }

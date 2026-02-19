@@ -46,10 +46,31 @@ export async function startTelegramBot(token: string): Promise<Bot> {
 	// Clean expired codes every hour
 	setInterval(() => cleanExpiredCodes(), 60 * 60 * 1000);
 
-	// Start long polling
-	bot.start({
-		onStart: () => logger.info("Telegram bot started (long polling)"),
-	});
+	// Suppress Node.js v24 punycode deprecation warning (triggered by grammY's URL handling)
+	const originalEmit = process.emit;
+	process.emit = function (event: string, ...args: unknown[]) {
+		if (
+			event === "warning" &&
+			typeof args[0] === "object" &&
+			args[0] !== null &&
+			(args[0] as { name?: string }).name === "DeprecationWarning" &&
+			String((args[0] as { message?: string }).message).includes("punycode")
+		) {
+			return false;
+		}
+		return originalEmit.apply(process, [event, ...args] as Parameters<typeof originalEmit>);
+	};
+
+	// Start long polling with error handling to avoid crashing the parent process
+	try {
+		bot.start({
+			onStart: () => logger.info("Telegram bot started (long polling)"),
+		});
+	} catch (err) {
+		logger.error(
+			`Telegram bot failed to start: ${err instanceof Error ? err.message : String(err)}`,
+		);
+	}
 
 	return bot;
 }

@@ -218,6 +218,9 @@ importers:
       '@tek/db':
         specifier: workspace:*
         version: link:../db
+      '@tek/telegram':
+        specifier: workspace:*
+        version: link:../telegram
       ai:
         specifier: ^6.0.86
         version: 6.0.86(zod@4.3.6)
