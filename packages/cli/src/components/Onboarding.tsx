@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Text } from "ink";
-import { Select, TextInput, ConfirmInput } from "@inkjs/ui";
+import { Select, TextInput, ConfirmInput, MultiSelect } from "@inkjs/ui";
 import { type SecurityMode, DISPLAY_NAME, CLI_COMMAND } from "@tek/core";
 import type { Provider } from "../vault/index.js";
 import { PROVIDERS } from "../vault/index.js";
@@ -15,7 +15,8 @@ type OnboardingStep =
 	| "keys-input"
 	| "keys-more"
 	| "model-select"
-	| "model-alias"
+	| "model-alias-select"
+	| "model-alias-name"
 	| "summary"
 	| "done";
 
@@ -58,6 +59,8 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 		Array<{ label: string; value: string }>
 	>([]);
 	const [aliasIndex, setAliasIndex] = useState(0);
+	const [modelsToAlias, setModelsToAlias] = useState<string[]>([]);
+	const [aliasKeepDecided, setAliasKeepDecided] = useState(false);
 
 	/** Build the list of available models from the full catalog for configured providers. */
 	function buildAvailableModels(): Array<{ label: string; value: string }> {
@@ -318,30 +321,92 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 						}
 						// Start alias assignment
 						setAliasIndex(0);
-						setStep("model-alias");
+						setStep("model-alias-select");
 					}}
 				/>
 			</Box>
 		);
 	}
 
-	if (step === "model-alias") {
-		if (aliasIndex >= availableModels.length) {
-			// All models processed
+	if (step === "model-alias-select") {
+		const hasExistingAliases = existingConfig?.modelAliases && existingConfig.modelAliases.length > 0;
+
+		if (hasExistingAliases && !aliasKeepDecided) {
+			// Show options to keep, choose new, or skip aliases
+			const aliasPreview = existingConfig!.modelAliases!
+				.map((a) => `${a.alias} -> ${a.modelId}`)
+				.join(", ");
+			return (
+				<Box flexDirection="column" padding={1}>
+					<Text bold>Model Aliases</Text>
+					<Text dimColor>Current aliases: {aliasPreview}</Text>
+					<Text />
+					<Select
+						options={[
+							{ label: "Keep current aliases", value: "keep" },
+							{ label: "Choose new aliases", value: "choose" },
+							{ label: "Skip aliases", value: "skip" },
+						]}
+						onChange={(value) => {
+							if (value === "keep") {
+								setModelAliases(existingConfig!.modelAliases!);
+								setStep("summary");
+							} else if (value === "skip") {
+								setModelAliases([]);
+								setStep("summary");
+							} else {
+								// "choose" — fall through to MultiSelect
+								setAliasKeepDecided(true);
+								setModelAliases([]);
+							}
+						}}
+					/>
+				</Box>
+			);
+		}
+
+		// Show MultiSelect for picking which models to alias
+		return (
+			<Box flexDirection="column" padding={1}>
+				<Text bold>Select models to create aliases for:</Text>
+				<Text dimColor>
+					Space to toggle, Enter to confirm. Enter with none selected to skip.
+				</Text>
+				<Text />
+				<MultiSelect
+					options={availableModels}
+					visibleOptionCount={8}
+					onSubmit={(selected) => {
+						if (selected.length === 0) {
+							setStep("summary");
+						} else {
+							setModelsToAlias(selected);
+							setAliasIndex(0);
+							setStep("model-alias-name");
+						}
+					}}
+				/>
+			</Box>
+		);
+	}
+
+	if (step === "model-alias-name") {
+		if (aliasIndex >= modelsToAlias.length) {
 			setStep("summary");
 			return null;
 		}
 
-		const currentModel = availableModels[aliasIndex];
+		const currentModelId = modelsToAlias[aliasIndex];
+		const currentModelLabel =
+			availableModels.find((m) => m.value === currentModelId)?.label ?? currentModelId;
 
 		return (
 			<Box flexDirection="column" padding={1}>
 				<Text bold>
-					Assign alias for {currentModel.label}:
+					Assign alias for {currentModelLabel}:
 				</Text>
 				<Text dimColor>
-					Type a short name (e.g. "sonnet") or press Enter to skip. Type "done"
-					to skip remaining.{existingConfig?.modelAliases && existingConfig.modelAliases.length > 0 ? ' Type "keep" to preserve existing aliases.' : ""}
+					Type a short name (e.g. "sonnet") or press Enter to skip.
 				</Text>
 				{modelAliases.length > 0 && (
 					<Box flexDirection="column" marginTop={1}>
@@ -355,22 +420,14 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 				)}
 				<Text />
 				<TextInput
+					key={`alias-${aliasIndex}`}
 					placeholder=""
 					onSubmit={(value) => {
 						const trimmed = value.trim();
-						if (trimmed.toLowerCase() === "done") {
-							setStep("summary");
-							return;
-						}
-						if (trimmed.toLowerCase() === "keep" && existingConfig?.modelAliases) {
-							setModelAliases(existingConfig.modelAliases);
-							setStep("summary");
-							return;
-						}
 						if (trimmed) {
 							setModelAliases((prev) => [
 								...prev,
-								{ alias: trimmed, modelId: currentModel.value },
+								{ alias: trimmed, modelId: currentModelId },
 							]);
 						}
 						setAliasIndex((prev) => prev + 1);
