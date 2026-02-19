@@ -223,7 +223,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 13. Rebrand to tek | 2/2 | Complete    | 2026-02-18 |
 | 14. CLI & Setup Polish | 2/2 | Complete    | 2026-02-18 |
 | 15. Init & Onboarding Polish | 0/3 | Not started | - |
-| 16. Agent Personality System | 0/0 | Not started | - |
+| 16. Agent Personality System | 0/5 | Not started | - |
 | 17. Desktop Frontend (Tauri) | 0/0 | Not started | - |
 | 18. Onboarding Research | 1/1 | Complete    | 2026-02-19 |
 
@@ -309,12 +309,16 @@ Plans:
 
 ### Phase 16: Agent Personality System
 
-**Goal:** [To be planned]
+**Goal:** Expand tek's single-file SOUL.md personality into a structured multi-file identity architecture (SOUL.md, IDENTITY.md, USER.md, STYLE.md, AGENTS.md), add personality evolution with user-approved diff-style proposals, migrate existing users safely, and implement per-agent identity isolation with cascade resolution
 **Depends on:** Phase 15
-**Plans:** 0 plans
+**Plans:** 5 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 16 to break down)
+- [ ] 16-01-PLAN.md — Identity template files (expanded SOUL.md, new IDENTITY/USER/STYLE/AGENTS) and loader functions
+- [ ] 16-02-PLAN.md — AppConfig agents schema and agent directory resolver with cascade resolution
+- [ ] 16-03-PLAN.md — Migration from single-file to multi-file, expanded context assembler with token budget
+- [ ] 16-04-PLAN.md — Soul evolution WS protocol (propose/approve) and identity file section updater
+- [ ] 16-05-PLAN.md — Agent-aware identity loading, conditional AGENTS.md, migration trigger wiring
 
 ### Phase 17: Desktop Frontend (Tauri)
 
