@@ -11,6 +11,7 @@ import {
 	loadAgentsConfig,
 } from "@tek/db";
 import type { SearchResult } from "@tek/db";
+import { loadConfig } from "@tek/core";
 
 /**
  * Orchestrates all memory operations: context building, semantic search,
@@ -20,6 +21,7 @@ export class MemoryManager {
 	/**
 	 * Build memory context for the assembler.
 	 * Loads soul personality, all identity files, long-term memory facts, and recent daily logs.
+	 * AGENTS.md only loaded when config has multiple agents (saves tokens for single-agent setups).
 	 */
 	getMemoryContext(agentId?: string): {
 		soul: string;
@@ -30,12 +32,17 @@ export class MemoryManager {
 		longTermMemory: string;
 		recentLogs: string;
 	} {
+		// Only load AGENTS.md when multiple agents are configured (token efficiency)
+		const config = loadConfig();
+		const agentsList = config?.agents?.list ?? [];
+		const agents = agentsList.length > 1 ? loadAgentsConfig() : "";
+
 		return {
 			soul: loadSoul(agentId),
-			identity: loadIdentity(),
-			style: loadStyle(),
+			identity: loadIdentity(agentId),
+			style: loadStyle(agentId),
 			user: loadUser(),
-			agents: loadAgentsConfig(),
+			agents,
 			longTermMemory: loadLongTermMemory(),
 			recentLogs: loadRecentLogs(),
 		};

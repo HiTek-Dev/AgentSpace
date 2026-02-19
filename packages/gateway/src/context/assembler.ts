@@ -62,6 +62,7 @@ export function assembleContext(
 	model: string,
 	threadId?: string,
 	toolDescriptions?: string,
+	agentId?: string,
 ): AssembledContext {
 	const pricing = getModelPricing(model);
 	const sections: ContextSection[] = [];
@@ -72,7 +73,7 @@ export function assembleContext(
 
 	// Load memory context (soul, long-term memory, daily logs)
 	const memoryManager = getMemoryManager();
-	const memoryCtx = memoryManager.getMemoryContext();
+	const memoryCtx = memoryManager.getMemoryContext(agentId);
 
 	// Compose full system prompt: user prompt + identity files + memory + recent logs
 	const systemParts = [
