@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 15 — Init & Onboarding Polish
+**Current focus:** Phase 16 — Agent Personality System
 
 ## Current Position
 
-Phase: 15 of 18 (Init & Onboarding Polish)
-Plan: 3 of 3 in current phase (COMPLETE)
-Status: Phase 15 complete
-Last activity: 2026-02-18 - Completed 15-03: Telegram + Hatch wizard steps
+Phase: 16 of 18 (Agent Personality System)
+Plan: 2 of 5 in current phase
+Status: Executing phase 16
+Last activity: 2026-02-19 - Completed 16-02: Config schema + agent resolver
 
-Progress: [████████████████████████████████████████] 100%
+Progress: [████████████████░░░░░░░░░░░░░░░░░░░░░░░░] 40%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [███████████████████████
 | Phase 15 P01 | 1min | 2 tasks | 8 files |
 | Phase 15 P02 | 2min | 1 tasks | 1 files |
 | Phase 15 P03 | 3min | 2 tasks | 4 files |
+| Phase 16 P02 | 1min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -224,6 +225,8 @@ Recent decisions affecting current work:
 - [Phase 15]: React key prop on TextInput forces unmount/remount to clear internal state between alias entries
 - [Phase 15]: Filter telegram from keys-provider list since it has a dedicated step
 - [Phase 15]: hatchSubStep counter for sequential name inputs; applyPersonalityPreset in @tek/db for preset-to-SOUL.md copy
+- [Phase 16]: [16-02]: Cascade resolution order: agent-specific > shared > global memory > empty string for identity files
+- [Phase 16]: [16-02]: Default agent (undefined or 'default') uses global memory directory for backward compatibility
 
 ### Roadmap Evolution
 
@@ -264,6 +267,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-18
-Stopped at: Completed 15-03-PLAN.md (Phase 15 complete)
+Last session: 2026-02-19
+Stopped at: Completed 16-02-PLAN.md
 Resume file: None
