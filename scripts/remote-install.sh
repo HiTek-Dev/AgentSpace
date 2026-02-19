@@ -199,51 +199,32 @@ if grep -q "$INSTALL_DIR/bin" "$SHELL_RC" 2>/dev/null; then
 fi
 
 if [ "$PATH_ALREADY_SET" = false ]; then
-  if [ -t 0 ]; then
-    printf "  Add tek to PATH automatically? [Y/n]: "
-    read -r ADD_PATH
-    ADD_PATH="${ADD_PATH:-Y}"
-    if [[ "$ADD_PATH" =~ ^[Yy] ]]; then
-      echo "" >> "$SHELL_RC"
-      echo "# Tek AI Agent Gateway" >> "$SHELL_RC"
-      echo "$PATH_LINE" >> "$SHELL_RC"
-      echo "  Added to $SHELL_RC ✓"
-      export PATH="$INSTALL_DIR/bin:$PATH"
-    else
-      echo "  Skipped. Add this to $SHELL_RC manually:"
-      echo "    $PATH_LINE"
-    fi
-  else
-    # Non-interactive: just print instructions
-    echo "  Add this to your ~/.zshrc:"
-    echo "    $PATH_LINE"
-  fi
+  # Add PATH automatically (both interactive and piped curl modes)
+  echo "" >> "$SHELL_RC"
+  echo "# Tek AI Agent Gateway" >> "$SHELL_RC"
+  echo "$PATH_LINE" >> "$SHELL_RC"
+  echo "  Added to $SHELL_RC ✓"
 else
   echo "  PATH already configured ✓"
-  export PATH="$INSTALL_DIR/bin:$PATH"
 fi
 
 # 16. Success!
 echo ""
 echo "  ╔════════════════════════════════════════╗"
-echo "  ║  Tek v$VERSION installed! ✓              "
+echo "  ║  Tek v$VERSION installed!                "
 echo "  ╚════════════════════════════════════════╝"
 echo ""
-echo "  Next steps:"
+echo "  Get started:"
 echo ""
-echo "  1. Open a new terminal (or run: source ~/.zshrc)"
+echo "    source ~/.zshrc              # load PATH in this terminal"
+echo "    tek init                     # setup wizard (API keys, model)"
+echo "    tek gateway start            # start the gateway server"
+echo "    tek chat                     # start chatting"
 echo ""
-echo "  2. Run the setup wizard:"
-echo "     tek init"
+echo "  Or use the full path directly:"
 echo ""
-echo "  3. Start the gateway:"
-echo "     tek gateway start"
+echo "    $INSTALL_DIR/bin/tek init"
 echo ""
-echo "  4. Start chatting:"
-echo "     tek chat"
-echo ""
-echo "  5. Open the desktop app:"
-echo "     Open Tek from /Applications or Spotlight"
-echo ""
-echo "  Uninstall anytime with: tek uninstall"
+echo "  Desktop app: open /Applications/Tek.app"
+echo "  Uninstall:   tek uninstall"
 echo ""
