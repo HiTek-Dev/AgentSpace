@@ -12,7 +12,7 @@ import {
 	type AppConfig,
 	DISPLAY_NAME,
 } from "@tek/core";
-import { recordAuditEvent } from "@tek/db";
+import { recordAuditEvent, ensureMemoryFile, applyPersonalityPreset } from "@tek/db";
 import { Onboarding } from "../components/Onboarding.js";
 import { addKey, getOrCreateAuthToken, listProviders } from "../vault/index.js";
 
@@ -73,12 +73,27 @@ export const initCommand = new Command("init")
 						defaultModel: existing.defaultModel,
 						modelAliases: existing.modelAliases,
 						configuredProviders: configuredProviderNames,
+						agentName: existing.agentName,
+						userDisplayName: existing.userDisplayName,
 					} : undefined,
 					onComplete: async (result) => {
 						// Store API keys
 						for (const { provider, key } of result.keys) {
 							addKey(provider, key);
 						}
+
+						// Store Telegram bot token in keychain
+						if (result.telegramToken) {
+							addKey("telegram", result.telegramToken);
+						}
+
+						// Handle personality preset
+						if (result.personalityPreset && result.personalityPreset !== "custom" && result.personalityPreset !== "skip") {
+							applyPersonalityPreset(result.personalityPreset);
+						} else if (result.personalityPreset === "custom" || !result.personalityPreset) {
+							ensureMemoryFile("BOOTSTRAP.md", "BOOTSTRAP.md");
+						}
+						// "skip" preset: do nothing, keep default SOUL.md
 
 						// Save config
 						const config: AppConfig = {
@@ -91,6 +106,8 @@ export const initCommand = new Command("init")
 							createdAt: new Date().toISOString(),
 							defaultModel: result.defaultModel,
 							modelAliases: result.modelAliases,
+							agentName: result.agentName,
+							userDisplayName: result.userDisplayName,
 						};
 						saveConfig(config);
 

@@ -50,6 +50,22 @@ export function ensureMemoryFile(subpath: string, templateFilename: string | nul
 }
 
 /**
+ * Apply a personality preset by copying the preset template to SOUL.md.
+ * Overwrites any existing SOUL.md with the preset content.
+ *
+ * @param presetName - Name of the preset (e.g. "professional", "friendly", "technical", "opinionated")
+ * @returns true if the preset was applied, false if the preset file was not found
+ */
+export function applyPersonalityPreset(presetName: string): boolean {
+	const presetPath = join(TEMPLATE_DIR, "presets", `${presetName}.md`);
+	if (!existsSync(presetPath)) return false;
+	const soulPath = join(CONFIG_DIR, "memory", "SOUL.md");
+	mkdirSync(dirname(soulPath), { recursive: true });
+	copyFileSync(presetPath, soulPath);
+	return true;
+}
+
+/**
  * Ensure the daily log directory exists at CONFIG_DIR/memory/daily/.
  * @returns The absolute path to the daily directory
  */

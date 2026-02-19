@@ -28,3 +28,5 @@ export {
 
 export { searchMemories } from "./vector-search.js";
 export type { SearchResult } from "./vector-search.js";
+
+export { ensureMemoryFile, applyPersonalityPreset } from "./ensure-memory.js";
