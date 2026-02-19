@@ -65,6 +65,7 @@ Progress: [███████████████████████
 | Phase 17 P01 | 3min | 2 tasks | 19 files |
 | Phase 17 P04 | 2min | 2 tasks | 5 files |
 | Phase 17 P02 | 2min | 2 tasks | 7 files |
+| Phase 17 P05 | 2min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -252,6 +253,8 @@ Recent decisions affecting current work:
 - [Phase 17]: [17-04]: Added fs:allow-mkdir Tauri capability for config dir creation
 - [Phase 17]: [17-04]: Map<string, FileState> for per-file loading/modified/content state tracking
 - [Phase 17]: [17-04]: Plain textarea editor for identity files (no rich markdown preview for MVP)
+- [Phase 17]: [17-05]: Config save uses merge pattern to preserve unknown fields the UI doesn't manage
+- [Phase 17]: [17-05]: Security mode and MCP servers displayed read-only (complex config via CLI for safety)
 
 ### Roadmap Evolution
 
@@ -293,5 +296,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 17-04-PLAN.md
+Stopped at: Completed 17-05-PLAN.md
 Resume file: None
