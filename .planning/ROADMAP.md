@@ -290,3 +290,44 @@ Plans:
 Plans:
 - [ ] 14-01-PLAN.md — Gateway subcommand group (start/stop/status), uninstall command, script updates
 - [ ] 14-02-PLAN.md — Centralized model catalog with recommendations, skippable Onboarding wizard
+
+### Phase 15: Init & Onboarding Polish
+
+**Goal:** [To be planned]
+**Depends on:** Phase 14
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 15 to break down)
+
+### Phase 16: Agent Personality System
+
+**Goal:** [To be planned]
+**Depends on:** Phase 15
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 16 to break down)
+
+### Phase 17: Desktop Frontend (Tauri)
+
+**Goal:** [To be planned]
+**Depends on:** Phase 16
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 17 to break down)
+
+### Phase 18: Onboarding Research
+
+**Goal:** Research how modern AI agent platforms handle personality, identity, and onboarding — synthesize findings into actionable recommendations for Phase 15 (Init & Onboarding Polish) and Phase 16 (Agent Personality System)
+**Depends on:** Phase 14
+**Requirements**: RESEARCH-18
+**Success Criteria** (what must be TRUE):
+  1. 18-RESEARCH.md exists with comprehensive findings on OpenClaw, Claude Code, Cursor, ChatGPT personality systems
+  2. 18-RECOMMENDATIONS.md exists with concrete implementation actions for Phase 15 and Phase 16
+  3. Open questions surfaced with recommended answers for user decision during downstream phase planning
+**Plans:** 1 plan
+
+Plans:
+- [ ] 18-01-PLAN.md — Synthesize research into recommendations and finalize roadmap
