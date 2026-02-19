@@ -1,8 +1,120 @@
+import { useEffect, useRef } from "react";
+import { useAppStore } from "../stores/app-store";
+import { useWebSocket } from "../hooks/useWebSocket";
+import { useChat } from "../hooks/useChat";
+import { ChatMessage } from "../components/ChatMessage";
+import { StreamingText } from "../components/StreamingText";
+import { ChatInput } from "../components/ChatInput";
+
+/**
+ * Full chat interface page.
+ * Connects to gateway via Tauri WebSocket plugin, sends/receives messages,
+ * and displays streaming responses with styled message bubbles.
+ */
 export function ChatPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Chat</h1>
-      <p className="text-gray-400 mt-2">Chat interface with your AI agent will appear here.</p>
-    </div>
-  );
+	const gateway = useAppStore((s) => s.gateway);
+
+	// Construct WebSocket URL only when gateway is running
+	const wsUrl =
+		gateway.status === "running" && gateway.port
+			? `ws://127.0.0.1:${gateway.port}/gateway`
+			: null;
+
+	const ws = useWebSocket(wsUrl);
+
+	const chat = useChat({
+		send: ws.send,
+		addMessageHandler: ws.addMessageHandler,
+		removeMessageHandler: ws.removeMessageHandler,
+		connected: ws.connected,
+	});
+
+	// Auto-scroll to bottom
+	const scrollRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		const el = scrollRef.current;
+		if (el) {
+			el.scrollTop = el.scrollHeight;
+		}
+	}, [chat.messages, chat.streamingText]);
+
+	return (
+		<div className="flex flex-col h-full">
+			{/* Header bar */}
+			<div className="flex items-center justify-between px-4 py-3 border-b border-gray-700 bg-gray-900/50">
+				<div className="flex items-center gap-3">
+					<h1 className="text-lg font-semibold text-gray-100">Chat</h1>
+					<div className="flex items-center gap-1.5">
+						<span
+							className={`w-2 h-2 rounded-full ${ws.connected ? "bg-green-400" : "bg-red-400"}`}
+						/>
+						<span className="text-xs text-gray-400">
+							{ws.connected ? "Connected" : "Disconnected"}
+						</span>
+					</div>
+				</div>
+				<div className="flex items-center gap-3 text-xs text-gray-500">
+					{chat.sessionId && (
+						<span className="font-mono">
+							{chat.sessionId.slice(0, 8)}
+						</span>
+					)}
+					{chat.model && (
+						<span className="bg-gray-700 text-gray-400 px-2 py-0.5 rounded">
+							{chat.model}
+						</span>
+					)}
+				</div>
+			</div>
+
+			{/* Message list */}
+			<div
+				ref={scrollRef}
+				className="flex-1 overflow-y-auto px-4 py-4 space-y-0"
+			>
+				{chat.messages.length === 0 && !chat.isStreaming && (
+					<div className="flex items-center justify-center h-full">
+						<div className="text-center">
+							<p className="text-gray-500 text-sm">
+								{ws.connected
+									? "Send a message to start chatting"
+									: gateway.status === "stopped"
+										? "Start the gateway from the Dashboard to begin"
+										: "Connecting to gateway..."}
+							</p>
+							{ws.error && (
+								<p className="text-red-400/70 text-xs mt-2">
+									{ws.error}
+								</p>
+							)}
+						</div>
+					</div>
+				)}
+
+				{chat.messages.map((msg) => (
+					<ChatMessage key={msg.id} message={msg} />
+				))}
+
+				{chat.isStreaming && (
+					<StreamingText text={chat.streamingText} model={chat.model} />
+				)}
+
+				{chat.error && (
+					<div className="flex justify-center mb-3">
+						<div className="bg-red-600/10 border border-red-600/20 rounded-lg px-3 py-1.5">
+							<p className="text-xs text-red-400 text-center">
+								{chat.error}
+							</p>
+						</div>
+					</div>
+				)}
+			</div>
+
+			{/* Input bar */}
+			<ChatInput
+				onSend={chat.sendMessage}
+				disabled={!ws.connected || chat.isStreaming}
+			/>
+		</div>
+	);
 }
