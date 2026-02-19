@@ -63,7 +63,9 @@ export function SettingsPage() {
   }
 
   const providers = config?.configuredProviders ?? [];
-  const aliases = config?.modelAliases ?? {};
+  const aliases: Record<string, string> = (config?.modelAliases && typeof config.modelAliases === 'object' && !Array.isArray(config.modelAliases))
+    ? config.modelAliases
+    : {};
   const mcpServers = config?.mcpServers ?? {};
   const mcpEntries = Object.entries(mcpServers);
 

@@ -32,7 +32,20 @@ export async function loadConfig(): Promise<AppConfig | null> {
       return null;
     }
     const content = await readTextFile(configPath);
-    return JSON.parse(content) as AppConfig;
+    const raw = JSON.parse(content);
+
+    // Normalize modelAliases: core stores as Array<{alias, modelId}>, desktop expects Record<string, string>
+    if (Array.isArray(raw.modelAliases)) {
+      const record: Record<string, string> = {};
+      for (const entry of raw.modelAliases) {
+        if (entry && typeof entry === 'object' && entry.alias && entry.modelId) {
+          record[entry.alias] = entry.modelId;
+        }
+      }
+      raw.modelAliases = record;
+    }
+
+    return raw as AppConfig;
   } catch {
     return null;
   }
@@ -55,7 +68,14 @@ export async function saveConfig(config: AppConfig): Promise<void> {
   }
 
   // Merge: existing fields preserved, new values override
-  const merged = { ...existing, ...config };
+  const merged = { ...existing, ...config } as Record<string, unknown>;
+
+  // Normalize modelAliases back to array format for core schema compatibility
+  if (merged.modelAliases && !Array.isArray(merged.modelAliases)) {
+    const record = merged.modelAliases as Record<string, string>;
+    merged.modelAliases = Object.entries(record).map(([alias, modelId]) => ({ alias, modelId }));
+  }
+
   const json = JSON.stringify(merged, null, 2);
 
   // Ensure config directory exists
