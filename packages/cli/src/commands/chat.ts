@@ -1,18 +1,89 @@
 import { Command } from "commander";
 import React from "react";
-import { render } from "ink";
+import { render, Box, Text } from "ink";
 import WebSocket from "ws";
 import { nanoid } from "nanoid";
-import { CLI_COMMAND } from "@tek/core";
+import { CLI_COMMAND, loadConfig, configExists, type AgentDefinition } from "@tek/core";
+import { Select } from "@inkjs/ui";
 import { discoverGateway } from "../lib/discovery.js";
 import { Chat } from "../components/Chat.js";
 import { runPtyProxy } from "../lib/pty-proxy.js";
+
+/**
+ * Pick an agent from a list using an interactive Ink Select component.
+ */
+async function pickAgent(agents: AgentDefinition[]): Promise<string> {
+	return new Promise((resolve) => {
+		const options = agents.map((a) => ({
+			label: `${a.name ?? a.id} — ${a.purpose ?? a.description ?? a.id}`,
+			value: a.id,
+		}));
+
+		const { unmount } = render(
+			React.createElement(
+				Box,
+				{ flexDirection: "column", padding: 1 },
+				React.createElement(Text, { bold: true }, "Select an agent to chat with:"),
+				React.createElement(Select, {
+					options,
+					onChange: (value: string) => {
+						unmount();
+						resolve(value);
+					},
+				}),
+			),
+		);
+	});
+}
+
+/**
+ * Resolve agentId from --agent flag, auto-select for single agent, or interactive picker.
+ * Returns undefined for legacy mode (zero agents).
+ */
+async function resolveAgentId(explicitAgent?: string): Promise<string | undefined> {
+	if (!configExists()) return undefined;
+	const config = loadConfig();
+	const agents = config?.agents?.list ?? [];
+
+	if (explicitAgent) {
+		// Try exact ID match first
+		const byId = agents.find((a) => a.id === explicitAgent);
+		if (byId) return byId.id;
+
+		// Try case-insensitive name match
+		const byName = agents.find(
+			(a) => a.name?.toLowerCase() === explicitAgent.toLowerCase(),
+		);
+		if (byName) return byName.id;
+
+		// Not found
+		console.error(
+			`Agent "${explicitAgent}" not found. Available agents: ${agents.map((a) => a.name ?? a.id).join(", ") || "(none)"}`,
+		);
+		process.exit(1);
+	}
+
+	// No --agent flag
+	if (agents.length === 0) {
+		return undefined; // Legacy mode
+	}
+
+	if (agents.length === 1) {
+		const agent = agents[0];
+		console.log(`Using agent: ${agent.name ?? agent.id}`);
+		return agent.id;
+	}
+
+	// Multiple agents: interactive picker
+	return pickAgent(agents);
+}
 
 export const chatCommand = new Command("chat")
 	.description("Start a chat session with your agent")
 	.option("-m, --model <model>", "Model to use")
 	.option("-s, --session <id>", "Resume an existing session")
-	.action(async (options: { model?: string; session?: string }) => {
+	.option("-a, --agent <id>", "Agent to chat with")
+	.action(async (options: { model?: string; session?: string; agent?: string }) => {
 		const gateway = discoverGateway();
 
 		if (!gateway) {
@@ -23,6 +94,9 @@ export const chatCommand = new Command("chat")
 		}
 
 		const wsUrl = `ws://127.0.0.1:${gateway.port}/gateway`;
+
+		// Resolve agent before rendering Chat
+		const agentId = await resolveAgentId(options.agent);
 
 		let pendingProxy: { command: string; args: string[]; agent: boolean } | null = null as {
 			command: string;
@@ -35,6 +109,7 @@ export const chatCommand = new Command("chat")
 				wsUrl,
 				initialModel: options.model,
 				resumeSessionId: options.session,
+				agentId,
 				onProxyRequest: (cmd: string, args: string[], agent: boolean) => {
 					pendingProxy = { command: cmd, args, agent };
 				},

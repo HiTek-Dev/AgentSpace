@@ -21,6 +21,7 @@ interface ChatProps {
 	wsUrl: string;
 	initialModel?: string;
 	resumeSessionId?: string;
+	agentId?: string;
 	onProxyRequest?: (command: string, args: string[], agent: boolean) => void;
 }
 
@@ -28,7 +29,7 @@ interface ChatProps {
  * Full chat interface component. Wires together StatusBar, MessageList,
  * StreamingResponse, InputBar, and slash command dispatch.
  */
-export function Chat({ wsUrl, initialModel, resumeSessionId, onProxyRequest }: ChatProps) {
+export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyRequest }: ChatProps) {
 	const { exit } = useApp();
 
 	const {
@@ -110,6 +111,7 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, onProxyRequest }: C
 				createChatSendMessage(input, {
 					sessionId: sessionId ?? undefined,
 					model,
+					agentId,
 				}),
 			);
 		},
@@ -117,6 +119,7 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, onProxyRequest }: C
 			processInput,
 			sessionId,
 			model,
+			agentId,
 			addMessage,
 			addUserMessage,
 			send,
