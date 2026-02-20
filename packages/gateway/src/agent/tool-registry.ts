@@ -1,5 +1,6 @@
 import { createLogger, getSkillsDirs, loadConfig, type SecurityMode, PROJECT_NAME, CONFIG_DIR_NAME } from "@tek/core";
 import type { MCPServerConfig } from "@tek/core";
+import { mkdir } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { join } from "node:path";
 import { homedir, tmpdir } from "node:os";
@@ -65,6 +66,11 @@ export async function buildToolRegistry(
 		veniceApiKey,
 		braveApiKey,
 	} = options;
+
+	// Ensure workspace directory exists on disk (config stores path but never creates it)
+	if (workspaceDir) {
+		await mkdir(workspaceDir, { recursive: true });
+	}
 
 	const tools: Record<string, unknown> = {};
 

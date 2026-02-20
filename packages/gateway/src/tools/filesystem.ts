@@ -1,7 +1,7 @@
 import { tool } from "ai";
 import { z } from "zod";
-import { readFile, writeFile, readdir, unlink } from "node:fs/promises";
-import { join, resolve, isAbsolute } from "node:path";
+import { mkdir, readFile, writeFile, readdir, unlink } from "node:fs/promises";
+import { dirname, join, resolve, isAbsolute } from "node:path";
 import { isPathWithinWorkspace, type SecurityMode } from "@tek/core";
 
 const MAX_READ_SIZE = 100 * 1024; // 100KB
@@ -73,6 +73,7 @@ export function createFilesystemTools(
 		execute: async ({ path: rawPath, content }) => {
 			const path = resolveAgentPath(rawPath, workspaceDir);
 			checkWorkspace(path, securityMode, workspaceDir);
+			await mkdir(dirname(path), { recursive: true });
 			await writeFile(path, content, "utf-8");
 			return `Wrote ${Buffer.byteLength(content, "utf-8")} bytes to ${path}`;
 		},
