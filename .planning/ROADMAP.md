@@ -57,7 +57,11 @@
   2. Desktop app renders a recovery UI when a page component throws an error instead of white-screening the entire app
   3. CLI and desktop WebSocket clients automatically reconnect after the gateway restarts, resuming the session without user intervention
   4. `pnpm test` from repo root discovers and runs tests across all packages via Vitest workspace config
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 25-01-PLAN.md — Vault extraction from @tek/cli to @tek/core
+- [ ] 25-02-PLAN.md — Error boundaries + Vitest workspace config
+- [ ] 25-03-PLAN.md — WebSocket auto-reconnect with exponential backoff
 
 ### Phase 26: CLI Visual Overhaul
 **Goal**: CLI chat experience reaches Claude Code quality -- syntax-highlighted code, collapsible tool panels, input history, and a clean information-dense StatusBar
