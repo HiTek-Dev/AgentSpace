@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 Phase: 23 of 23 (Agent Tools & Error Recovery)
 Plan: 2 of 3 in current phase
 Status: Executing phase 23
-Last activity: 2026-02-20 - Completed 23-02: Context inspector rewrite
+Last activity: 2026-02-20 - Completed 23-01: Tool paths, error relay, delete & fetch
 
 Progress: [████████████████████████████████████████░░] 95%
 
@@ -80,6 +80,7 @@ Progress: [███████████████████████
 | Phase 22 P03 | 2min | 2 tasks | 9 files |
 | Phase 22 P01 | 3min | 2 tasks | 4 files |
 | Phase 23 P02 | 1min | 1 tasks | 3 files |
+| Phase 23 P01 | 3min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -300,6 +301,9 @@ Recent decisions affecting current work:
 - [Phase 22]: [22-03]: useIdentityFiles cache key changed from 'default' to 'global' for clarity
 - [Phase 22]: [22-01]: Inline first-contact prompt in buildFirstContactPrompt() over file-read; 50-char USER.md threshold for first-contact detection
 - [Phase 23]: [23-02]: Inspector uses same lazy-init singleton pattern as assembler for MemoryManager/ThreadManager
+- [Phase 23]: [23-01]: resolveAgentPath before checkWorkspace for workspace-relative path resolution in all file/shell tools
+- [Phase 23]: [23-01]: fetch_url uses session approval tier; 30s timeout; 100KB response truncation
+- [Phase 23]: [23-01]: Shell tool defaults cwd to workspaceDir even in full-control mode (sensible default, not a restriction)
 
 ### Roadmap Evolution
 

@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 20: Agent Identity & Memory Access** - Identity injection, memory tools, provider validation (completed 2026-02-20)
 - [ ] **Phase 21: Init & Agent Onboarding Rework** - Separate app init from agent onboarding, `tek onboard` command, agent selection in chat, gateway identity injection
 - [x] **Phase 22: Agent First Contact & Dashboard Polish** - Fix agent first-chat identity and greeting, conversational onboarding to build USER/SOUL, remove default agent, fix desktop gateway discovery and chat, dashboard UI spacing, OpenClaw-inspired UX research (completed 2026-02-20)
-- [ ] **Phase 23: Agent Tools & Error Recovery** - Fix tool workspace paths, tool error handling, complete base tool set, memory/system prompt loading, Brave Search skill, workspace permissions
+- [x] **Phase 23: Agent Tools & Error Recovery** - Fix tool workspace paths, tool error handling, complete base tool set, memory/system prompt loading, Brave Search skill, workspace permissions (completed 2026-02-20)
 
 ## Phase Details
 
@@ -239,7 +239,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 20. Agent Identity & Memory Access | 2/2 | Complete    | 2026-02-20 |
 | 21. Init & Agent Onboarding Rework | 2/3 | In Progress|  |
 | 22. Agent First Contact & Dashboard Polish | 3/3 | Complete   | 2026-02-20 |
-| 23. Agent Tools & Error Recovery | 1/3 | In Progress|  |
+| 23. Agent Tools & Error Recovery | 3/3 | Complete   | 2026-02-20 |
 
 ### Phase 11: Install & Update System
 
@@ -484,7 +484,7 @@ Plans:
   8. tek init includes Brave Search API key setup step
   9. Tool failures never leave the agent frozen/unresponsive
   10. File operations in limited mode are restricted to agent workspace; full mode allows broader access
-**Plans:** 1/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 23-01-PLAN.md — Fix tool workspace path resolution and add tool error handling to agent loop
