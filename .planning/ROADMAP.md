@@ -41,7 +41,7 @@
 
 **Milestone Goal:** Transform Tek from functional infrastructure into a polished, product-grade experience -- CLI that feels like Claude Code, desktop app that feels like Claudia, with a test harness over critical gateway paths.
 
-- [ ] **Phase 25: Foundation & Blockers** - Vault extraction, error boundaries, Vitest workspace, WS auto-reconnect
+- [x] **Phase 25: Foundation & Blockers** - Vault extraction, error boundaries, Vitest workspace, WS auto-reconnect (completed 2026-02-20)
 - [ ] **Phase 26: CLI Visual Overhaul** - Syntax highlighting, collapsible panels, input history, StatusBar redesign
 - [ ] **Phase 27: Desktop UI Overhaul** - Markdown rendering, tool approval modal, conversation history, design system
 - [ ] **Phase 28: Testing Foundation** - MockTransport, WS protocol tests, agent loop tests, approval gate tests
@@ -106,7 +106,7 @@ Phase 25 first, then Phases 26, 27, and 28 can run in parallel.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 25. Foundation & Blockers | 2/3 | In Progress|  | - |
+| 25. Foundation & Blockers | 3/3 | Complete   | 2026-02-20 | - |
 | 26. CLI Visual Overhaul | v0.1 | 0/TBD | Not started | - |
 | 27. Desktop UI Overhaul | v0.1 | 0/TBD | Not started | - |
 | 28. Testing Foundation | v0.1 | 0/TBD | Not started | - |

@@ -12,22 +12,22 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 Phase: 25 of 28 (Foundation & Blockers)
 Plan: 3 of 3 (COMPLETE)
 Status: Phase 25 complete
-Last activity: 2026-02-20 — Completed 25-03 (WebSocket Reconnect)
+Last activity: 2026-02-20 — Completed 25-01 (Vault Extraction)
 
 Progress: [########################..] 86% (24/28 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 38 (36 v0.0 + 2 v0.1)
+- Total plans completed: 39 (36 v0.0 + 3 v0.1)
 - Average duration: 3min
-- Total execution time: 1.30 hours
+- Total execution time: 1.35 hours
 
 **By Phase (v0.1):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 25 | 2/3 | 3min | 1.5min |
+| 25 | 3/3 | 8min | 2.7min |
 | 26 | 0/TBD | - | - |
 | 27 | 0/TBD | - | - |
 | 28 | 0/TBD | - | - |
@@ -54,6 +54,8 @@ Recent decisions affecting current work:
 - [25-02]: Vitest projects glob targets packages/* only; apps excluded from test scope
 - [25-03]: Identical getReconnectDelay in both hooks (no shared package to avoid coupling)
 - [25-03]: Unlimited retries with 30s cap — gateway will eventually return
+- [25-01]: Vault as @tek/core/vault sub-export (separate from main to avoid native module in desktop)
+- [25-01]: Audit logging moved from vault functions to CLI call sites
 
 ### Pending Todos
 
@@ -62,11 +64,12 @@ Recent decisions affecting current work:
 
 ### Blockers/Concerns
 
-- Circular dependency (@tek/cli <-> @tek/gateway via vault) blocks gateway test isolation — must resolve in Phase 25
+- ~~Circular dependency (@tek/cli <-> @tek/gateway via vault)~~ RESOLVED in 25-01: vault extracted to @tek/core
+- Circular dependency (@tek/gateway <-> @tek/telegram) — pre-existing, surfaced after cli-gateway resolved. Turbo build blocked.
 - handlers.ts (1,422 lines, zero tests) — characterization tests before any extraction
 
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 25-03-PLAN.md
+Stopped at: Completed 25-01-PLAN.md (all Phase 25 plans done)
 Resume file: None
