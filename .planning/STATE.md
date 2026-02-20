@@ -10,16 +10,16 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 25 of 28 (Foundation & Blockers)
-Plan: 3 of 3 (COMPLETE)
+Plan: 4 of 4 (COMPLETE)
 Status: Phase 25 complete
-Last activity: 2026-02-20 — Completed 25-01 (Vault Extraction)
+Last activity: 2026-02-20 — Completed 25-04 (Gateway-Telegram Cycle Fix)
 
 Progress: [########################..] 86% (24/28 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 39 (36 v0.0 + 3 v0.1)
+- Total plans completed: 40 (36 v0.0 + 4 v0.1)
 - Average duration: 3min
 - Total execution time: 1.35 hours
 
@@ -27,13 +27,13 @@ Progress: [########################..] 86% (24/28 phases)
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 25 | 3/3 | 8min | 2.7min |
+| 25 | 4/4 | 9min | 2.3min |
 | 26 | 0/TBD | - | - |
 | 27 | 0/TBD | - | - |
 | 28 | 0/TBD | - | - |
 
 **Recent Trend:**
-- Last 5 plans: 3min, 1min, 4min, 1min, 2min
+- Last 5 plans: 1min, 4min, 1min, 2min, 1min
 - Trend: Stable (~2min avg)
 
 *Updated after each plan completion*
@@ -56,6 +56,7 @@ Recent decisions affecting current work:
 - [25-03]: Unlimited retries with 30s cap — gateway will eventually return
 - [25-01]: Vault as @tek/core/vault sub-export (separate from main to avoid native module in desktop)
 - [25-01]: Audit logging moved from vault functions to CLI call sites
+- [25-04]: Dynamic string variable import to bypass TS static resolution for optional workspace deps
 
 ### Pending Todos
 
@@ -65,11 +66,11 @@ Recent decisions affecting current work:
 ### Blockers/Concerns
 
 - ~~Circular dependency (@tek/cli <-> @tek/gateway via vault)~~ RESOLVED in 25-01: vault extracted to @tek/core
-- Circular dependency (@tek/gateway <-> @tek/telegram) — pre-existing, surfaced after cli-gateway resolved. Turbo build blocked.
+- ~~Circular dependency (@tek/gateway <-> @tek/telegram)~~ RESOLVED in 25-04: removed @tek/telegram from gateway package.json
 - handlers.ts (1,422 lines, zero tests) — characterization tests before any extraction
 
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 25-01-PLAN.md (all Phase 25 plans done)
+Stopped at: Completed 25-04-PLAN.md (all Phase 25 plans done)
 Resume file: None
