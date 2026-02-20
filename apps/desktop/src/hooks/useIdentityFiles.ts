@@ -12,7 +12,7 @@ export function useIdentityFiles(agentId?: string) {
   const [activeFile, setActiveFile] = useState<string>('SOUL.md');
 
   // Compute a stable key from agentId to trigger reload when agent changes
-  const agentKey = agentId ?? 'default';
+  const agentKey = agentId ?? 'global';
 
   // Load all identity files on mount or when agentId changes
   useEffect(() => {

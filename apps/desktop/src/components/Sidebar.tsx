@@ -46,12 +46,12 @@ export function Sidebar({ currentPage, onNavigate }: SidebarProps) {
       <div className="p-4 border-b border-[#2a2a2a]">
         <h1 className="text-xl font-bold text-white tracking-tight">Tek</h1>
       </div>
-      <nav className="flex-1 p-2">
+      <nav className="flex-1 px-3 py-3 space-y-1">
         {navItems.map(({ page, label, icon }) => (
           <button
             key={page}
             onClick={() => onNavigate(page)}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
               currentPage === page
                 ? 'bg-blue-500/20 text-blue-400'
                 : 'text-gray-400 hover:text-gray-200 hover:bg-[#252525]'

@@ -9,14 +9,6 @@ type View = 'list' | 'create' | 'detail';
 
 const DEFAULT_TEMPLATE = `<!-- This file hasn't been created yet. Start writing to define this aspect of your agent's identity. -->\n`;
 
-// Default agent represents the global memory directory
-const DEFAULT_AGENT: AgentDefinition = {
-  id: 'default',
-  name: 'Default Agent',
-  description: 'Global agent using ~/.config/tek/memory/',
-  accessMode: 'full',
-};
-
 function generateId(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
@@ -72,7 +64,7 @@ export function AgentsPage() {
         accessMode: formAccessMode,
       };
 
-      const currentAgents = config?.agents ?? { list: [], defaultAgentId: 'default' };
+      const currentAgents = config?.agents ?? { list: [], defaultAgentId: '' };
       const updatedList = [...currentAgents.list, newAgent];
       updateField('agents', { ...currentAgents, list: updatedList });
 
@@ -104,9 +96,7 @@ export function AgentsPage() {
   }
 
   if (view === 'detail' && selectedAgentId) {
-    const agent = selectedAgentId === 'default'
-      ? DEFAULT_AGENT
-      : agents.find((a) => a.id === selectedAgentId);
+    const agent = agents.find((a) => a.id === selectedAgentId);
 
     return <DetailView
       agent={agent ?? { id: selectedAgentId, name: selectedAgentId }}
@@ -133,17 +123,13 @@ export function AgentsPage() {
       </div>
 
       <div className="space-y-3">
-        {/* Default agent card */}
-        <AgentCard agent={DEFAULT_AGENT} onSelect={selectAgent} />
-
-        {/* User-created agents */}
         {agents.map((agent) => (
           <AgentCard key={agent.id} agent={agent} onSelect={selectAgent} />
         ))}
 
         {agents.length === 0 && (
-          <p className="text-sm text-gray-500 text-center py-6">
-            No custom agents yet. The default agent uses your global identity files.
+          <p className="text-sm text-gray-500 text-center py-8">
+            No agents yet. Create one above or run <code className="text-gray-400">tek onboard</code> in the terminal.
           </p>
         )}
       </div>
@@ -303,7 +289,7 @@ function CreateView({
 }
 
 function DetailView({ agent, onBack }: { agent: AgentDefinition; onBack: () => void }) {
-  const agentId = agent.id === 'default' ? undefined : agent.id;
+  const agentId = agent.id;
   const { files, activeFile, setActiveFile, setContent, save, saveAll } = useIdentityFiles(agentId);
 
   const activeState = files.get(activeFile);
@@ -315,9 +301,7 @@ function DetailView({ agent, onBack }: { agent: AgentDefinition; onBack: () => v
     setContent(activeFile, DEFAULT_TEMPLATE);
   };
 
-  const basePath = agent.id === 'default'
-    ? '~/.config/tek/memory'
-    : `~/.config/tek/agents/${agent.id}`;
+  const basePath = `~/.config/tek/agents/${agent.id}`;
 
   return (
     <div className="flex flex-col h-full">

@@ -21,7 +21,7 @@ export async function getConfigDir(): Promise<string> {
 
 async function getIdentityDir(agentId?: string): Promise<string> {
   const home = await homeDir();
-  if (agentId && agentId !== 'default') {
+  if (agentId) {
     return await join(home, '.config', 'tek', 'agents', agentId);
   }
   return await join(home, '.config', 'tek', 'memory');
