@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 19 — Desktop & Integration Polish
+**Current focus:** Phase 20 — Agent Identity & Memory Access
 
 ## Current Position
 
-Phase: 19 of 19 (Desktop & Integration Polish)
-Plan: 6 of 6 in current phase
-Status: Executing phase 19
-Last activity: 2026-02-19 - Completed quick task 8: Create proper app icon for Tek Desktop tray
+Phase: 20 of 20 (Agent Identity & Memory Access)
+Plan: 2 of 2 in current phase
+Status: Phase 20 complete
+Last activity: 2026-02-19 - Completed 20-02: Provider validation & desktop verification
 
-Progress: [██████████████████████████████████░░░░░░░░] 83%
+Progress: [██████████████████████████████████████████] 100%
 
 ## Performance Metrics
 
@@ -72,6 +72,7 @@ Progress: [███████████████████████
 | Phase 19 P05 | 2min | 1 tasks | 4 files |
 | Phase 19 P03 | 2min | 2 tasks | 5 files |
 | Phase 19 P04 | 2min | 2 tasks | 7 files |
+| Phase 20 P02 | 1min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -273,6 +274,8 @@ Recent decisions affecting current work:
 - [Phase 19]: [19-03]: Default agent maps to ~/.config/tek/memory/ for backward compat; three-view state machine for AgentsPage; agent IDs from lowercase hyphenated names
 - [Phase 19]: [19-04]: Inline SVG icons via Record<string, ReactNode> instead of icon library (zero new dependencies)
 - [Phase 19]: [19-04]: Role labels and colored left borders for chat message user/assistant distinction
+- [Phase 20]: [20-02]: Provider validation placed after resolveModelId but before addMessage to avoid persisting messages for doomed requests
+- [Phase 20]: [20-02]: Error includes provider name, available providers list, and CLI fix command for actionable feedback
 
 ### Roadmap Evolution
 
@@ -318,5 +321,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed quick task 8
+Stopped at: Completed 20-02-PLAN.md
 Resume file: None

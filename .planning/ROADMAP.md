@@ -227,7 +227,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 17. Desktop Frontend (Tauri) | 5/6 | In Progress|  |
 | 18. Onboarding Research | 1/1 | Complete    | 2026-02-19 |
 | 19. Desktop & Integration Polish | 5/6 | In Progress|  |
-| 20. Agent Identity & Memory Access | 0/0 | Not started | - |
+| 20. Agent Identity & Memory Access | 1/2 | In Progress|  |
 
 ### Phase 11: Install & Update System
 
@@ -401,7 +401,7 @@ Plans:
   4. Desktop chat works without provider errors (uses configured default model)
   5. Desktop agents page shows agent list, create form, and per-agent editing
   6. Limited workspace mode still grants agent access to its own ~/.config/tek/memory/ directory
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 20-01-PLAN.md — Memory read/write tools and tool registry registration
