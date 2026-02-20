@@ -285,6 +285,7 @@ Recent decisions affecting current work:
 - Phase 17 added: Desktop Frontend (Tauri) — Tauri-based desktop app for install/update/reset, gateway management, agent management, chat interface
 - Phase 18 added: Onboarding Research — deep research on OpenClaw (Peter Steinberger's soul files/agents) and other systems to improve personality and onboarding flows
 - Phase 19 added: Desktop & Integration Polish — fix gateway stop, chat agent defaults, settings crash, agent workspace isolation, desktop UI/UX, Telegram bot, end-to-end verification
+- Phase 20 added: Agent Identity & Memory Access — fix system prompt identity injection, grant agent memory file read/write, fix desktop chat provider errors, fix agents page rendering
 - [Phase 18]: [18-01]: Two-phase onboarding: infrastructure wizard then conversational Hatch step for personality
 - [Phase 18]: [18-01]: 5 personality presets (Professional/Friendly/Technical/Opinionated/Custom) as markdown templates
 - [Phase 18]: [18-01]: Multi-file identity architecture: SOUL.md + IDENTITY.md + USER.md + STYLE.md + AGENTS.md

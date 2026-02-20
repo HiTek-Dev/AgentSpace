@@ -227,6 +227,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 17. Desktop Frontend (Tauri) | 5/6 | In Progress|  |
 | 18. Onboarding Research | 1/1 | Complete    | 2026-02-19 |
 | 19. Desktop & Integration Polish | 5/6 | In Progress|  |
+| 20. Agent Identity & Memory Access | 0/0 | Not started | - |
 
 ### Phase 11: Install & Update System
 
@@ -381,3 +382,26 @@ Plans:
 - [ ] 19-04-PLAN.md — Desktop UI polish (SVG icons, consistent spacing, chat message styling)
 - [ ] 19-05-PLAN.md — Fix Telegram bot punycode crash and wire auto-start into gateway
 - [ ] 19-06-PLAN.md — End-to-end verification of all phase 19 fixes
+
+### Phase 20: Agent Identity & Memory Access
+
+**Goal:** The agent knows its name, the user's name, and its personality in every chat session. The agent can read and write its own memory/identity files from its workspace. Desktop chat connects without provider errors. Desktop agents page renders correctly with working agent management.
+**Depends on:** Phase 19
+**Requirements**:
+  - System prompt includes identity context (SOUL.md, USER.md, IDENTITY.md, STYLE.md) in every chat session
+  - Agent has read/write access to its memory directory (~/.config/tek/memory/) even in limited workspace mode
+  - Desktop chat resolves correct provider (no "No such provider: anthropic" errors)
+  - Desktop agents page renders the redesigned list/create/detail views
+  - Agent can write daily memories and update its own identity files
+  - Init-written identity (name, user name, personality) persists and loads correctly
+**Success Criteria** (what must be TRUE):
+  1. `tek chat` session greets user by name and responds with agent personality from init
+  2. Agent can read its identity files (SOUL.md, USER.md, etc.) and reference them in conversation
+  3. Agent can write to MEMORY.md and daily log files in its workspace
+  4. Desktop chat works without provider errors (uses configured default model)
+  5. Desktop agents page shows agent list, create form, and per-agent editing
+  6. Limited workspace mode still grants agent access to its own ~/.config/tek/memory/ directory
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 20 to break down)
