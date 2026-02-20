@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 20 of 20 (Agent Identity & Memory Access)
-Plan: 2 of 2 in current phase
-Status: Phase 20 complete
-Last activity: 2026-02-19 - Completed 20-02: Provider validation & desktop verification
+Plan: 1 of 2 in current phase
+Status: Executing phase 20
+Last activity: 2026-02-19 - Completed 20-01: Memory read/write tools
 
-Progress: [██████████████████████████████████████████] 100%
+Progress: [████████████████████████████████████████░░] 95%
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Progress: [███████████████████████
 | Phase 19 P03 | 2min | 2 tasks | 5 files |
 | Phase 19 P04 | 2min | 2 tasks | 7 files |
 | Phase 20 P02 | 1min | 2 tasks | 3 files |
+| Phase 20 P01 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -276,6 +277,9 @@ Recent decisions affecting current work:
 - [Phase 19]: [19-04]: Role labels and colored left borders for chat message user/assistant distinction
 - [Phase 20]: [20-02]: Provider validation placed after resolveModelId but before addMessage to avoid persisting messages for doomed requests
 - [Phase 20]: [20-02]: Error includes provider name, available providers list, and CLI fix command for actionable feedback
+- [Phase 20]: [20-01]: Memory read auto-approved; memory write requires session-level approval
+- [Phase 20]: [20-01]: Agent ID resolved from loadConfig at tool registry build time for agent-specific identity
+- [Phase 20]: [20-01]: Memory tools always registered (not gated on API keys), bypass workspace restrictions
 
 ### Roadmap Evolution
 
