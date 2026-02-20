@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 21 of 21 (Init & Agent Onboarding Rework)
-Plan: 2 of 3 in current phase
+Plan: 3 of 3 in current phase
 Status: Executing phase 21
-Last activity: 2026-02-19 - Completed 21-01: Init/Onboard separation
+Last activity: 2026-02-19 - Completed 21-02: Agent selection & gateway identity
 
-Progress: [████████████████████████████████████████░░] 96%
+Progress: [█████████████████████████████████████████░] 98%
 
 ## Performance Metrics
 
@@ -75,6 +75,7 @@ Progress: [███████████████████████
 | Phase 20 P02 | 1min | 2 tasks | 3 files |
 | Phase 21 P01 | 6min | 2 tasks | 8 files |
 | Phase 20 P01 | 2min | 2 tasks | 2 files |
+| Phase 21 P02 | 3min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -284,6 +285,9 @@ Recent decisions affecting current work:
 - [Phase 20]: [20-01]: Memory read auto-approved; memory write requires session-level approval
 - [Phase 20]: [20-01]: Agent ID resolved from loadConfig at tool registry build time for agent-specific identity
 - [Phase 20]: [20-01]: Memory tools always registered (not gated on API keys), bypass workspace restrictions
+- [Phase 21]: [21-02]: Gateway uses per-message agentId from chat.send with config fallback to defaultAgentId
+- [Phase 21]: [21-02]: Tool registry cache invalidated when agentId changes between messages via lastAgentId tracking
+- [Phase 21]: [21-02]: Agent picker uses @inkjs/ui Select with Promise wrapper for pre-render resolution
 
 ### Roadmap Evolution
 
@@ -330,5 +334,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 21-01-PLAN.md
+Stopped at: Completed 21-02-PLAN.md
 Resume file: None
