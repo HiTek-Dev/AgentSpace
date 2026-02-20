@@ -276,7 +276,7 @@ export async function buildToolRegistry(
 	// 7. Add memory tools (always available, bypasses workspace restrictions)
 	const currentAgentId = options.agentId || loadConfig()?.agents?.defaultAgentId || undefined;
 	const memoryRead = createMemoryReadTool(currentAgentId);
-	const memoryWrite = createMemoryWriteTool();
+	const memoryWrite = createMemoryWriteTool(currentAgentId);
 
 	tools.memory_read = approvalPolicy
 		? wrapToolWithApproval("memory_read", memoryRead as unknown as Record<string, unknown>, approvalPolicy)

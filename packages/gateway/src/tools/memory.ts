@@ -59,7 +59,7 @@ export function createMemoryReadTool(agentId?: string) {
 					content = loadStyle(agentId);
 					break;
 				case "USER.md":
-					content = loadUser();
+					content = loadUser(agentId);
 					break;
 				case "MEMORY.md":
 					content = loadLongTermMemory();
@@ -79,8 +79,9 @@ export function createMemoryReadTool(agentId?: string) {
 /**
  * Create a memory_write tool that writes to memory and identity files.
  * Bypasses workspace restrictions — accesses ~/.config/tek/memory/ directly via @tek/db.
+ * When agentId is provided, identity file writes go to the agent-specific directory.
  */
-export function createMemoryWriteTool() {
+export function createMemoryWriteTool(agentId?: string) {
 	return tool({
 		description:
 			"Write to your memory or identity files. Use 'memory' to add facts to MEMORY.md, 'daily' to append to today's log, 'identity' to update a section in an identity file.",
@@ -130,6 +131,7 @@ export function createMemoryWriteTool() {
 						identityFile,
 						identitySection,
 						content,
+						agentId,
 					);
 					return `Updated section '${identitySection}' in ${identityFile}`;
 				}
