@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 21: Init & Agent Onboarding Rework** - Separate app init from agent onboarding, `tek onboard` command, agent selection in chat, gateway identity injection
 - [x] **Phase 22: Agent First Contact & Dashboard Polish** - Fix agent first-chat identity and greeting, conversational onboarding to build USER/SOUL, remove default agent, fix desktop gateway discovery and chat, dashboard UI spacing, OpenClaw-inspired UX research (completed 2026-02-20)
 - [x] **Phase 23: Agent Tools & Error Recovery** - Fix tool workspace paths, tool error handling, complete base tool set, memory/system prompt loading, Brave Search skill, workspace permissions (completed 2026-02-20)
-- [ ] **Phase 24: Tools Actually Working** - Fix workspace dir creation, agent loop session persistence, tool error recovery
+- [x] **Phase 24: Tools Actually Working** - Fix workspace dir creation, agent loop session persistence, tool error recovery (completed 2026-02-20)
 
 ## Phase Details
 
@@ -241,7 +241,7 @@ Note: Phases 3, 4, and 5 can execute in parallel after Phase 2. Phases 7, 8, 9, 
 | 21. Init & Agent Onboarding Rework | 2/3 | In Progress|  |
 | 22. Agent First Contact & Dashboard Polish | 3/3 | Complete   | 2026-02-20 |
 | 23. Agent Tools & Error Recovery | 3/3 | Complete    | 2026-02-20 |
-| 24. Tools Actually Working | 1/2 | In Progress|  |
+| 24. Tools Actually Working | 2/2 | Complete   | 2026-02-20 |
 
 ### Phase 11: Install & Update System
 
@@ -510,7 +510,7 @@ Plans:
   3. When tools fail, agent responds with error explanation instead of going silent
   4. write_file to nested paths (e.g. "subdir/file.txt") creates parent directories
   5. Agent tool loop saves assistant response to session after tool execution completes
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 24-01-PLAN.md — Fix workspace directory creation (mkdir in tool-registry and write_file)
