@@ -13,6 +13,7 @@ import { auditCommand } from "./commands/audit.js";
 import { chatCommand } from "./commands/chat.js";
 import { gatewayCommand } from "./commands/gateway.js";
 import { uninstallCommand } from "./commands/uninstall.js";
+import { onboardCommand } from "./commands/onboard.js";
 import { discoverGateway } from "./lib/discovery.js";
 
 // Migrate config from old location if present
@@ -43,6 +44,7 @@ program.addCommand(auditCommand);
 program.addCommand(chatCommand);
 program.addCommand(gatewayCommand);
 program.addCommand(uninstallCommand);
+program.addCommand(onboardCommand);
 
 // Default action: auto-launch chat when configured and gateway is running
 program.action(async () => {

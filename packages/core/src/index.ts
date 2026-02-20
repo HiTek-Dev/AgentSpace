@@ -28,6 +28,8 @@ export {
 } from "./config/index.js";
 export type {
 	AppConfig,
+	AgentDefinition,
+	AgentsConfig,
 	ModelAlias,
 	SecurityMode,
 	MCPServerConfig,
