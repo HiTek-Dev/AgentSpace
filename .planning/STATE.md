@@ -52,6 +52,8 @@ Recent decisions affecting current work:
 - [v0.1 Roadmap]: Vault extraction from @tek/cli to @tek/core to break circular dep
 - [25-02]: ErrorBoundary inside Layout so sidebar stays visible during page errors
 - [25-02]: Vitest projects glob targets packages/* only; apps excluded from test scope
+- [25-03]: Identical getReconnectDelay in both hooks (no shared package to avoid coupling)
+- [25-03]: Unlimited retries with 30s cap — gateway will eventually return
 
 ### Pending Todos
 
@@ -66,5 +68,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 25-02-PLAN.md
+Stopped at: Completed 25-03-PLAN.md
 Resume file: None

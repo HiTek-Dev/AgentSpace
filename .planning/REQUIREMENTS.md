@@ -109,7 +109,7 @@ Requirements for the Product Polish milestone. Each maps to roadmap phases.
 
 - [ ] **FOUND-01**: Vault code extracted from @tek/cli to @tek/core, circular dependency eliminated, Turbo builds in one pass
 - [x] **FOUND-02**: Desktop app has per-page React error boundaries with recovery UI
-- [ ] **FOUND-03**: CLI and desktop WebSocket clients auto-reconnect with exponential backoff (1s->2s->4s->8s->max 30s)
+- [x] **FOUND-03**: CLI and desktop WebSocket clients auto-reconnect with exponential backoff (1s->2s->4s->8s->max 30s)
 
 ### CLI Visual
 
@@ -230,7 +230,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | FOUND-01 | Phase 25 | Pending |
 | FOUND-02 | Phase 25 | Complete |
-| FOUND-03 | Phase 25 | Pending |
+| FOUND-03 | Phase 25 | Complete |
 | CLIV-01 | Phase 26 | Pending |
 | CLIV-02 | Phase 26 | Pending |
 | CLIV-03 | Phase 26 | Pending |
