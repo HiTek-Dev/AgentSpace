@@ -8,12 +8,18 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./vault": {
+      "import": "./dist/vault/index.js",
+      "types": "./dist/vault/index.d.ts"
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest run"
   },
   "dependencies": {
+    "@napi-rs/keyring": "^1.2.0",
     "gray-matter": "^4.0.3",
     "zod": "^4.3.6"
   }
