@@ -14,6 +14,8 @@ interface AppState {
   setGateway: (info: RuntimeInfo | null) => void;
   currentPage: Page;
   setCurrentPage: (page: Page) => void;
+  selectedAgentId: string | null;
+  setSelectedAgentId: (id: string | null) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -43,4 +45,7 @@ export const useAppStore = create<AppState>((set) => ({
 
   currentPage: 'dashboard',
   setCurrentPage: (page: Page) => set({ currentPage: page }),
+
+  selectedAgentId: null,
+  setSelectedAgentId: (id: string | null) => set({ selectedAgentId: id }),
 }));

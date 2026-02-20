@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useAppStore } from "../stores/app-store";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { useChat } from "../hooks/useChat";
+import { useConfig } from "../hooks/useConfig";
 import { ChatMessage } from "../components/ChatMessage";
 import { StreamingText } from "../components/StreamingText";
 import { ChatInput } from "../components/ChatInput";
@@ -13,6 +14,20 @@ import { ChatInput } from "../components/ChatInput";
  */
 export function ChatPage() {
 	const gateway = useAppStore((s) => s.gateway);
+	const selectedAgentId = useAppStore((s) => s.selectedAgentId);
+	const setSelectedAgentId = useAppStore((s) => s.setSelectedAgentId);
+	const { config } = useConfig();
+
+	const agents = config?.agents?.list ?? [];
+
+	// Auto-select first agent if none selected
+	useEffect(() => {
+		if (selectedAgentId === null && agents.length > 0) {
+			const defaultId = config?.agents?.defaultAgentId;
+			const hasDefault = defaultId && agents.some((a) => a.id === defaultId);
+			setSelectedAgentId(hasDefault ? defaultId : agents[0].id);
+		}
+	}, [selectedAgentId, agents, config?.agents?.defaultAgentId, setSelectedAgentId]);
 
 	// Construct WebSocket URL only when gateway is running
 	const wsUrl =
@@ -27,6 +42,7 @@ export function ChatPage() {
 		addMessageHandler: ws.addMessageHandler,
 		removeMessageHandler: ws.removeMessageHandler,
 		connected: ws.connected,
+		agentId: selectedAgentId ?? undefined,
 	});
 
 	// Auto-scroll to bottom
@@ -44,6 +60,21 @@ export function ChatPage() {
 			<div className="flex items-center justify-between px-4 py-3 border-b border-gray-700 bg-gray-900/50">
 				<div className="flex items-center gap-3">
 					<h1 className="text-lg font-semibold text-gray-100">Chat</h1>
+					{agents.length > 0 && (
+						<select
+							value={selectedAgentId ?? ""}
+							onChange={(e) =>
+								setSelectedAgentId(e.target.value || null)
+							}
+							className="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-gray-200 focus:border-blue-500 focus:outline-none"
+						>
+							{agents.map((a) => (
+								<option key={a.id} value={a.id}>
+									{a.name ?? a.id}
+								</option>
+							))}
+						</select>
+					)}
 					<div className="flex items-center gap-1.5">
 						<span
 							className={`w-2 h-2 rounded-full ${ws.connected ? "bg-green-400" : "bg-red-400"}`}
@@ -77,7 +108,9 @@ export function ChatPage() {
 						<div className="text-center">
 							<p className="text-gray-500 text-sm">
 								{ws.connected
-									? "Send a message to start chatting"
+									? agents.length === 0
+										? "Create an agent with 'tek onboard' in the terminal to start chatting"
+										: "Send a message to start chatting"
 									: gateway.status === "stopped"
 										? "Start the gateway from the Dashboard to begin"
 										: "Connecting to gateway..."}

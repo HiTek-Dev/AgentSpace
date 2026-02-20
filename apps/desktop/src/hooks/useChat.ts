@@ -11,6 +11,7 @@ export interface UseChatOptions {
 	addMessageHandler: (handler: (msg: unknown) => void) => void;
 	removeMessageHandler: (handler: (msg: unknown) => void) => void;
 	connected: boolean;
+	agentId?: string;
 }
 
 export interface UseChatReturn {
@@ -147,6 +148,7 @@ export function useChat(opts: UseChatOptions): UseChatReturn {
 			// Send to gateway
 			const wsMsg = createChatSendMessage(text, {
 				sessionId: sessionId ?? undefined,
+				agentId: optsRef.current.agentId,
 			});
 			optsRef.current.send(wsMsg);
 		},

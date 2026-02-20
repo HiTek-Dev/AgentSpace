@@ -51,7 +51,7 @@ export type ClientMessage = {
 /** Create a chat.send message for the gateway WebSocket protocol. */
 export function createChatSendMessage(
 	content: string,
-	opts?: { sessionId?: string; model?: string },
+	opts?: { sessionId?: string; model?: string; agentId?: string },
 ): ClientMessage {
 	return {
 		type: "chat.send",
