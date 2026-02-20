@@ -535,6 +535,7 @@ export async function handleChatRouteConfirm(
 export async function handleContextInspect(
 	transport: Transport,
 	msg: ContextInspect,
+	connState: ConnectionState,
 ): Promise<void> {
 	const session = sessionManager.get(msg.sessionId);
 	if (!session) {
@@ -547,8 +548,11 @@ export async function handleContextInspect(
 		return;
 	}
 
+	// Resolve agentId from connection state (same pattern as handleChatSend)
+	const agentId = connState.lastAgentId || loadConfig()?.agents?.defaultAgentId || undefined;
+
 	const sessionMessages = sessionManager.getMessages(session.id);
-	const inspection = inspectContext(sessionMessages, session.model);
+	const inspection = inspectContext(sessionMessages, session.model, agentId);
 
 	transport.send({
 		type: "context.inspection",

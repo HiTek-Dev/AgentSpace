@@ -134,7 +134,7 @@ export async function registerGatewayWebSocket(
 
 						case "context.inspect": {
 							logger.info(`context.inspect for session ${msg.sessionId}`);
-							handleContextInspect(transport, msg).catch(
+							handleContextInspect(transport, msg, connState).catch(
 								(err: Error) => {
 									logger.error(`Unhandled context.inspect error: ${err.message}`);
 								},
