@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 21 — Init & Agent Onboarding Rework
+**Current focus:** Phase 22 — Agent First Contact & Dashboard Polish
 
 ## Current Position
 
-Phase: 21 of 21 (Init & Agent Onboarding Rework)
-Plan: 3 of 3 in current phase
-Status: Executing phase 21
-Last activity: 2026-02-19 - Completed 21-02: Agent selection & gateway identity
+Phase: 22 of 22 (Agent First Contact & Dashboard Polish)
+Plan: 2 of 3 in current phase
+Status: Executing phase 22
+Last activity: 2026-02-19 - Completed 22-02: Remove default agent sentinel
 
 Progress: [█████████████████████████████████████████░] 98%
 
@@ -76,6 +76,7 @@ Progress: [███████████████████████
 | Phase 21 P01 | 6min | 2 tasks | 8 files |
 | Phase 20 P01 | 2min | 2 tasks | 2 files |
 | Phase 21 P02 | 3min | 2 tasks | 7 files |
+| Phase 22 P02 | 2min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -288,6 +289,9 @@ Recent decisions affecting current work:
 - [Phase 21]: [21-02]: Gateway uses per-message agentId from chat.send with config fallback to defaultAgentId
 - [Phase 21]: [21-02]: Tool registry cache invalidated when agentId changes between messages via lastAgentId tracking
 - [Phase 21]: [21-02]: Agent picker uses @inkjs/ui Select with Promise wrapper for pre-render resolution
+- [Phase 22]: [22-02]: || instead of ?? for agentId resolution so empty string falls through to undefined
+- [Phase 22]: [22-02]: Session key uses "global" prefix when no agentId (preserves key format)
+- [Phase 22]: [22-02]: Zero-agent chat exits with tek onboard prompt instead of silent legacy fallback
 
 ### Roadmap Evolution
 
@@ -302,6 +306,7 @@ Recent decisions affecting current work:
 - Phase 19 added: Desktop & Integration Polish — fix gateway stop, chat agent defaults, settings crash, agent workspace isolation, desktop UI/UX, Telegram bot, end-to-end verification
 - Phase 20 added: Agent Identity & Memory Access — fix system prompt identity injection, grant agent memory file read/write, fix desktop chat provider errors, fix agents page rendering
 - Phase 21 added: Init & Agent Onboarding Rework — separate app init from agent onboarding, tek onboard command, agent model/workspace config, agent selection in chat, gateway-managed identity injection, full CLI code review
+- Phase 22 added: Agent First Contact & Dashboard Polish — fix agent first-chat identity/greeting, conversational onboarding to build USER/SOUL, remove default agent, fix desktop gateway discovery/chat, dashboard UI spacing, OpenClaw-inspired UX research
 - [Phase 18]: [18-01]: Two-phase onboarding: infrastructure wizard then conversational Hatch step for personality
 - [Phase 18]: [18-01]: 5 personality presets (Professional/Friendly/Technical/Opinionated/Custom) as markdown templates
 - [Phase 18]: [18-01]: Multi-file identity architecture: SOUL.md + IDENTITY.md + USER.md + STYLE.md + AGENTS.md
@@ -334,5 +339,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 21-02-PLAN.md
+Stopped at: Completed 22-02-PLAN.md
 Resume file: None
