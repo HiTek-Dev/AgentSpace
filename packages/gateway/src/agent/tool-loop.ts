@@ -35,8 +35,11 @@ export interface AgentLoopOptions {
  *
  * Uses AI SDK's `streamText` with `fullStream` to capture tool-call,
  * tool-result, and tool-approval-request events alongside text deltas.
+ *
+ * Returns the accumulated text from all text-delta events (or a fallback
+ * message when the agent produced no text output).
  */
-export async function runAgentLoop(options: AgentLoopOptions): Promise<void> {
+export async function runAgentLoop(options: AgentLoopOptions): Promise<string> {
 	const {
 		transport,
 		model,
@@ -55,6 +58,8 @@ export async function runAgentLoop(options: AgentLoopOptions): Promise<void> {
 	const languageModel = registry.languageModel(model as never);
 
 	const stepHistory: StepRecord[] = [];
+
+	let fullText = "";
 
 	try {
 		const result = streamText({
@@ -100,6 +105,7 @@ export async function runAgentLoop(options: AgentLoopOptions): Promise<void> {
 						requestId,
 						delta: part.text,
 					});
+					fullText += part.text;
 					break;
 				}
 
@@ -222,6 +228,19 @@ export async function runAgentLoop(options: AgentLoopOptions): Promise<void> {
 					break;
 			}
 		}
+
+		// Guarantee a response when agent produced no text (e.g. all tools failed)
+		if (!fullText || fullText.trim().length === 0) {
+			const fallback = "I attempted to use tools to help with your request, but encountered errors. Could you try rephrasing or providing more details?";
+			transport.send({
+				type: "chat.stream.delta",
+				requestId,
+				delta: fallback,
+			});
+			fullText = fallback;
+		}
+
+		return fullText;
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Unknown agent loop error";
 		logger.error(`Agent loop error: ${message}`);
@@ -231,6 +250,7 @@ export async function runAgentLoop(options: AgentLoopOptions): Promise<void> {
 			code: "AGENT_LOOP_ERROR",
 			message,
 		});
+		return "";
 	}
 }
 
