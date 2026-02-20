@@ -12,3 +12,4 @@ export type { GoogleAuthConfig } from "./google-auth.js";
 export { createGoogleWorkspaceTools } from "./google-workspace.js";
 export { createVeniceImageTool } from "./venice-image.js";
 export { createVeniceVideoTool } from "./venice-video.js";
+export { createBraveSearchTool } from "./brave-search.js";
