@@ -91,7 +91,8 @@ if (isDirectRun) {
 		const { getKey } = await import("@tek/core/vault");
 		const telegramToken = getKey("telegram");
 		if (telegramToken) {
-			const { startTelegramBot } = await import("@tek/telegram");
+			const pkg = "@tek/telegram";
+			const { startTelegramBot } = await import(/* @vite-ignore */ pkg);
 			await startTelegramBot(telegramToken);
 			const { createLogger } = await import("@tek/core");
 			const logger = createLogger("gateway");

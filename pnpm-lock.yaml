@@ -93,9 +93,6 @@ importers:
       '@inkjs/ui':
         specifier: ^2.0.0
         version: 2.0.0(ink@6.7.0)
-      '@napi-rs/keyring':
-        specifier: ^1.2.0
-        version: 1.2.0
       '@tek/core':
         specifier: workspace:*
         version: link:../core
@@ -148,6 +145,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@napi-rs/keyring':
+        specifier: ^1.2.0
+        version: 1.2.0
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -212,18 +212,12 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.26.0
         version: 1.26.0(zod@4.3.6)
-      '@tek/cli':
-        specifier: workspace:*
-        version: link:../cli
       '@tek/core':
         specifier: workspace:*
         version: link:../core
       '@tek/db':
         specifier: workspace:*
         version: link:../db
-      '@tek/telegram':
-        specifier: workspace:*
-        version: link:../telegram
       ai:
         specifier: ^6.0.86
         version: 6.0.86(zod@4.3.6)
