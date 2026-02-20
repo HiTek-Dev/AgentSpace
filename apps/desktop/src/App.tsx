@@ -1,4 +1,6 @@
+import { ErrorBoundary } from 'react-error-boundary';
 import { Layout } from './components/Layout';
+import { PageErrorFallback } from './components/PageErrorFallback';
 import { DashboardPage } from './pages/DashboardPage';
 import { ChatPage } from './pages/ChatPage';
 import { AgentsPage } from './pages/AgentsPage';
@@ -21,7 +23,13 @@ export function App() {
 
   return (
     <Layout currentPage={currentPage} onNavigate={setCurrentPage}>
-      <ActivePage />
+      <ErrorBoundary
+        FallbackComponent={PageErrorFallback}
+        resetKeys={[currentPage]}
+        onError={(error) => console.error('Page error:', error)}
+      >
+        <ActivePage />
+      </ErrorBoundary>
     </Layout>
   );
 }
