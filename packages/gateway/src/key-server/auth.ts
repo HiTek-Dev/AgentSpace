@@ -1,4 +1,4 @@
-import { getOrCreateAuthToken } from "@tek/cli/vault";
+import { getOrCreateAuthToken } from "@tek/core/vault";
 
 /**
  * Get the set of valid bearer auth keys for the key server.

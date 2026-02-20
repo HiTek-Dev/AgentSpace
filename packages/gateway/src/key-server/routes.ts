@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { getKey, validateProvider } from "@tek/cli/vault";
+import { getKey, validateProvider } from "@tek/core/vault";
 import { recordAuditEvent } from "@tek/db";
 
 /**

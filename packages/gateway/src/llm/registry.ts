@@ -3,7 +3,7 @@ import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { getKey } from "@tek/cli/vault";
+import { getKey } from "@tek/core/vault";
 import { createLogger, loadConfig } from "@tek/core";
 
 const logger = createLogger("llm-registry");

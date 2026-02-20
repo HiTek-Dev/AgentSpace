@@ -1,5 +1,5 @@
 import { createAnthropic } from "@ai-sdk/anthropic";
-import { getKey } from "@tek/cli/vault";
+import { getKey } from "@tek/core/vault";
 import { createLogger, CLI_COMMAND } from "@tek/core";
 
 const logger = createLogger("llm-provider");

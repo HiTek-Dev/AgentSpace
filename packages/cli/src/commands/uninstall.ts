@@ -6,8 +6,8 @@ import { realpathSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import chalk from "chalk";
-import { Entry } from "@napi-rs/keyring";
-import { KEYCHAIN_SERVICE, CONFIG_DIR, CLI_COMMAND } from "@tek/core";
+import { CONFIG_DIR, CLI_COMMAND } from "@tek/core";
+import { keychainDelete } from "@tek/core/vault";
 import { discoverGateway } from "../lib/discovery.js";
 
 function getInstallDir(): string {
@@ -114,12 +114,7 @@ export const uninstallCommand = new Command("uninstall")
 
 		// 3. Delete keychain entries
 		for (const account of KEYCHAIN_ACCOUNTS) {
-			try {
-				const entry = new Entry(KEYCHAIN_SERVICE, account);
-				entry.deletePassword();
-			} catch {
-				// Entry doesn't exist — skip
-			}
+			keychainDelete(account);
 		}
 		console.log("Removed keychain entries.");
 

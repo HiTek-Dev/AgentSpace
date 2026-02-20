@@ -8,8 +8,9 @@ import {
 	listProviders,
 	validateProvider,
 	PROVIDER_KEY_PREFIXES,
-} from "../vault/index.js";
-import type { Provider } from "../vault/index.js";
+} from "@tek/core/vault";
+import type { Provider } from "@tek/core/vault";
+import { recordAuditEvent } from "@tek/db";
 
 /**
  * Prompt for a key value with hidden input (no echo).
@@ -105,6 +106,7 @@ keysCommand
 
 			warnKeyPrefix(provider, key);
 			addKey(provider, key);
+			recordAuditEvent({ event: "key_added", provider });
 			console.log(
 				chalk.green(`API key for ${provider} stored in keychain`),
 			);
@@ -134,6 +136,7 @@ keysCommand
 
 			warnKeyPrefix(provider, key);
 			updateKey(provider, key);
+			recordAuditEvent({ event: "key_updated", provider });
 			console.log(
 				chalk.green(`API key for ${provider} updated in keychain`),
 			);
@@ -154,6 +157,7 @@ keysCommand
 		try {
 			const provider = validateProvider(providerInput);
 			removeKey(provider);
+			recordAuditEvent({ event: "key_removed", provider });
 			console.log(
 				chalk.green(`API key for ${provider} removed from keychain`),
 			);

@@ -9,8 +9,7 @@ import {
 	DISPLAY_NAME,
 } from "@tek/core";
 import { recordAuditEvent } from "@tek/db";
-import { getOrCreateAuthToken } from "../vault/index.js";
-import { keychainSet } from "../vault/keychain.js";
+import { getOrCreateAuthToken, keychainSet } from "@tek/core/vault";
 import { generateAuthToken } from "@tek/core";
 
 export const configCommand = new Command("config").description(

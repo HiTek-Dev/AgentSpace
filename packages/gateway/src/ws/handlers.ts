@@ -51,7 +51,7 @@ import {
 import type { PreflightApproval } from "./protocol.js";
 import { MCPClientManager } from "../mcp/client-manager.js";
 import { loadMCPConfigs } from "../mcp/config.js";
-import { getKey } from "@tek/cli/vault";
+import { getKey } from "@tek/core/vault";
 import { updateIdentityFileSection, migrateToMultiFile } from "@tek/db";
 
 const logger = createLogger("ws-handlers");

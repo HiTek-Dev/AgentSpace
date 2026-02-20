@@ -88,7 +88,7 @@ if (isDirectRun) {
 
 	// Optionally start Telegram bot if token is configured
 	try {
-		const { getKey } = await import("@tek/cli/vault");
+		const { getKey } = await import("@tek/core/vault");
 		const telegramToken = getKey("telegram");
 		if (telegramToken) {
 			const { startTelegramBot } = await import("@tek/telegram");

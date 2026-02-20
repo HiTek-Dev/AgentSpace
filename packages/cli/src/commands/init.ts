@@ -12,7 +12,7 @@ import {
 } from "@tek/core";
 import { recordAuditEvent } from "@tek/db";
 import { Onboarding } from "../components/Onboarding.js";
-import { addKey, getOrCreateAuthToken, listProviders } from "../vault/index.js";
+import { addKey, getOrCreateAuthToken, listProviders } from "@tek/core/vault";
 
 /**
  * Simple y/n confirmation prompt (not Ink-based).

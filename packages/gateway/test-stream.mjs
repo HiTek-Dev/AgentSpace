@@ -1,6 +1,6 @@
 import { streamText } from 'ai';
 import { createAnthropic } from '@ai-sdk/anthropic';
-import { getKey } from '@tek/cli/vault';
+import { getKey } from '@tek/core/vault';
 
 const key = getKey('anthropic');
 console.log('Key found:', !!key);

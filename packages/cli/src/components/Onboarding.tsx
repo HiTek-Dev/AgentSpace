@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Box, Text } from "ink";
 import { Select, TextInput, ConfirmInput, MultiSelect } from "@inkjs/ui";
 import { type SecurityMode, DISPLAY_NAME, CLI_COMMAND } from "@tek/core";
-import type { Provider } from "../vault/index.js";
-import { PROVIDERS } from "../vault/index.js";
+import type { Provider } from "@tek/core/vault";
+import { PROVIDERS } from "@tek/core/vault";
 import { buildModelOptions } from "../lib/models.js";
 
 type OnboardingStep =

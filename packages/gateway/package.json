@@ -15,7 +15,6 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@tek/cli": "workspace:*",
     "@tek/core": "workspace:*",
     "@tek/telegram": "workspace:*",
     "@tek/db": "workspace:*",

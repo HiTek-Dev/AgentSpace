@@ -22,7 +22,7 @@ import {
 	AgentOnboarding,
 	type AgentOnboardingResult,
 } from "../components/AgentOnboarding.js";
-import { listProviders } from "../vault/index.js";
+import { listProviders } from "@tek/core/vault";
 
 /**
  * Resolve a path that may start with ~ to an absolute path.
