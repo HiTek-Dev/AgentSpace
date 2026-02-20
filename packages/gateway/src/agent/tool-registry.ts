@@ -1,4 +1,4 @@
-import { createLogger, getSkillsDirs, type SecurityMode, PROJECT_NAME, CONFIG_DIR_NAME } from "@tek/core";
+import { createLogger, getSkillsDirs, loadConfig, type SecurityMode, PROJECT_NAME, CONFIG_DIR_NAME } from "@tek/core";
 import type { MCPServerConfig } from "@tek/core";
 import { randomUUID } from "node:crypto";
 import { join } from "node:path";
@@ -14,6 +14,7 @@ import {
 	wrapToolWithApproval,
 	type ApprovalPolicy,
 } from "./approval-gate.js";
+import { createMemoryReadTool, createMemoryWriteTool } from "../tools/memory.js";
 import {
 	createWebSearchTool,
 	createImageGenTool,
@@ -270,6 +271,25 @@ export async function buildToolRegistry(
 	// Note: Playwright browser automation tools are handled by the MCP tool
 	// loading loop (step 3) when "playwright" is included in mcpConfigs.
 	// Add { playwright: getPlaywrightMcpConfig() } to mcpServers to enable.
+
+	// 7. Add memory tools (always available, bypasses workspace restrictions)
+	const agentConfig = loadConfig();
+	const currentAgentId = agentConfig?.agents?.defaultAgentId;
+	const memoryRead = createMemoryReadTool(currentAgentId === "default" ? undefined : currentAgentId);
+	const memoryWrite = createMemoryWriteTool();
+
+	tools.memory_read = approvalPolicy
+		? wrapToolWithApproval("memory_read", memoryRead as unknown as Record<string, unknown>, approvalPolicy)
+		: memoryRead;
+	tools.memory_write = approvalPolicy
+		? wrapToolWithApproval("memory_write", memoryWrite as unknown as Record<string, unknown>, approvalPolicy)
+		: memoryWrite;
+
+	// Memory read is safe (auto tier), memory write needs session approval
+	if (approvalPolicy) {
+		approvalPolicy.perTool.memory_read = "auto";
+		approvalPolicy.perTool.memory_write = "session";
+	}
 
 	logger.info(`Tool registry built with ${Object.keys(tools).length} tools`);
 	return tools;
