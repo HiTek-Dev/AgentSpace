@@ -12,14 +12,14 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 Phase: 26 of 28 (CLI Visual Overhaul)
 Plan: 3 of 4
 Status: Executing phase 26
-Last activity: 2026-02-21 — Completed 26-02 (Multiline Input & History)
+Last activity: 2026-02-21 — Completed 26-01 (Shiki Syntax Highlighting)
 
 Progress: [########################..] 86% (24/28 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 42 (36 v0.0 + 6 v0.1)
+- Total plans completed: 43 (36 v0.0 + 7 v0.1)
 - Average duration: 3min
 - Total execution time: 1.35 hours
 
@@ -28,7 +28,7 @@ Progress: [########################..] 86% (24/28 phases)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 25 | 4/4 | 9min | 2.3min |
-| 26 | 2/4 | 2min | 1min |
+| 26 | 3/4 | 6min | 2min |
 | 27 | 0/TBD | - | - |
 | 28 | 0/TBD | - | - |
 
@@ -61,6 +61,8 @@ Recent decisions affecting current work:
 - [26-03]: Timestamps use local time HH:MM format via Date constructor
 - [26-02]: useRef for history+cursor with tick state for re-renders (avoids stale closures in useInput)
 - [26-02]: Append-only input (no mid-text cursor) covers 90%+ of chat use cases
+- [26-01]: Top-level await to pre-resolve async grammar loaders for createHighlighterCoreSync
+- [26-01]: FontStyle constants inline rather than importing @shikijs/vscode-textmate transitive dep
 
 ### Pending Todos
 
@@ -76,5 +78,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 26-02-PLAN.md
+Stopped at: Completed 26-01-PLAN.md
 Resume file: None

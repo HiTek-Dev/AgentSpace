@@ -113,7 +113,7 @@ Requirements for the Product Polish milestone. Each maps to roadmap phases.
 
 ### CLI Visual
 
-- [ ] **CLIV-01**: Code blocks in CLI chat display syntax highlighting via shiki
+- [x] **CLIV-01**: Code blocks in CLI chat display syntax highlighting via shiki
 - [x] **CLIV-02**: Tool call panels are collapsible -- default collapsed showing tool name + status, expand to show args/output
 - [x] **CLIV-03**: User can cycle through previous messages with up/down arrow keys in input
 - [x] **CLIV-04**: Tool output truncated at ~20 lines with "... (N more lines)" indicator
@@ -231,7 +231,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUND-01 | Phase 25 | Complete |
 | FOUND-02 | Phase 25 | Complete |
 | FOUND-03 | Phase 25 | Complete |
-| CLIV-01 | Phase 26 | Pending |
+| CLIV-01 | Phase 26 | Complete |
 | CLIV-02 | Phase 26 | Complete |
 | CLIV-03 | Phase 26 | Complete |
 | CLIV-04 | Phase 26 | Complete |
