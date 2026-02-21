@@ -52,9 +52,9 @@ export function GatewayStatus({ status, port, pid, startedAt, onStart, onStop }:
   }
 
   return (
-    <div className="bg-gray-800 border border-gray-700/50 rounded-xl p-6">
+    <div className="bg-surface-secondary border border-surface-overlay/50 rounded-xl p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-white">Gateway</h2>
+        <h2 className="text-lg font-semibold text-text-primary">Gateway</h2>
         <div className="flex items-center gap-2">
           <span
             className={`inline-block w-2.5 h-2.5 rounded-full ${
@@ -72,16 +72,16 @@ export function GatewayStatus({ status, port, pid, startedAt, onStart, onStop }:
       {isRunning && (
         <div className="grid grid-cols-3 gap-4 mb-4">
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">Port</p>
-            <p className="text-sm text-gray-200 font-mono">{port}</p>
+            <p className="text-xs text-text-muted uppercase tracking-wider">Port</p>
+            <p className="text-sm text-text-secondary font-mono">{port}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">PID</p>
-            <p className="text-sm text-gray-200 font-mono">{pid}</p>
+            <p className="text-xs text-text-muted uppercase tracking-wider">PID</p>
+            <p className="text-sm text-text-secondary font-mono">{pid}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">Uptime</p>
-            <p className="text-sm text-gray-200 font-mono">
+            <p className="text-xs text-text-muted uppercase tracking-wider">Uptime</p>
+            <p className="text-sm text-text-secondary font-mono">
               {startedAt ? formatUptime(startedAt) : '--'}
             </p>
           </div>

@@ -357,11 +357,17 @@ export async function handleChatSend(
 				const approvalPolicy = createApprovalPolicy(config.toolApproval);
 				connState.approvalPolicy = approvalPolicy;
 
+				const agentDef = config.agents?.list?.find(a => a.id === agentId);
+				const workspaceDir = agentDef?.workspaceDir ?? config.workspaceDir;
+				const securityMode = agentDef?.accessMode === 'limited'
+					? 'limited-control'
+					: (config.securityMode ?? "limited-control");
+
 				tools = await buildToolRegistry({
 					mcpManager,
 					mcpConfigs,
-					securityMode: config.securityMode ?? "limited-control",
-					workspaceDir: config.workspaceDir,
+					securityMode,
+					workspaceDir,
 					approvalPolicy,
 					tavilyApiKey: getKey("tavily") ?? undefined,
 					openaiApiKey: getKey("openai") ?? undefined,

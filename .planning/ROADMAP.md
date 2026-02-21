@@ -127,3 +127,32 @@ Phase 25 first, then Phases 26, 27, and 28 can run in parallel.
 | 26. CLI Visual Overhaul | 4/4 | Complete    | 2026-02-21 | - |
 | 27. Desktop UI Overhaul | 6/6 | Complete   | 2026-02-21 | - |
 | 28. Testing Foundation | 3/3 | Complete    | 2026-02-21 | - |
+
+### Phase 29: Sandbox Bug Fixes & Desktop Rebuild
+
+**Goal:** Fix all blocking sandbox bugs (agent identity, tool permissions, preflight errors, gateway start) and rebuild the desktop app from scratch with proper layout, full gateway stream forwarding, and a polished chat experience
+
+**Depends on:** Phase 28
+
+**Scope:**
+
+**Bug fixes (gateway + tools):**
+- Agent personality preset not applied during onboarding (dist.sh missing presets/, TEMPLATE_DIR wrong path)
+- Agent workspaceDir not passed to tool registry (handlers.ts uses global config instead of agent-specific)
+- Folder deletion fails (delete_file uses unlink, needs rmdir for directories)
+- Preflight generation crashes with Venice AI ("Bad Request" — structured output not supported)
+- Desktop gateway start fails (Tauri shell allowlist missing "node" command)
+- Gateway drops tool-input, reasoning, step-boundary stream events (never forwarded to WS clients)
+
+**Desktop app rebuild:**
+- Strip all existing pages/components, start fresh with proper CSS layout
+- Dashboard: gateway status card with start/stop, connection indicator
+- Chat: full-width chat interface with streaming text, tool call display with expand/collapse, reasoning blocks, model badge, thinking indicator
+- Forward all gateway stream events to client (tool-input streaming, reasoning, step boundaries, sources)
+- Proper spacing, margins, padding on every element — no more raw Tailwind class soup
+- Keep React 19 + Vite + Tailwind 4 + Tauri 2 stack (proven solid)
+
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 29 to break down)

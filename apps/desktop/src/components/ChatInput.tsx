@@ -43,7 +43,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
 	);
 
 	return (
-		<div className="border-t border-gray-700 bg-gray-900 px-4 py-3">
+		<div className="border-t border-surface-overlay bg-surface-primary px-4 py-3">
 			<div className="flex items-end gap-2 max-w-4xl mx-auto">
 				<textarea
 					ref={textareaRef}
@@ -55,7 +55,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
 						disabled ? "Waiting for connection..." : "Type a message..."
 					}
 					rows={1}
-					className={`flex-1 resize-none bg-gray-800 border border-gray-600 rounded-xl px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors ${
+					className={`flex-1 resize-none bg-surface-secondary border border-surface-overlay rounded-xl px-4 py-2.5 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-brand-500 transition-colors ${
 						disabled ? "opacity-50 cursor-not-allowed" : ""
 					}`}
 					style={{ lineHeight: "20px" }}
@@ -64,7 +64,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
 					<button
 						type="button"
 						onClick={handleSend}
-						className="flex-shrink-0 w-9 h-9 flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white rounded-full transition-colors"
+						className="flex-shrink-0 w-9 h-9 flex items-center justify-center bg-brand-600 hover:bg-brand-500 text-white rounded-full transition-colors"
 						aria-label="Send message"
 					>
 						<svg

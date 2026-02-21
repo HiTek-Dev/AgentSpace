@@ -88,6 +88,10 @@ Recent decisions affecting current work:
 - [27-03]: Chevron toggle with max-h-0/max-h-96 transition for expandable tool calls
 - [27-06]: Semantic status colors (green/red/yellow) preserved as intentional hardcoded values during token migration
 
+### Roadmap Evolution
+
+- Phase 29 added: Sandbox Bug Fixes & Tool Display UI
+
 ### Pending Todos
 
 - **Daemon mode for gateway** — launchd service for background gateway

@@ -6,8 +6,18 @@ import { resolveAgentDir } from "./agent-resolver.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-/** Path to the bundled template memory-files directory */
-const TEMPLATE_DIR = resolve(__dirname, "../../memory-files");
+/** Path to the bundled template memory-files directory.
+ * Dev: packages/db/src/memory/../../memory-files = packages/db/memory-files/
+ * Deployed: packages/db/dist/memory/../../memory-files = packages/db/memory-files/ (doesn't exist)
+ * Fallback: walk up to the install root (~/tek/memory-files/) */
+const TEMPLATE_DIR = (() => {
+	const devPath = resolve(__dirname, "../../memory-files");
+	if (existsSync(devPath)) return devPath;
+	// Deployed layout: memory-files/ is at the tarball root (4 levels up from packages/db/dist/memory/)
+	const deployedPath = resolve(__dirname, "../../../../memory-files");
+	if (existsSync(deployedPath)) return deployedPath;
+	return devPath; // fallback (may not exist)
+})();
 
 /**
  * Ensure a memory file exists at the CONFIG_DIR location.

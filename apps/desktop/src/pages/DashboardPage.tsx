@@ -152,8 +152,8 @@ export function DashboardPage() {
   const providers = config?.configuredProviders ?? [];
 
   return (
-    <div className="p-6 max-w-3xl">
-      <div className="mb-6">
+    <div className="p-8 max-w-3xl space-y-8">
+      <div>
         <h1 className="text-2xl font-bold text-text-primary">Dashboard</h1>
         <p className="text-text-secondary mt-1 text-sm">Monitor and control your Tek gateway.</p>
       </div>
@@ -168,8 +168,8 @@ export function DashboardPage() {
       />
 
       {/* Usage Stats Cards */}
-      <div className="mt-8">
-        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">Usage Stats</h2>
+      <div>
+        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Usage Stats</h2>
         <div className="grid grid-cols-3 gap-4">
           {/* Total Cost */}
           <div className="bg-surface-secondary border border-surface-overlay rounded-xl p-4">
@@ -225,8 +225,8 @@ export function DashboardPage() {
       </div>
 
       {/* Recent Sessions */}
-      <div className="mt-8">
-        <div className="flex items-center justify-between mb-3">
+      <div>
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">Recent Sessions</h2>
           <button
             onClick={() => setCurrentPage('chat')}
@@ -272,8 +272,8 @@ export function DashboardPage() {
       </div>
 
       {/* System Health */}
-      <div className="mt-8">
-        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">System Health</h2>
+      <div>
+        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">System Health</h2>
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-surface-secondary border border-surface-overlay rounded-xl p-4">
             <p className="text-xs text-text-muted font-medium mb-1">Gateway</p>
@@ -297,8 +297,8 @@ export function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-8">
-        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">Quick Actions</h2>
+      <div>
+        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Quick Actions</h2>
         <div className="grid grid-cols-3 gap-4">
           {quickActions.map(({ label, description, page, icon }) => (
             <button

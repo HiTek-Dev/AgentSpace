@@ -106,6 +106,10 @@ done
 # Copy memory template files (so remote installer can seed them)
 mkdir -p "$SOURCE_DIR/dist/staging/memory-files"
 cp "$SOURCE_DIR/packages/db/memory-files/"*.md "$SOURCE_DIR/dist/staging/memory-files/"
+# Include personality preset templates for agent onboarding
+if [ -d "$SOURCE_DIR/packages/db/memory-files/presets" ]; then
+  cp -r "$SOURCE_DIR/packages/db/memory-files/presets" "$SOURCE_DIR/dist/staging/memory-files/presets"
+fi
 
 # 5. Compute commit hash for unique filenames (avoids CDN edge cache issues)
 COMMIT=$(cd "$SOURCE_DIR" && git rev-parse --short HEAD 2>/dev/null || echo "unknown")

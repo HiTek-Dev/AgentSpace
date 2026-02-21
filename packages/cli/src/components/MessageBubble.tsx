@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Text } from "ink";
 import type { ChatMessage } from "../lib/gateway-client.js";
 import { MarkdownRenderer } from "./MarkdownRenderer.js";
-import { truncateOutput } from "../lib/truncate.js";
 
 interface MessageBubbleProps {
 	message: ChatMessage;
@@ -29,7 +28,7 @@ function formatTimestamp(iso: string): string {
  * Tool and bash output is truncated at 20 lines.
  */
 export function MessageBubble({ message }: MessageBubbleProps) {
-	const ts = <Text dimColor>{formatTimestamp(message.timestamp)}</Text>;
+	const ts = <Text dimColor>{"  "}{formatTimestamp(message.timestamp)}</Text>;
 
 	switch (message.type) {
 		case "text": {
@@ -76,50 +75,59 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 			break;
 		}
 
-		case "tool_call":
+		case "tool_call": {
+			const statusIcon =
+				message.status === "complete" ? <Text color="green">{"✓"}</Text> :
+				message.status === "error" ? <Text color="red">{"✗"}</Text> :
+				<Text color="yellow">{"⋯"}</Text>;
 			return (
-				<Box flexDirection="column" marginBottom={1}>
+				<Box>
 					<Box justifyContent="space-between" width="100%">
-						<Text bold color="blue">
-							{"# Tool: "}
-							{message.toolName}
-						</Text>
+						<Box gap={1}>
+							<Text dimColor>{"▶"}</Text>
+							<Text bold color="blue">{message.toolName}</Text>
+							{statusIcon}
+						</Box>
 						{ts}
 					</Box>
-					<Text dimColor>{message.input}</Text>
-					{message.output && (
-						<Text>{truncateOutput(message.output)}</Text>
-					)}
 				</Box>
 			);
+		}
 
-		case "bash_command":
+		case "bash_command": {
+			const cmdPreview = message.command.length > 60
+				? message.command.slice(0, 57) + "..."
+				: message.command;
+			const exitIcon =
+				message.exitCode === undefined ? <Text color="yellow">{"⋯"}</Text> :
+				message.exitCode === 0 ? <Text color="green">{"✓"}</Text> :
+				<Text color="red">{"✗"}</Text>;
 			return (
-				<Box flexDirection="column" marginBottom={1}>
+				<Box>
 					<Box justifyContent="space-between" width="100%">
-						<Text bold color="green">
-							{"$ "}
-							{message.command}
-						</Text>
+						<Box gap={1}>
+							<Text bold color="green">{"$"}</Text>
+							<Text dimColor>{cmdPreview}</Text>
+							{exitIcon}
+						</Box>
 						{ts}
 					</Box>
-					{message.output && (
-						<Text dimColor>{truncateOutput(message.output)}</Text>
-					)}
 				</Box>
 			);
+		}
 
-		case "reasoning":
+		case "reasoning": {
+			const preview = message.content.length > 80
+				? message.content.slice(0, 77) + "..."
+				: message.content;
 			return (
-				<Box marginBottom={1}>
+				<Box>
 					<Box justifyContent="space-between" width="100%">
-						<Text dimColor italic>
-							{"~ "}
-							{message.content}
-						</Text>
+						<Text dimColor italic>{"~ "}{preview}</Text>
 						{ts}
 					</Box>
 				</Box>
 			);
+		}
 	}
 }

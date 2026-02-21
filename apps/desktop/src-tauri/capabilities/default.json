@@ -22,7 +22,8 @@
     {
       "identifier": "shell:allow-execute",
       "allow": [
-        { "name": "tek", "cmd": "tek", "args": true }
+        { "name": "tek", "cmd": "tek", "args": true },
+        { "name": "node", "cmd": "node", "args": true }
       ]
     },
     "process:default"
