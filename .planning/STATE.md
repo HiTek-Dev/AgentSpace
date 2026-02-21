@@ -10,16 +10,16 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 26 of 28 (CLI Visual Overhaul)
-Plan: 3 of 4
-Status: Executing phase 26
-Last activity: 2026-02-21 — Completed 26-01 (Shiki Syntax Highlighting)
+Plan: 4 of 4 (COMPLETE)
+Status: Phase 26 complete
+Last activity: 2026-02-21 — Completed 26-04 (Welcome Screen, StatusBar & Tool Panel)
 
 Progress: [########################..] 86% (24/28 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 43 (36 v0.0 + 7 v0.1)
+- Total plans completed: 44 (36 v0.0 + 8 v0.1)
 - Average duration: 3min
 - Total execution time: 1.35 hours
 
@@ -28,12 +28,12 @@ Progress: [########################..] 86% (24/28 phases)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 25 | 4/4 | 9min | 2.3min |
-| 26 | 3/4 | 6min | 2min |
+| 26 | 4/4 | 7min | 1.8min |
 | 27 | 0/TBD | - | - |
 | 28 | 0/TBD | - | - |
 
 **Recent Trend:**
-- Last 5 plans: 1min, 2min, 1min, 1min, 1min
+- Last 5 plans: 2min, 1min, 1min, 1min, 1min
 - Trend: Stable (~2min avg)
 
 *Updated after each plan completion*
@@ -63,6 +63,8 @@ Recent decisions affecting current work:
 - [26-02]: Append-only input (no mid-text cursor) covers 90%+ of chat use cases
 - [26-01]: Top-level await to pre-resolve async grammar loaders for createHighlighterCoreSync
 - [26-01]: FontStyle constants inline rather than importing @shikijs/vscode-textmate transitive dep
+- [26-04]: StatusBar borderless single-line; session ID removed (available via /session command)
+- [26-04]: WelcomeScreen fully static, disappears on first message or streaming start
 
 ### Pending Todos
 
@@ -78,5 +80,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 26-01-PLAN.md
+Stopped at: Completed 26-04-PLAN.md (Phase 26 complete)
 Resume file: None
