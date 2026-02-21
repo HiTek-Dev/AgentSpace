@@ -1,8 +1,16 @@
 import type { Page } from '../App';
+import type { Session } from '../hooks/useSessions';
+import { SessionList } from './sidebar/SessionList';
 
 interface SidebarProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
+  collapsed: boolean;
+  onToggle: () => void;
+  sessions: Session[];
+  sessionsLoading?: boolean;
+  onSelectSession: (sessionId: string) => void;
+  onRefreshSessions?: () => void;
 }
 
 const icons: Record<string, React.ReactNode> = {
@@ -40,28 +48,85 @@ const navItems: { page: Page; label: string; icon: React.ReactNode }[] = [
   { page: 'settings', label: 'Settings', icon: icons.settings },
 ];
 
-export function Sidebar({ currentPage, onNavigate }: SidebarProps) {
+export function Sidebar({
+  currentPage,
+  onNavigate,
+  collapsed,
+  onToggle,
+  sessions,
+  sessionsLoading = false,
+  onSelectSession,
+  onRefreshSessions,
+}: SidebarProps) {
   return (
-    <aside className="w-56 h-full bg-[#1a1a1a] border-r border-[#2a2a2a] flex flex-col">
-      <div className="p-4 border-b border-[#2a2a2a]">
-        <h1 className="text-xl font-bold text-white tracking-tight">Tek</h1>
+    <aside
+      className={`h-full bg-surface-secondary border-r border-surface-overlay flex flex-col transition-all duration-200 ${
+        collapsed ? 'w-14' : 'w-56'
+      }`}
+    >
+      {/* Header */}
+      <div className="p-4 border-b border-surface-overlay flex items-center justify-between">
+        {!collapsed && (
+          <h1 className="text-xl font-bold text-white tracking-tight">Tek</h1>
+        )}
+        <button
+          onClick={onToggle}
+          className={`text-text-muted hover:text-text-secondary transition-colors ${collapsed ? 'mx-auto' : ''}`}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {collapsed ? (
+              <polyline points="9 18 15 12 9 6" />
+            ) : (
+              <polyline points="15 18 9 12 15 6" />
+            )}
+          </svg>
+        </button>
       </div>
-      <nav className="flex-1 px-3 py-3 space-y-1">
+
+      {/* Navigation */}
+      <nav className="px-2 py-3 space-y-1">
         {navItems.map(({ page, label, icon }) => (
           <button
             key={page}
             onClick={() => onNavigate(page)}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+              collapsed ? 'justify-center' : ''
+            } ${
               currentPage === page
-                ? 'bg-blue-500/20 text-blue-400'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-[#252525]'
+                ? 'bg-brand-500/20 text-brand-400'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-surface-elevated'
             }`}
+            title={collapsed ? label : undefined}
           >
             {icon}
-            <span>{label}</span>
+            {!collapsed && <span>{label}</span>}
           </button>
         ))}
       </nav>
+
+      {/* Divider */}
+      <div className="mx-3 border-t border-surface-overlay" />
+
+      {/* Session list */}
+      <div className="flex-1 overflow-y-auto">
+        <SessionList
+          sessions={sessions}
+          loading={sessionsLoading}
+          collapsed={collapsed}
+          onSelectSession={onSelectSession}
+          onRefresh={onRefreshSessions}
+        />
+      </div>
     </aside>
   );
 }

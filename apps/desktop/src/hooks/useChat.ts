@@ -23,6 +23,7 @@ export interface UseChatReturn {
 	error: string | null;
 	sendMessage: (text: string) => void;
 	clearMessages: () => void;
+	setSessionId: (id: string | null) => void;
 }
 
 /**
@@ -171,5 +172,6 @@ export function useChat(opts: UseChatOptions): UseChatReturn {
 		error,
 		sendMessage,
 		clearMessages,
+		setSessionId,
 	};
 }

@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useAppStore } from "../stores/app-store";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { useChat } from "../hooks/useChat";
 import { useConfig } from "../hooks/useConfig";
+import { useSessions } from "../hooks/useSessions";
 import { ChatMessage } from "../components/ChatMessage";
 import { StreamingText } from "../components/StreamingText";
 import { ChatInput } from "../components/ChatInput";
@@ -16,6 +17,9 @@ export function ChatPage() {
 	const gateway = useAppStore((s) => s.gateway);
 	const selectedAgentId = useAppStore((s) => s.selectedAgentId);
 	const setSelectedAgentId = useAppStore((s) => s.setSelectedAgentId);
+	const setSessions = useAppStore((s) => s.setSessions);
+	const resumeSessionId = useAppStore((s) => s.resumeSessionId);
+	const setResumeSessionId = useAppStore((s) => s.setResumeSessionId);
 	const { config } = useConfig();
 
 	const agents = config?.agents?.list ?? [];
@@ -44,6 +48,31 @@ export function ChatPage() {
 		connected: ws.connected,
 		agentId: selectedAgentId ?? undefined,
 	});
+
+	// Fetch sessions and sync to store
+	const sessionData = useSessions(
+		ws.send,
+		ws.addMessageHandler,
+		ws.removeMessageHandler,
+		ws.connected,
+	);
+
+	useEffect(() => {
+		setSessions(sessionData.sessions);
+	}, [sessionData.sessions, setSessions]);
+
+	// Handle resume session from sidebar click
+	const resumeHandled = useRef(false);
+	useEffect(() => {
+		if (resumeSessionId && !resumeHandled.current) {
+			resumeHandled.current = true;
+			// Set the sessionId for the next chat message
+			chat.setSessionId(resumeSessionId);
+			setResumeSessionId(null);
+		} else if (!resumeSessionId) {
+			resumeHandled.current = false;
+		}
+	}, [resumeSessionId, chat, setResumeSessionId]);
 
 	// Auto-scroll to bottom
 	const scrollRef = useRef<HTMLDivElement>(null);

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { RuntimeInfo } from '../lib/discovery';
 import type { Page } from '../App';
+import type { Session } from '../hooks/useSessions';
 
 export interface GatewayState {
   status: 'unknown' | 'running' | 'stopped';
@@ -16,6 +17,12 @@ interface AppState {
   setCurrentPage: (page: Page) => void;
   selectedAgentId: string | null;
   setSelectedAgentId: (id: string | null) => void;
+  sidebarCollapsed: boolean;
+  toggleSidebar: () => void;
+  sessions: Session[];
+  setSessions: (sessions: Session[]) => void;
+  resumeSessionId: string | null;
+  setResumeSessionId: (id: string | null) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -48,4 +55,13 @@ export const useAppStore = create<AppState>((set) => ({
 
   selectedAgentId: null,
   setSelectedAgentId: (id: string | null) => set({ selectedAgentId: id }),
+
+  sidebarCollapsed: false,
+  toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+
+  sessions: [],
+  setSessions: (sessions: Session[]) => set({ sessions }),
+
+  resumeSessionId: null,
+  setResumeSessionId: (id: string | null) => set({ resumeSessionId: id }),
 }));
