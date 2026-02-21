@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 28 — Testing Foundation (v0.1 Product Polish)
+**Current focus:** Phase 27 — Desktop UI Overhaul (v0.1 Product Polish)
 
 ## Current Position
 
-Phase: 28 of 28 (Testing Foundation)
-Plan: 3 of 3 (COMPLETE)
-Status: Phase 28 complete
-Last activity: 2026-02-21 — Completed 28-03 (Agent Loop & Context Assembly Tests)
+Phase: 27 of 28 (Desktop UI Overhaul)
+Plan: 1 of 5
+Status: Executing phase 27
+Last activity: 2026-02-21 — Completed 27-01 (Design System Foundation)
 
 Progress: [############################] 100% (28/28 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 46 (36 v0.0 + 10 v0.1)
+- Total plans completed: 47 (36 v0.0 + 11 v0.1)
 - Average duration: 3min
 - Total execution time: 1.43 hours
 
@@ -29,7 +29,7 @@ Progress: [############################] 100% (28/28 phases)
 |-------|-------|-------|----------|
 | 25 | 4/4 | 9min | 2.3min |
 | 26 | 4/4 | 7min | 1.8min |
-| 27 | 0/TBD | - | - |
+| 27 | 1/5 | 1min | 1min |
 | 28 | 3/3 | 5min | 1.7min |
 
 **Recent Trend:**
@@ -72,6 +72,8 @@ Recent decisions affecting current work:
 - [28-03]: AI SDK v6 doStream text-delta uses `delta` field not `textDelta` at model layer
 - [28-03]: vi.hoisted + class syntax for mocking constructors (MemoryManager/ThreadManager)
 - [28-03]: Tool-call streaming tests deferred pending source refactoring (too coupled to AI SDK internals)
+- [27-01]: Indigo palette for brand colors (brand-400 through brand-600)
+- [27-01]: Dark surface scale: #0f0f0f -> #1a1a1a -> #252525 -> #2a2a2a
 
 ### Pending Todos
 
@@ -87,5 +89,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 28-03-PLAN.md (Phase 28 complete)
+Stopped at: Completed 27-01-PLAN.md
 Resume file: None

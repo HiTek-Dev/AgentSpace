@@ -91,7 +91,7 @@ Plans:
   3. Conversation history sidebar lists past sessions with preview text and timestamps; user can click to resume a previous session
   4. Chat messages display as polished cards (user right-aligned, assistant with model badge, tool calls expandable) with subtle page transition animations
   5. App has a defined brand color palette, consistent typography scale, collapsible sidebar, loading states for async operations, enriched dashboard, and organized settings page
-**Plans:** 5 plans
+**Plans:** 1/5 plans executed
 Plans:
 - [ ] 27-01-PLAN.md — Design system foundation (brand tokens, typography, UI primitives)
 - [ ] 27-02-PLAN.md — Markdown rendering with syntax highlighting and copy button
@@ -124,5 +124,5 @@ Phase 25 first, then Phases 26, 27, and 28 can run in parallel.
 |-------|-----------|----------------|--------|-----------|
 | 25. Foundation & Blockers | 4/4 | Complete    | 2026-02-20 | - |
 | 26. CLI Visual Overhaul | 4/4 | Complete    | 2026-02-21 | - |
-| 27. Desktop UI Overhaul | v0.1 | 0/TBD | Not started | - |
+| 27. Desktop UI Overhaul | 1/5 | In Progress|  | - |
 | 28. Testing Foundation | 3/3 | Complete    | 2026-02-21 | - |
