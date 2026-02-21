@@ -37,6 +37,7 @@ Progress: [############################] 100% (28/28 phases)
 - Trend: Stable (~2min avg)
 
 *Updated after each plan completion*
+| Phase 27 P02 | 2min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Recent decisions affecting current work:
 - [27-05]: Dashboard WebSocket connection inline (same pattern as ChatPage) for usage/session queries
 - [27-05]: Memory status indicator based on gateway running state (no dedicated memory endpoint)
 - [27-05]: Settings footer (Save/Reload) placed outside tabs for persistent visibility
+- [Phase 27]: react-shiki for syntax highlighting (lazy-loads grammars, matches CLI shiki choice)
+- [Phase 27]: Streaming text stays plain whitespace-pre-wrap (no markdown parsing mid-stream)
 
 ### Pending Todos
 
@@ -94,5 +97,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 27-05-PLAN.md
+Stopped at: Completed 27-02-PLAN.md
 Resume file: None

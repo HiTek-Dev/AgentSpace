@@ -91,13 +91,13 @@ Plans:
   3. Conversation history sidebar lists past sessions with preview text and timestamps; user can click to resume a previous session
   4. Chat messages display as polished cards (user right-aligned, assistant with model badge, tool calls expandable) with subtle page transition animations
   5. App has a defined brand color palette, consistent typography scale, collapsible sidebar, loading states for async operations, enriched dashboard, and organized settings page
-**Plans:** 2/5 plans executed
+**Plans:** 4/5 plans executed
 Plans:
-- [ ] 27-01-PLAN.md — Design system foundation (brand tokens, typography, UI primitives)
+- [x] 27-01-PLAN.md — Design system foundation (brand tokens, typography, UI primitives)
 - [ ] 27-02-PLAN.md — Markdown rendering with syntax highlighting and copy button
 - [ ] 27-03-PLAN.md — Tool approval modal and chat card redesign
-- [ ] 27-04-PLAN.md — Collapsible sidebar, session history, page transitions
-- [ ] 27-05-PLAN.md — Dashboard enrichment and tabbed settings
+- [x] 27-04-PLAN.md — Collapsible sidebar, session history, page transitions
+- [x] 27-05-PLAN.md — Dashboard enrichment and tabbed settings
 
 ### Phase 28: Testing Foundation
 **Goal**: Critical gateway paths have automated test coverage so future changes catch regressions before they ship
@@ -124,5 +124,5 @@ Phase 25 first, then Phases 26, 27, and 28 can run in parallel.
 |-------|-----------|----------------|--------|-----------|
 | 25. Foundation & Blockers | 4/4 | Complete    | 2026-02-20 | - |
 | 26. CLI Visual Overhaul | 4/4 | Complete    | 2026-02-21 | - |
-| 27. Desktop UI Overhaul | 2/5 | In Progress|  | - |
+| 27. Desktop UI Overhaul | 4/5 | In Progress|  | - |
 | 28. Testing Foundation | 3/3 | Complete    | 2026-02-21 | - |

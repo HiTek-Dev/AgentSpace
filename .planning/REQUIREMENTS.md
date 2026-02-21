@@ -124,8 +124,8 @@ Requirements for the Product Polish milestone. Each maps to roadmap phases.
 
 ### Desktop Visual
 
-- [ ] **DSKV-01**: Assistant messages render full markdown (headers, code blocks, lists, tables, inline code, links) with syntax highlighting
-- [ ] **DSKV-02**: Code blocks have a copy-to-clipboard button
+- [x] **DSKV-01**: Assistant messages render full markdown (headers, code blocks, lists, tables, inline code, links) with syntax highlighting
+- [x] **DSKV-02**: Code blocks have a copy-to-clipboard button
 - [ ] **DSKV-03**: User can approve/deny/session-approve tool calls from the desktop app via modal with argument preview
 - [x] **DSKV-04**: Async operations show loading states (skeleton loaders, spinners, disabled states)
 - [x] **DSKV-05**: Conversation history sidebar lists past sessions with preview, timestamp, and click-to-resume
@@ -239,8 +239,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CLIV-06 | Phase 26 | Complete |
 | CLIV-07 | Phase 26 | Complete |
 | CLIV-08 | Phase 26 | Complete |
-| DSKV-01 | Phase 27 | Pending |
-| DSKV-02 | Phase 27 | Pending |
+| DSKV-01 | Phase 27 | Complete |
+| DSKV-02 | Phase 27 | Complete |
 | DSKV-03 | Phase 27 | Pending |
 | DSKV-04 | Phase 27 | Complete |
 | DSKV-05 | Phase 27 | Complete |
