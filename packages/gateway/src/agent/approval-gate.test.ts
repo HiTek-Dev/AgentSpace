@@ -19,6 +19,7 @@ describe("createApprovalPolicy", () => {
 	it("accepts custom config", () => {
 		const policy = createApprovalPolicy({
 			defaultTier: "always",
+			approvalTimeout: 60000,
 			perTool: { shell: "auto" },
 		});
 		expect(policy.defaultTier).toBe("always");
@@ -31,28 +32,28 @@ describe("createApprovalPolicy", () => {
 
 describe("checkApproval", () => {
 	it("returns false for auto tier", () => {
-		const policy = createApprovalPolicy({ defaultTier: "auto" });
+		const policy = createApprovalPolicy({ defaultTier: "auto", approvalTimeout: 60000 });
 		expect(checkApproval("any-tool", policy)).toBe(false);
 	});
 
 	it("returns true for always tier", () => {
-		const policy = createApprovalPolicy({ defaultTier: "always" });
+		const policy = createApprovalPolicy({ defaultTier: "always", approvalTimeout: 60000 });
 		expect(checkApproval("any-tool", policy)).toBe(true);
 	});
 
 	it("returns true for session tier on first call", () => {
-		const policy = createApprovalPolicy({ defaultTier: "session" });
+		const policy = createApprovalPolicy({ defaultTier: "session", approvalTimeout: 60000 });
 		expect(checkApproval("shell", policy)).toBe(true);
 	});
 
 	it("returns false for session tier after approval recorded", () => {
-		const policy = createApprovalPolicy({ defaultTier: "session" });
+		const policy = createApprovalPolicy({ defaultTier: "session", approvalTimeout: 60000 });
 		recordSessionApproval("shell", policy);
 		expect(checkApproval("shell", policy)).toBe(false);
 	});
 
 	it("still requires approval for different tool after approving one", () => {
-		const policy = createApprovalPolicy({ defaultTier: "session" });
+		const policy = createApprovalPolicy({ defaultTier: "session", approvalTimeout: 60000 });
 		recordSessionApproval("shell", policy);
 		expect(checkApproval("fetch", policy)).toBe(true);
 	});
@@ -60,6 +61,7 @@ describe("checkApproval", () => {
 	it("uses perTool override over defaultTier", () => {
 		const policy = createApprovalPolicy({
 			defaultTier: "session",
+			approvalTimeout: 60000,
 			perTool: { shell: "auto" },
 		});
 		expect(checkApproval("shell", policy)).toBe(false); // auto -> false
@@ -89,7 +91,7 @@ describe("recordSessionApproval", () => {
 
 describe("wrapToolWithApproval", () => {
 	it("adds _approvalTier matching effective tier", () => {
-		const policy = createApprovalPolicy({ defaultTier: "session" });
+		const policy = createApprovalPolicy({ defaultTier: "session", approvalTimeout: 60000 });
 		const tool = { execute: vi.fn() };
 		const wrapped = wrapToolWithApproval("shell", tool, policy);
 		expect(wrapped._approvalTier).toBe("session");
@@ -107,6 +109,7 @@ describe("wrapToolWithApproval", () => {
 	it("uses perTool tier for _approvalTier", () => {
 		const policy = createApprovalPolicy({
 			defaultTier: "session",
+			approvalTimeout: 60000,
 			perTool: { shell: "auto" },
 		});
 		const tool = { execute: vi.fn() };
