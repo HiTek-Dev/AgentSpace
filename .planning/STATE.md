@@ -10,16 +10,16 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 27 of 28 (Desktop UI Overhaul)
-Plan: 1 of 5
+Plan: 4 of 5
 Status: Executing phase 27
-Last activity: 2026-02-21 — Completed 27-01 (Design System Foundation)
+Last activity: 2026-02-21 — Completed 27-04 (Sidebar & Sessions)
 
 Progress: [############################] 100% (28/28 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 47 (36 v0.0 + 11 v0.1)
+- Total plans completed: 48 (36 v0.0 + 12 v0.1)
 - Average duration: 3min
 - Total execution time: 1.43 hours
 
@@ -29,11 +29,11 @@ Progress: [############################] 100% (28/28 phases)
 |-------|-------|-------|----------|
 | 25 | 4/4 | 9min | 2.3min |
 | 26 | 4/4 | 7min | 1.8min |
-| 27 | 1/5 | 1min | 1min |
+| 27 | 2/5 | 4min | 2min |
 | 28 | 3/3 | 5min | 1.7min |
 
 **Recent Trend:**
-- Last 5 plans: 1min, 1min, 1min, 1min, 3min
+- Last 5 plans: 1min, 1min, 1min, 3min, 3min
 - Trend: Stable (~2min avg)
 
 *Updated after each plan completion*
@@ -74,6 +74,8 @@ Recent decisions affecting current work:
 - [28-03]: Tool-call streaming tests deferred pending source refactoring (too coupled to AI SDK internals)
 - [27-01]: Indigo palette for brand colors (brand-400 through brand-600)
 - [27-01]: Dark surface scale: #0f0f0f -> #1a1a1a -> #252525 -> #2a2a2a
+- [27-04]: Session resume via store-mediated resumeSessionId (set in sidebar, consumed in ChatPage)
+- [27-04]: Expose setSessionId from useChat for external session resume control
 
 ### Pending Todos
 
@@ -89,5 +91,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 27-01-PLAN.md
+Stopped at: Completed 27-04-PLAN.md
 Resume file: None

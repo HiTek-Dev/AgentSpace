@@ -128,12 +128,12 @@ Requirements for the Product Polish milestone. Each maps to roadmap phases.
 - [ ] **DSKV-02**: Code blocks have a copy-to-clipboard button
 - [ ] **DSKV-03**: User can approve/deny/session-approve tool calls from the desktop app via modal with argument preview
 - [x] **DSKV-04**: Async operations show loading states (skeleton loaders, spinners, disabled states)
-- [ ] **DSKV-05**: Conversation history sidebar lists past sessions with preview, timestamp, and click-to-resume
+- [x] **DSKV-05**: Conversation history sidebar lists past sessions with preview, timestamp, and click-to-resume
 - [x] **DSKV-06**: Brand color palette defined and applied (primary, secondary, accent colors replacing generic blue/gray)
 - [x] **DSKV-07**: Typography system applied (UI font + monospace code font with consistent scale)
 - [ ] **DSKV-08**: Chat messages redesigned as polished cards (user right-aligned, assistant with model badge, tool calls expandable)
-- [ ] **DSKV-09**: Page transitions with subtle fade animation
-- [ ] **DSKV-10**: Sidebar is collapsible to icon-only mode with smooth transition
+- [x] **DSKV-09**: Page transitions with subtle fade animation
+- [x] **DSKV-10**: Sidebar is collapsible to icon-only mode with smooth transition
 - [ ] **DSKV-11**: Dashboard shows usage stats, recent sessions, memory activity, system health
 - [ ] **DSKV-12**: Settings page organized with tabs/accordion, provider health indicators
 
@@ -243,12 +243,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DSKV-02 | Phase 27 | Pending |
 | DSKV-03 | Phase 27 | Pending |
 | DSKV-04 | Phase 27 | Complete |
-| DSKV-05 | Phase 27 | Pending |
+| DSKV-05 | Phase 27 | Complete |
 | DSKV-06 | Phase 27 | Complete |
 | DSKV-07 | Phase 27 | Complete |
 | DSKV-08 | Phase 27 | Pending |
-| DSKV-09 | Phase 27 | Pending |
-| DSKV-10 | Phase 27 | Pending |
+| DSKV-09 | Phase 27 | Complete |
+| DSKV-10 | Phase 27 | Complete |
 | DSKV-11 | Phase 27 | Pending |
 | DSKV-12 | Phase 27 | Pending |
 | TEST-01 | Phase 28 | Complete |
