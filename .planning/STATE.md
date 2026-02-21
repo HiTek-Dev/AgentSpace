@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 27 of 28 (Desktop UI Overhaul)
-Plan: 1 of 5
+Plan: 5 of 5
 Status: Executing phase 27
-Last activity: 2026-02-21 — Completed 27-01 (Design System Foundation)
+Last activity: 2026-02-21 — Completed 27-05 (Dashboard & Settings Enrichment)
 
 Progress: [############################] 100% (28/28 phases)
 
@@ -29,7 +29,7 @@ Progress: [############################] 100% (28/28 phases)
 |-------|-------|-------|----------|
 | 25 | 4/4 | 9min | 2.3min |
 | 26 | 4/4 | 7min | 1.8min |
-| 27 | 1/5 | 1min | 1min |
+| 27 | 2/5 | 3min | 1.5min |
 | 28 | 3/3 | 5min | 1.7min |
 
 **Recent Trend:**
@@ -74,6 +74,9 @@ Recent decisions affecting current work:
 - [28-03]: Tool-call streaming tests deferred pending source refactoring (too coupled to AI SDK internals)
 - [27-01]: Indigo palette for brand colors (brand-400 through brand-600)
 - [27-01]: Dark surface scale: #0f0f0f -> #1a1a1a -> #252525 -> #2a2a2a
+- [27-05]: Dashboard WebSocket connection inline (same pattern as ChatPage) for usage/session queries
+- [27-05]: Memory status indicator based on gateway running state (no dedicated memory endpoint)
+- [27-05]: Settings footer (Save/Reload) placed outside tabs for persistent visibility
 
 ### Pending Todos
 
@@ -89,5 +92,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 27-01-PLAN.md
+Stopped at: Completed 27-05-PLAN.md
 Resume file: None

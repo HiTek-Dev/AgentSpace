@@ -134,8 +134,8 @@ Requirements for the Product Polish milestone. Each maps to roadmap phases.
 - [ ] **DSKV-08**: Chat messages redesigned as polished cards (user right-aligned, assistant with model badge, tool calls expandable)
 - [ ] **DSKV-09**: Page transitions with subtle fade animation
 - [ ] **DSKV-10**: Sidebar is collapsible to icon-only mode with smooth transition
-- [ ] **DSKV-11**: Dashboard shows usage stats, recent sessions, memory activity, system health
-- [ ] **DSKV-12**: Settings page organized with tabs/accordion, provider health indicators
+- [x] **DSKV-11**: Dashboard shows usage stats, recent sessions, memory activity, system health
+- [x] **DSKV-12**: Settings page organized with tabs/accordion, provider health indicators
 
 ### Testing
 
@@ -249,8 +249,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DSKV-08 | Phase 27 | Pending |
 | DSKV-09 | Phase 27 | Pending |
 | DSKV-10 | Phase 27 | Pending |
-| DSKV-11 | Phase 27 | Pending |
-| DSKV-12 | Phase 27 | Pending |
+| DSKV-11 | Phase 27 | Complete |
+| DSKV-12 | Phase 27 | Complete |
 | TEST-01 | Phase 28 | Complete |
 | TEST-02 | Phase 28 | Complete |
 | TEST-03 | Phase 28 | Complete |
