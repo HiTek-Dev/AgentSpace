@@ -1,10 +1,18 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import {
 	createChatSendMessage,
+	createToolApprovalResponse,
 	type ChatMessage,
 	type TextMessage,
 	type ToolCallMessage,
 } from "../lib/gateway-client";
+
+export interface ToolApprovalRequest {
+	toolCallId: string;
+	toolName: string;
+	args: unknown;
+	risk?: string;
+}
 
 export interface UseChatOptions {
 	send: (msg: object) => void;
@@ -21,9 +29,11 @@ export interface UseChatReturn {
 	sessionId: string | null;
 	model: string | null;
 	error: string | null;
+	pendingApprovals: ToolApprovalRequest[];
 	sendMessage: (text: string) => void;
 	clearMessages: () => void;
 	setSessionId: (id: string | null) => void;
+	handleApproval: (approved: boolean, sessionApprove?: boolean) => void;
 }
 
 /**
@@ -38,6 +48,7 @@ export function useChat(opts: UseChatOptions): UseChatReturn {
 	const [sessionId, setSessionId] = useState<string | null>(null);
 	const [model, setModel] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
+	const [pendingApprovals, setPendingApprovals] = useState<ToolApprovalRequest[]>([]);
 
 	const optsRef = useRef(opts);
 	optsRef.current = opts;
@@ -104,6 +115,17 @@ export function useChat(opts: UseChatOptions): UseChatReturn {
 					break;
 				}
 
+				case "tool.approval.request": {
+					const req: ToolApprovalRequest = {
+						toolCallId: m.toolCallId as string,
+						toolName: m.toolName as string,
+						args: m.args,
+						risk: m.risk as string | undefined,
+					};
+					setPendingApprovals((prev) => [...prev, req]);
+					break;
+				}
+
 				case "tool.result": {
 					const tcId = m.toolCallId as string;
 					const resultStr =
@@ -156,6 +178,23 @@ export function useChat(opts: UseChatOptions): UseChatReturn {
 		[sessionId],
 	);
 
+	const handleApproval = useCallback(
+		(approved: boolean, sessionApprove?: boolean) => {
+			setPendingApprovals((prev) => {
+				if (prev.length === 0) return prev;
+				const [first, ...rest] = prev;
+				const response = createToolApprovalResponse(
+					first.toolCallId,
+					approved,
+					sessionApprove,
+				);
+				optsRef.current.send(response);
+				return rest;
+			});
+		},
+		[],
+	);
+
 	const clearMessages = useCallback(() => {
 		setMessages([]);
 		setStreamingText("");
@@ -170,8 +209,10 @@ export function useChat(opts: UseChatOptions): UseChatReturn {
 		sessionId,
 		model,
 		error,
+		pendingApprovals,
 		sendMessage,
 		clearMessages,
 		setSessionId,
+		handleApproval,
 	};
 }
