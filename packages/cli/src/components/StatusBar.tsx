@@ -13,39 +13,26 @@ interface StatusBarProps {
 }
 
 /**
- * Single-line status bar showing connection state, session, model, and usage.
- * Displayed at the top of the chat interface.
+ * Compact single-line status bar with three zones: connection + name, model, usage.
+ * No border — saves 2 vertical lines compared to the old bordered layout.
  */
-export function StatusBar({ connected, sessionId, model, usage }: StatusBarProps) {
+export function StatusBar({ connected, model, usage }: StatusBarProps) {
 	// Shorten model name for display (e.g., "claude-sonnet-4-5-20250929" -> "sonnet-4-5")
 	const shortModel = model
 		.replace("claude-", "")
 		.replace(/-\d{8}$/, "");
 
-	const sessionDisplay = sessionId ? sessionId.slice(0, 8) : "No session";
-
 	return (
-		<Box
-			borderStyle="single"
-			borderColor="gray"
-			paddingX={1}
-			justifyContent="space-between"
-		>
+		<Box justifyContent="space-between">
 			<Box>
-				<Text color={connected ? "green" : "red"}>
-					{"● "}
-				</Text>
+				<Text color={connected ? "green" : "red"}>{"● "}</Text>
 				<Text bold>{DISPLAY_NAME}</Text>
 			</Box>
-			<Text dimColor>{sessionDisplay}</Text>
-			<Box>
-				<Text color="cyan">{shortModel}</Text>
-				<Text dimColor>
-					{" "}
-					{usage.totalTokens.toLocaleString()} tok | $
-					{usage.totalCost.toFixed(4)}
-				</Text>
-			</Box>
+			<Text color="cyan">{shortModel}</Text>
+			<Text dimColor>
+				{usage.totalTokens.toLocaleString()} tok · $
+				{usage.totalCost.toFixed(2)}
+			</Text>
 		</Box>
 	);
 }
