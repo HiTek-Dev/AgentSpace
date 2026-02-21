@@ -44,7 +44,7 @@
 - [x] **Phase 25: Foundation & Blockers** - Vault extraction, error boundaries, Vitest workspace, WS auto-reconnect (completed 2026-02-20)
 - [x] **Phase 26: CLI Visual Overhaul** - Syntax highlighting, collapsible panels, input history, StatusBar redesign (completed 2026-02-21)
 - [ ] **Phase 27: Desktop UI Overhaul** - Markdown rendering, tool approval modal, conversation history, design system
-- [ ] **Phase 28: Testing Foundation** - WS protocol tests, config schema tests, router tests, approval gate tests, agent loop tests, context assembly tests
+- [x] **Phase 28: Testing Foundation** - WS protocol tests, config schema tests, router tests, approval gate tests, agent loop tests, context assembly tests (completed 2026-02-21)
 
 ## Phase Details
 
@@ -125,4 +125,4 @@ Phase 25 first, then Phases 26, 27, and 28 can run in parallel.
 | 25. Foundation & Blockers | 4/4 | Complete    | 2026-02-20 | - |
 | 26. CLI Visual Overhaul | 4/4 | Complete    | 2026-02-21 | - |
 | 27. Desktop UI Overhaul | v0.1 | 0/TBD | Not started | - |
-| 28. Testing Foundation | 2/3 | In Progress|  | - |
+| 28. Testing Foundation | 3/3 | Complete   | 2026-02-21 | - |
