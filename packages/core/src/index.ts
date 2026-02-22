@@ -25,6 +25,9 @@ export {
 	CLI_COMMAND,
 	DB_NAME,
 	KEYCHAIN_SERVICE,
+	getInstallDir,
+	validateUninstallTarget,
+	INSTALL_PATH_FILE,
 } from "./config/index.js";
 export type {
 	AppConfig,

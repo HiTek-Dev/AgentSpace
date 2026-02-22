@@ -3,11 +3,13 @@ set -euo pipefail
 
 # Tek Install Script
 # Builds from source and deploys to a target directory.
+# Handles both fresh installs and updates (merges update.sh functionality).
 # Usage: scripts/install.sh [INSTALL_DIR]
 
 INSTALL_DIR="${1:-$HOME/tek}"
 SOURCE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CONFIG_DIR="$HOME/.config/tek"
+RUNTIME="$CONFIG_DIR/runtime.json"
 
 echo "Tek Installer"
 echo "============="
@@ -31,7 +33,21 @@ if ! command -v pnpm &>/dev/null; then
   exit 1
 fi
 
-# 3. Build in source
+# 3. Stop gateway if running (prevents file-in-use issues during sync)
+if [ -f "$RUNTIME" ]; then
+  PID=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$RUNTIME','utf-8')).pid)" 2>/dev/null || echo "")
+  if [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null; then
+    echo "Stopping gateway (PID $PID)..."
+    kill "$PID"
+    for i in $(seq 1 10); do
+      [ ! -f "$RUNTIME" ] && break
+      sleep 0.5
+    done
+  fi
+  rm -f "$RUNTIME"
+fi
+
+# 4. Build in source
 echo ""
 echo "Building from source..."
 cd "$SOURCE_DIR" && pnpm install
@@ -54,10 +70,10 @@ rm -rf "$SOURCE_DIR/packages/gateway/dist"
 (cd "$SOURCE_DIR/packages/gateway" && npx tsc -p tsconfig.json)
 echo "Build complete."
 
-# 4. Create install directory
+# 5. Create install directory
 mkdir -p "$INSTALL_DIR"
 
-# 5. Migrate from old config location if present
+# 6. Migrate from old config location if present
 OLD_CONFIG="$HOME/.config/agentspace"
 if [ -d "$OLD_CONFIG" ] && [ ! -d "$CONFIG_DIR" ]; then
   echo "Migrating config from $OLD_CONFIG to $CONFIG_DIR..."
@@ -69,7 +85,7 @@ if [ -d "$OLD_CONFIG" ] && [ ! -d "$CONFIG_DIR" ]; then
   echo "Migration complete."
 fi
 
-# 6. Sync packages (excluding source files, dev artifacts, memory-files)
+# 7. Sync packages (excluding source files, dev artifacts, memory-files)
 echo ""
 echo "Syncing packages..."
 rsync -a --delete \
@@ -83,17 +99,17 @@ rsync -a --delete \
   --exclude='biome.json' \
   "$SOURCE_DIR/packages/" "$INSTALL_DIR/packages/"
 
-# 7. Copy root files
+# 8. Copy root files
 echo "Copying root files..."
 cp "$SOURCE_DIR/package.json" "$INSTALL_DIR/package.json"
 cp "$SOURCE_DIR/pnpm-lock.yaml" "$INSTALL_DIR/pnpm-lock.yaml"
 cp "$SOURCE_DIR/pnpm-workspace.yaml" "$INSTALL_DIR/pnpm-workspace.yaml"
 
-# 8. Sync root node_modules
+# 9. Sync root node_modules
 echo "Syncing root node_modules..."
 rsync -a --delete "$SOURCE_DIR/node_modules/" "$INSTALL_DIR/node_modules/"
 
-# 9. Sync per-package node_modules
+# 10. Sync per-package node_modules
 echo "Syncing package node_modules..."
 for pkg in core db cli gateway telegram; do
   if [ -d "$SOURCE_DIR/packages/$pkg/node_modules" ]; then
@@ -104,7 +120,7 @@ for pkg in core db cli gateway telegram; do
   fi
 done
 
-# 10. Seed memory templates on first install
+# 11. Seed memory templates on first install
 mkdir -p "$CONFIG_DIR/memory/daily"
 if [ ! -f "$CONFIG_DIR/memory/SOUL.md" ]; then
   cp "$SOURCE_DIR/packages/db/memory-files/SOUL.md" "$CONFIG_DIR/memory/"
@@ -112,24 +128,35 @@ if [ ! -f "$CONFIG_DIR/memory/SOUL.md" ]; then
   echo "Seeded default personality and memory files."
 fi
 
-# 11. Create bin symlink
+# 12. Create bin symlink
 mkdir -p "$INSTALL_DIR/bin"
 ln -sf "../packages/cli/dist/index.js" "$INSTALL_DIR/bin/tek"
 chmod +x "$INSTALL_DIR/packages/cli/dist/index.js"
 
-# 12. Write .version file
+# 13. Record install path
+mkdir -p "$CONFIG_DIR"
+echo "$INSTALL_DIR" > "$CONFIG_DIR/install-path"
+
+# 14. Write .version file (preserve installedAt from existing install)
 VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$SOURCE_DIR/package.json','utf-8')).version || '0.0.0')")
 COMMIT=$(cd "$SOURCE_DIR" && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 NODE_VER=$(node -v)
 
+if [ -f "$INSTALL_DIR/.version" ]; then
+  INSTALLED_AT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$INSTALL_DIR/.version','utf-8')).installedAt)" 2>/dev/null || echo "$NOW")
+else
+  INSTALLED_AT="$NOW"
+fi
+
 cat > "$INSTALL_DIR/.version" <<VEOF
 {
   "version": "$VERSION",
   "sourceCommit": "$COMMIT",
-  "installedAt": "$NOW",
+  "installedAt": "$INSTALLED_AT",
   "updatedAt": "$NOW",
-  "nodeVersion": "$NODE_VER"
+  "nodeVersion": "$NODE_VER",
+  "installDir": "$INSTALL_DIR"
 }
 VEOF
 

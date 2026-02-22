@@ -34,3 +34,4 @@ export {
 	DB_NAME,
 	KEYCHAIN_SERVICE,
 } from "./constants.js";
+export { getInstallDir, validateUninstallTarget, INSTALL_PATH_FILE } from "./install.js";

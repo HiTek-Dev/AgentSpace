@@ -3,7 +3,7 @@
 ## Milestones
 
 - **v0.0 Core Infrastructure** - Phases 1-24 (shipped 2026-02-20)
-- **v0.1 Product Polish** - Phases 25-28 (in progress)
+- **v0.1 Product Polish** - Phases 25-28 (shipped 2026-02-21)
 
 ## Phases
 
@@ -37,7 +37,7 @@
 
 </details>
 
-## v0.1 Product Polish (Phases 25-28) - IN PROGRESS
+## v0.1 Product Polish (Phases 25-28) - SHIPPED 2026-02-21
 
 **Milestone Goal:** Transform Tek from functional infrastructure into a polished, product-grade experience -- CLI that feels like Claude Code, desktop app that feels like Claudia, with a test harness over critical gateway paths.
 
@@ -62,7 +62,7 @@ Plans:
 - [x] 25-01-PLAN.md — Vault extraction from @tek/cli to @tek/core
 - [x] 25-02-PLAN.md — Error boundaries + Vitest workspace config
 - [x] 25-03-PLAN.md — WebSocket auto-reconnect with exponential backoff
-- [ ] 25-04-PLAN.md — Break gateway-telegram cyclic dependency (gap closure)
+- [x] 25-04-PLAN.md — Break gateway-telegram cyclic dependency (gap closure)
 
 ### Phase 26: CLI Visual Overhaul
 **Goal**: CLI chat experience reaches Claude Code quality -- syntax-highlighted code, collapsible tool panels, input history, and a clean information-dense StatusBar
@@ -76,10 +76,10 @@ Plans:
   5. StatusBar displays a multi-zone layout with connection status, model/provider, and token count + cost in compact format; messages show dimmed HH:MM timestamps
 **Plans**: 4 plans
 Plans:
-- [ ] 26-01-PLAN.md — Shiki syntax highlighting integration
-- [ ] 26-02-PLAN.md — Custom multiline input with history
-- [ ] 26-03-PLAN.md — Message timestamps, truncation, and tool panels
-- [ ] 26-04-PLAN.md — Welcome screen, StatusBar redesign, and Chat wiring
+- [x] 26-01-PLAN.md — Shiki syntax highlighting integration
+- [x] 26-02-PLAN.md — Custom multiline input with history
+- [x] 26-03-PLAN.md — Message timestamps, truncation, and tool panels
+- [x] 26-04-PLAN.md — Welcome screen, StatusBar redesign, and Chat wiring
 
 ### Phase 27: Desktop UI Overhaul
 **Goal**: Desktop app delivers a polished, branded chat experience with rendered markdown, functional tool approvals, conversation history, and cohesive visual design
@@ -98,7 +98,7 @@ Plans:
 - [x] 27-03-PLAN.md — Tool approval modal and chat card redesign
 - [x] 27-04-PLAN.md — Collapsible sidebar, session history, page transitions
 - [x] 27-05-PLAN.md — Dashboard enrichment and tabbed settings
-- [ ] 27-06-PLAN.md — Gap closure: migrate remaining hardcoded colors to design tokens
+- [x] 27-06-PLAN.md — Gap closure: migrate remaining hardcoded colors to design tokens
 
 ### Phase 28: Testing Foundation
 **Goal**: Critical gateway paths have automated test coverage so future changes catch regressions before they ship
@@ -112,9 +112,9 @@ Plans:
   5. Approval gate tests verify auto/session/always tier logic; context assembly tests verify system prompt includes soul, memory, and identity content
 **Plans**: 3 plans
 Plans:
-- [ ] 28-01-PLAN.md — Zod schema round-trip tests (WS protocol + AppConfig)
-- [ ] 28-02-PLAN.md — Pure function tests (LLM router + approval gate)
-- [ ] 28-03-PLAN.md — Mock-based tests (agent loop + context assembly)
+- [x] 28-01-PLAN.md — Zod schema round-trip tests (WS protocol + AppConfig)
+- [x] 28-02-PLAN.md — Pure function tests (LLM router + approval gate)
+- [x] 28-03-PLAN.md — Mock-based tests (agent loop + context assembly)
 
 ## Progress
 
@@ -152,7 +152,6 @@ Phase 25 first, then Phases 26, 27, and 28 can run in parallel.
 - Proper spacing, margins, padding on every element — no more raw Tailwind class soup
 - Keep React 19 + Vite + Tailwind 4 + Tauri 2 stack (proven solid)
 
-**Plans:** 0 plans
+**Plans:** 0/TBD (run /gsd:plan-phase 29 to break down)
 
-Plans:
-- [ ] TBD (run /gsd:plan-phase 29 to break down)
+Plans: TBD

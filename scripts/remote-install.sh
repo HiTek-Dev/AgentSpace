@@ -153,7 +153,10 @@ if [ ! -f "$CONFIG_DIR/memory/SOUL.md" ] && [ -d "$INSTALL_DIR/memory-files" ]; 
   echo "  Seeded default personality and memory files."
 fi
 
-# 13. Write .version file
+# 13. Record install path
+echo "$INSTALL_DIR" > "$CONFIG_DIR/install-path"
+
+# 14. Write .version file
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 # Preserve installedAt from existing install
@@ -169,11 +172,12 @@ cat > "$INSTALL_DIR/.version" <<VEOF
   "sourceCommit": "$COMMIT",
   "installedAt": "$INSTALLED_AT",
   "updatedAt": "$NOW",
-  "nodeVersion": "$(node -v)"
+  "nodeVersion": "$(node -v)",
+  "installDir": "$INSTALL_DIR"
 }
 VEOF
 
-# 14. Install desktop app
+# 15. Install desktop app
 echo ""
 echo "  Installing Tek desktop app..."
 MOUNT_POINT=""
@@ -202,7 +206,7 @@ else
   trap '' EXIT
 fi
 
-# 15. Set up PATH
+# 16. Set up PATH
 echo ""
 PATH_LINE="export PATH=\"$INSTALL_DIR/bin:\$PATH\""
 SHELL_RC="$HOME/.zshrc"
@@ -222,7 +226,7 @@ else
   echo "  PATH already configured ✓"
 fi
 
-# 16. Success!
+# 17. Success!
 echo ""
 echo "  ╔════════════════════════════════════════╗"
 echo "  ║  Tek v$VERSION installed!                "

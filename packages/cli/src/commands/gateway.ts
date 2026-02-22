@@ -6,25 +6,13 @@ import {
 	createReadStream,
 	existsSync,
 	statSync,
-	realpathSync,
 } from "node:fs";
 import { createInterface } from "node:readline";
-import { resolve, dirname } from "node:path";
-import { homedir } from "node:os";
+import { resolve } from "node:path";
 import chalk from "chalk";
-import { LOG_PATH } from "@tek/core";
+import { LOG_PATH, getInstallDir } from "@tek/core";
 import { discoverGateway } from "../lib/discovery.js";
 import { formatLogLine } from "../lib/log-formatter.js";
-
-function getInstallDir(): string {
-	try {
-		const realBin = realpathSync(process.argv[1]);
-		// realBin is e.g. <installDir>/packages/cli/dist/index.js
-		return resolve(dirname(realBin), "..", "..", "..");
-	} catch {
-		return resolve(homedir(), "tek");
-	}
-}
 
 export const gatewayCommand = new Command("gateway").description(
 	"Manage the Tek gateway process",

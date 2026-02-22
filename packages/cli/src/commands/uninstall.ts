@@ -1,38 +1,32 @@
 import { Command } from "commander";
 import { createInterface } from "node:readline";
 import { existsSync, rmSync } from "node:fs";
-import { resolve, dirname } from "node:path";
-import { realpathSync } from "node:fs";
-import { homedir } from "node:os";
 import { join } from "node:path";
+import { homedir } from "node:os";
 import chalk from "chalk";
-import { CONFIG_DIR, CLI_COMMAND } from "@tek/core";
-import { keychainDelete } from "@tek/core/vault";
+import { CONFIG_DIR, getInstallDir, validateUninstallTarget } from "@tek/core";
+import { keychainDelete, PROVIDERS } from "@tek/core/vault";
 import { discoverGateway } from "../lib/discovery.js";
-
-function getInstallDir(): string {
-	try {
-		const realBin = realpathSync(process.argv[1]);
-		return resolve(dirname(realBin), "..", "..", "..");
-	} catch {
-		return resolve(homedir(), "tek");
-	}
-}
-
-const KEYCHAIN_ACCOUNTS = [
-	"api-key:anthropic",
-	"api-key:openai",
-	"api-key:ollama",
-	"api-key:venice",
-	"api-key:google",
-	"api-key:telegram",
-	"api-endpoint-token",
-];
 
 export const uninstallCommand = new Command("uninstall")
 	.description("Remove Tek completely from this system")
 	.action(async () => {
 		const installDir = getInstallDir();
+
+		// Safety check before doing anything
+		const unsafeReason = validateUninstallTarget(installDir);
+		if (unsafeReason) {
+			console.log(chalk.red.bold("Uninstall blocked:"));
+			console.log(chalk.red(`  ${unsafeReason}`));
+			console.log();
+			console.log(
+				chalk.dim(
+					"If you installed tek elsewhere, create ~/.config/tek/install-path with the correct path.",
+				),
+			);
+			process.exit(1);
+		}
+
 		const launchdPlist = join(
 			homedir(),
 			"Library",
@@ -112,13 +106,14 @@ export const uninstallCommand = new Command("uninstall")
 			}
 		}
 
-		// 3. Delete keychain entries
-		for (const account of KEYCHAIN_ACCOUNTS) {
-			keychainDelete(account);
+		// 3. Delete keychain entries (dynamic from PROVIDERS)
+		for (const provider of PROVIDERS) {
+			keychainDelete(`api-key:${provider}`);
 		}
+		keychainDelete("api-endpoint-token");
 		console.log("Removed keychain entries.");
 
-		// 4. Remove config directory
+		// 4. Remove config directory (includes install-path file)
 		if (existsSync(CONFIG_DIR)) {
 			rmSync(CONFIG_DIR, { recursive: true, force: true });
 			console.log("Removed config directory.");
@@ -130,8 +125,14 @@ export const uninstallCommand = new Command("uninstall")
 			console.log("Removed desktop app.");
 		}
 
-		// 6. Remove install directory
+		// 6. Remove install directory (last-resort .git guard)
 		if (existsSync(installDir)) {
+			if (existsSync(join(installDir, ".git"))) {
+				console.log(
+					chalk.red("ABORT: Install directory contains .git — refusing to delete a repository."),
+				);
+				process.exit(1);
+			}
 			rmSync(installDir, { recursive: true, force: true });
 			console.log("Removed install directory.");
 		}
