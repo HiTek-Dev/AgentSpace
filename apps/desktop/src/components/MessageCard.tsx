@@ -1,10 +1,9 @@
-import { useState } from "react";
 import { Streamdown } from "streamdown";
 import { code as CodePlugin } from "@streamdown/code";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Loader2, Check, X, ChevronDown, ChevronRight } from "lucide-react";
+import { ToolCallCard } from "@/components/ToolCallCard";
 import type { ChatMessage } from "@/lib/gateway-client";
 
 interface MessageCardProps {
@@ -19,99 +18,22 @@ function formatTime(timestamp: number): string {
   return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-function ToolCallCard({
-  message,
-}: {
-  message: Extract<ChatMessage, { type: "tool_call" }>;
-}) {
-  const [expanded, setExpanded] = useState(false);
-
-  const statusIcon =
-    message.status === "completed" ? (
-      <Check className="size-3.5 text-green-500" />
-    ) : message.status === "error" ? (
-      <X className="size-3.5 text-destructive" />
-    ) : (
-      <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
-    );
-
-  const argsPreview = message.args
-    ? JSON.stringify(message.args).slice(0, 100)
-    : "";
-
-  return (
-    <Card className="mr-auto max-w-[80%] py-2">
-      <CardContent className="p-3">
-        <button
-          type="button"
-          onClick={() => setExpanded((prev) => !prev)}
-          className="flex w-full items-center gap-2 text-left text-sm"
-        >
-          {statusIcon}
-          <span className="font-mono text-xs font-medium">
-            {message.toolName}
-          </span>
-          {expanded ? (
-            <ChevronDown className="ml-auto size-3.5 text-muted-foreground" />
-          ) : (
-            <ChevronRight className="ml-auto size-3.5 text-muted-foreground" />
-          )}
-        </button>
-
-        {!expanded && argsPreview && (
-          <p className="mt-1 truncate text-xs text-muted-foreground">
-            {argsPreview}
-            {argsPreview.length >= 100 ? "..." : ""}
-          </p>
-        )}
-
-        {expanded && (
-          <div className="mt-2 space-y-2">
-            {message.args != null && (
-              <div>
-                <p className="text-xs font-medium text-muted-foreground">
-                  Arguments
-                </p>
-                <pre className="mt-1 max-h-40 overflow-auto rounded bg-muted p-2 text-xs">
-                  {JSON.stringify(message.args, null, 2)}
-                </pre>
-              </div>
-            )}
-            {message.result != null && (
-              <div>
-                <p className="text-xs font-medium text-muted-foreground">
-                  Result
-                </p>
-                <pre className="mt-1 max-h-40 overflow-auto rounded bg-muted p-2 text-xs">
-                  {typeof message.result === "string"
-                    ? message.result
-                    : JSON.stringify(message.result, null, 2)}
-                </pre>
-              </div>
-            )}
-            {message.error != null && (
-              <div>
-                <p className="text-xs font-medium text-destructive">Error</p>
-                <pre className="mt-1 max-h-40 overflow-auto rounded bg-destructive/10 p-2 text-xs text-destructive">
-                  {message.error}
-                </pre>
-              </div>
-            )}
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
 export function MessageCard({ message, model }: MessageCardProps) {
   if (message.type === "tool_approval") {
-    // Handled by ToolApprovalModal in Plan 05
+    // Handled by ToolApprovalModal
     return null;
   }
 
   if (message.type === "tool_call") {
-    return <ToolCallCard message={message} />;
+    return (
+      <ToolCallCard
+        toolName={message.toolName}
+        args={message.args}
+        result={message.result}
+        error={message.error}
+        status={message.status}
+      />
+    );
   }
 
   // Text message

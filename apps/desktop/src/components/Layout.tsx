@@ -3,13 +3,15 @@ import { Separator } from "@/components/ui/separator";
 import { GatewayStatus } from "@/components/GatewayStatus";
 import { useAppStore } from "@/stores/app-store";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, PanelLeftOpen, PanelLeftClose } from "lucide-react";
 
 interface LayoutProps {
   children: ReactNode;
+  sidebarOpen: boolean;
+  onToggleSidebar: () => void;
 }
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children, sidebarOpen, onToggleSidebar }: LayoutProps) {
   const gateway = useAppStore((s) => s.gateway);
   const currentView = useAppStore((s) => s.currentView);
   const setCurrentView = useAppStore((s) => s.setCurrentView);
@@ -20,14 +22,28 @@ export function Layout({ children }: LayoutProps) {
       <header className="flex h-12 shrink-0 items-center justify-between px-4">
         <div className="flex items-center gap-2">
           {currentView === "chat" && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-7"
-              onClick={() => setCurrentView("landing")}
-            >
-              <ArrowLeft className="size-4" />
-            </Button>
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-7"
+                onClick={() => setCurrentView("landing")}
+              >
+                <ArrowLeft className="size-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-7"
+                onClick={onToggleSidebar}
+              >
+                {sidebarOpen ? (
+                  <PanelLeftClose className="size-4" />
+                ) : (
+                  <PanelLeftOpen className="size-4" />
+                )}
+              </Button>
+            </>
           )}
           <span className="text-sm font-semibold tracking-tight text-foreground">
             Tek

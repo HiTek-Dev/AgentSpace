@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from "react";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
 import { useAppStore } from "@/stores/app-store";
 import { Button } from "@/components/ui/button";
@@ -26,11 +27,37 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 
 export function App() {
   const currentView = useAppStore((s) => s.currentView);
+  const setCurrentView = useAppStore((s) => s.setCurrentView);
+  const setSessionId = useAppStore((s) => s.setSessionId);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((prev) => !prev);
+  }, []);
+
+  // Cmd+N (Mac) / Ctrl+N: new chat
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "n") {
+        e.preventDefault();
+        // Clear session, switch to chat view
+        setSessionId(null);
+        setCurrentView("chat");
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [setSessionId, setCurrentView]);
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <Layout>
-        {currentView === "landing" ? <LandingView /> : <ChatView />}
+      <Layout sidebarOpen={sidebarOpen} onToggleSidebar={toggleSidebar}>
+        {currentView === "landing" ? (
+          <LandingView />
+        ) : (
+          <ChatView sidebarOpen={sidebarOpen} />
+        )}
       </Layout>
     </ErrorBoundary>
   );

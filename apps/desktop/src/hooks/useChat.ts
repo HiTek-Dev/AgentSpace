@@ -6,7 +6,18 @@ import {
   createToolApprovalResponse,
   type ChatMessage,
   type ServerMessage,
+  type SessionListResponse,
 } from '@/lib/gateway-client';
+
+export type { SessionListResponse };
+
+interface SessionSummary {
+  sessionId: string;
+  sessionKey: string;
+  model: string;
+  createdAt: string;
+  messageCount: number;
+}
 
 interface UseChatParams {
   port: number | null;
@@ -20,8 +31,11 @@ interface UseChatReturn {
   currentModel: string | null;
   usage: { inputTokens: number; outputTokens: number; totalTokens: number } | null;
   cost: { totalCost: number } | null;
+  sessions: SessionSummary[];
   sendMessage: (content: string) => void;
   approveToolCall: (toolCallId: string, approved: boolean, sessionApprove?: boolean) => void;
+  clearMessages: () => void;
+  send: (data: string) => void;
   wsStatus: WebSocketStatus;
 }
 
@@ -40,6 +54,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
   const [currentModel, setCurrentModel] = useState<string | null>(null);
   const [usage, setUsage] = useState<UseChatReturn['usage']>(null);
   const [cost, setCost] = useState<UseChatReturn['cost']>(null);
+  const [sessions, setSessions] = useState<SessionSummary[]>([]);
 
   // Ref for accumulating streaming text to avoid stale closure issues
   const streamingTextRef = useRef('');
@@ -105,6 +120,11 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
 
         case 'session.created': {
           setSessionId(msg.sessionId);
+          break;
+        }
+
+        case 'session.list': {
+          setSessions(msg.sessions);
           break;
         }
 
@@ -234,6 +254,17 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
     [send],
   );
 
+  const clearMessages = useCallback(() => {
+    setMessages([]);
+    setStreamingText('');
+    streamingTextRef.current = '';
+    setStreamingRequestId(null);
+    setIsStreaming(false);
+    setCurrentModel(null);
+    setUsage(null);
+    setCost(null);
+  }, []);
+
   return {
     messages,
     streamingText,
@@ -241,8 +272,11 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
     currentModel,
     usage,
     cost,
+    sessions,
     sendMessage,
     approveToolCall,
+    clearMessages,
+    send,
     wsStatus,
   };
 }
