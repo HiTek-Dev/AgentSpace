@@ -52,7 +52,7 @@
 
 **Milestone Goal:** Deliver a premium chat experience across CLI and desktop — Ollama auto-discovery, opcode-style Tauri desktop app with structured JSON streaming, Claude Code-style CLI with fixed bottom input, and integrated todo display across both interfaces.
 
-- [ ] **Phase 30: Ollama Auto-Discovery & Remote Setup** - Detect local models, list in setup, manual IP/model for remote
+- [x] **Phase 30: Ollama Auto-Discovery & Remote Setup** - Detect local models, list in setup, manual IP/model for remote (completed 2026-02-22)
 - [ ] **Phase 31: Desktop Chat App Rebuild** - Opcode-style Tauri chat, gateway status landing, agent selection, streaming display
 - [ ] **Phase 32: Structured Streaming & Chat Formatting** - JSON streaming protocol, MD/code rendering, system prompt formatting
 - [ ] **Phase 33: Todo System Display in CLI and Desktop** - Todo progress in CLI bottom bar and desktop chat
@@ -65,7 +65,7 @@
 **Goal:** Ollama provider detects locally available models automatically (no API key needed), lists them during setup like other providers, and supports manual IP:port + model entry for remote Ollama instances on the network
 **Depends on:** None (fresh start)
 **Requirements:** [OLLM-01, OLLM-02, OLLM-03, OLLM-04]
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 30-01-PLAN.md -- Ollama discovery client, dynamic model catalog, and onboarding integration
@@ -113,8 +113,7 @@ Phases 30, 32, and 34 can start in parallel (no dependencies). Phase 31 follows 
 
 | Phase | Plans | Status |
 |-------|-------|--------|
-| 30. Ollama Auto-Discovery & Remote Setup | 0/1 | Planned |
-| 31. Desktop Chat App Rebuild | 0/TBD | Not started (blocked by 32) |
+| 30. Ollama Auto-Discovery & Remote Setup | 1/1 | Complete   | 2026-02-22 | 31. Desktop Chat App Rebuild | 0/TBD | Not started (blocked by 32) |
 | 32. Structured Streaming & Chat Formatting | 0/TBD | Not started |
 | 33. Todo System Display | 0/TBD | Not started (blocked by 31, 34) |
 | 34. CLI Chat UX Overhaul | 0/TBD | Not started |

@@ -152,10 +152,10 @@ Requirements for the Chat Experience & Providers milestone. Each maps to roadmap
 
 ### Ollama Auto-Discovery & Remote Setup (Phase 30)
 
-- [ ] **OLLM-01**: Tek auto-detects a locally running Ollama instance and lists its available models during setup (no API key required)
-- [ ] **OLLM-02**: Discovered Ollama models appear in the default model selection alongside cloud provider models during onboarding
-- [ ] **OLLM-03**: User can enter a remote Ollama IP:port during setup, with connectivity validation and model listing
-- [ ] **OLLM-04**: Remote Ollama endpoints are saved to config and registered as additional providers in the gateway registry
+- [x] **OLLM-01**: Tek auto-detects a locally running Ollama instance and lists its available models during setup (no API key required)
+- [x] **OLLM-02**: Discovered Ollama models appear in the default model selection alongside cloud provider models during onboarding
+- [x] **OLLM-03**: User can enter a remote Ollama IP:port during setup, with connectivity validation and model listing
+- [x] **OLLM-04**: Remote Ollama endpoints are saved to config and registered as additional providers in the gateway registry
 
 ## Future Requirements
 
