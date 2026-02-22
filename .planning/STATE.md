@@ -10,16 +10,16 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 31 of 34 (Desktop Chat App Rebuild)
-Plan: 1 of 5
+Plan: 3 of 5
 Status: Executing phase 31
-Last activity: 2026-02-22 — Completed 31-01 desktop app scaffold
+Last activity: 2026-02-22 — Completed 31-03 WebSocket and chat hooks
 
 Progress: [############################------] 82% (28/34 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 52 (36 v0.0 + 14 v0.1 + 2 v0.2)
+- Total plans completed: 54 (36 v0.0 + 14 v0.1 + 4 v0.2)
 - Average duration: 3min
 - Total execution time: 1.48 hours
 
@@ -37,7 +37,7 @@ Progress: [############################------] 82% (28/34 phases)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 30 | 1/1 | 3min | 3.0min |
-| 31 | 1/5 | 3min | 3.0min |
+| 31 | 3/5 | 7min | 2.3min |
 
 ## Accumulated Context
 
@@ -45,6 +45,8 @@ Progress: [############################------] 82% (28/34 phases)
 
 Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 31]: Used @streamdown/code@^1.0.3 (research had outdated ^0.2.1)
+- [Phase 31-03]: Local TypeScript interfaces instead of importing @tek/gateway (Node.js won't work in webview)
+- [Phase 31-03]: Ref-based streaming text accumulation to avoid stale closure issues in React
 
 ### Roadmap Evolution
 
@@ -68,5 +70,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 31-01-PLAN.md (Desktop app scaffold with Tauri, React, Vite, Tailwind, shadcn/ui)
+Stopped at: Completed 31-03-PLAN.md (WebSocket and chat hooks with auto-reconnect and streaming)
 Resume file: None
