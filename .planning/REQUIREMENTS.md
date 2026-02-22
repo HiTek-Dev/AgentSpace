@@ -174,7 +174,7 @@ Requirements for the Chat Experience & Providers milestone. Each maps to roadmap
 - [x] **STRM-02**: WS protocol extended with `chat.stream.reasoning` and `chat.stream.source` server message types, and optional `contentType` field on `chat.stream.delta`
 - [x] **STRM-03**: Gateway conditionally enables extended thinking (`providerOptions.anthropic.thinking`) for supported Claude models
 - [x] **STRM-04**: Desktop displays reasoning blocks as collapsible UI elements (collapsed by default, expandable to show full reasoning text)
-- [ ] **STRM-05**: CLI displays reasoning blocks inline as dimmed italic text during streaming and in message history
+- [x] **STRM-05**: CLI displays reasoning blocks inline as dimmed italic text during streaming and in message history
 - [x] **STRM-06**: Base system prompt injected into every context assembly instructing agents to use markdown formatting for structured responses
 - [x] **STRM-07**: Source attributions from providers are relayed to clients via protocol and displayed as footnote-style links
 
