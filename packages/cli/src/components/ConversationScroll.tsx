@@ -55,6 +55,15 @@ export function ConversationScroll({
 	// Only render the tail end of messages (auto-scroll to latest)
 	const visibleMessages = messages.slice(-maxMessages);
 
+	// Find the last tool_call message for diff focus
+	let lastToolCallId: string | null = null;
+	for (let i = visibleMessages.length - 1; i >= 0; i--) {
+		if (visibleMessages[i].type === "tool_call") {
+			lastToolCallId = visibleMessages[i].id;
+			break;
+		}
+	}
+
 	return (
 		<Box
 			flexDirection="column"
@@ -65,7 +74,11 @@ export function ConversationScroll({
 			{showWelcome && <WelcomeScreen />}
 
 			{visibleMessages.map((msg) => (
-				<MessageBubble key={msg.id} message={msg} />
+				<MessageBubble
+					key={msg.id}
+					message={msg}
+					isLastToolCall={msg.id === lastToolCallId}
+				/>
 			))}
 
 			{children}

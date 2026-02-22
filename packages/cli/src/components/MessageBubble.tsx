@@ -3,9 +3,22 @@ import { Box, Text } from "ink";
 import type { ChatMessage } from "../lib/gateway-client.js";
 import { MarkdownRenderer } from "./MarkdownRenderer.js";
 import { InlineToolCall } from "./InlineToolCall.js";
+import { InlineDiff } from "./InlineDiff.js";
+
+/**
+ * Heuristic: check if output looks like a diff (has lines starting with + and -)
+ * within the first 10 lines.
+ */
+function looksLikeDiff(output: string): boolean {
+	const lines = output.split("\n").slice(0, 10);
+	const hasPlus = lines.some((l) => l.startsWith("+ ") || l.startsWith("+\t"));
+	const hasMinus = lines.some((l) => l.startsWith("- ") || l.startsWith("-\t"));
+	return hasPlus && hasMinus;
+}
 
 interface MessageBubbleProps {
 	message: ChatMessage;
+	isLastToolCall?: boolean;
 }
 
 /** Format an ISO timestamp to HH:MM. */
@@ -28,7 +41,7 @@ function formatTimestamp(iso: string): string {
  * All messages display a dimmed HH:MM timestamp right-aligned.
  * Tool and bash output is truncated at 20 lines.
  */
-export function MessageBubble({ message }: MessageBubbleProps) {
+export function MessageBubble({ message, isLastToolCall = false }: MessageBubbleProps) {
 	const ts = <Text dimColor>{"  "}{formatTimestamp(message.timestamp)}</Text>;
 
 	switch (message.type) {
@@ -77,8 +90,13 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 		}
 
 		case "tool_call": {
+			const hasDiffOutput = message.output && looksLikeDiff(message.output);
+			const diffFileName =
+				(message.toolName === "write_file" || message.toolName === "update_file")
+					? (message.input?.split("\n")[0]?.trim() ?? "file")
+					: "output";
 			return (
-				<Box>
+				<Box flexDirection="column">
 					<Box justifyContent="space-between" width="100%">
 						<InlineToolCall
 							toolName={message.toolName}
@@ -87,6 +105,25 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 						/>
 						{ts}
 					</Box>
+					{hasDiffOutput && message.output && (
+						<Box marginLeft={2}>
+							<InlineDiff
+								oldText=""
+								newText={message.output}
+								fileName={diffFileName}
+								isFocused={isLastToolCall}
+							/>
+						</Box>
+					)}
+					{message.output && !hasDiffOutput && message.status === "complete" && (
+						<Box marginLeft={2}>
+							<Text dimColor>
+								{message.output.length > 200
+									? message.output.slice(0, 197) + "..."
+									: message.output}
+							</Text>
+						</Box>
+					)}
 				</Box>
 			);
 		}

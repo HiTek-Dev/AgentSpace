@@ -7,6 +7,16 @@ interface TodoPanelProps {
 	todos: TodoItem[];
 }
 
+/**
+ * Claude Code-style tree display for todos with colored status icons.
+ *
+ * Status icons:
+ * - completed: heavy check mark (green)
+ * - in_progress: spinner (keep existing)
+ * - pending: white circle (dimmed)
+ *
+ * Tree lines: vertical box drawing for all but last, corner for last item.
+ */
 export function TodoPanel({ todos }: TodoPanelProps) {
 	if (todos.length === 0) {
 		return null;
@@ -16,22 +26,35 @@ export function TodoPanel({ todos }: TodoPanelProps) {
 
 	return (
 		<Box flexDirection="column" marginTop={1}>
-			<Text dimColor>Tasks ({completed}/{todos.length})</Text>
-			{todos.map((todo) => (
-				<Box key={todo.id} gap={1}>
-					{todo.status === "completed" && <Text color="green">+</Text>}
-					{todo.status === "in_progress" && <Spinner label="" />}
-					{todo.status === "pending" && <Text dimColor>o</Text>}
-					<Text
-						dimColor={todo.status === "completed"}
-						strikethrough={todo.status === "completed"}
-					>
-						{todo.status === "in_progress"
-							? (todo.activeForm || todo.content)
-							: todo.content}
-					</Text>
-				</Box>
-			))}
+			<Text bold dimColor>
+				Tasks ({completed}/{todos.length})
+			</Text>
+			{todos.map((todo, index) => {
+				const isLast = index === todos.length - 1;
+				const treeLine = isLast ? "\u2514 " : "\u2502 ";
+
+				return (
+					<Box key={todo.id} gap={1}>
+						<Text dimColor>{"  "}{treeLine}</Text>
+						{todo.status === "completed" && (
+							<Text color="green">{"\u2714"}</Text>
+						)}
+						{todo.status === "in_progress" && <Spinner label="" />}
+						{todo.status === "pending" && (
+							<Text dimColor>{"\u25CB"}</Text>
+						)}
+						<Text
+							dimColor={todo.status === "completed"}
+							strikethrough={todo.status === "completed"}
+							bold={todo.status === "in_progress"}
+						>
+							{todo.status === "in_progress"
+								? (todo.activeForm || todo.content)
+								: todo.content}
+						</Text>
+					</Box>
+				);
+			})}
 		</Box>
 	);
 }
