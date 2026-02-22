@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 32 of 34 (Structured Streaming and Chat Formatting)
-Plan: 1 of 3
-Status: In progress
-Last activity: 2026-02-21 — Completed 32-01 gateway structured streaming protocol
+Plan: 3 of 3
+Status: Phase complete
+Last activity: 2026-02-22 — Completed 32-03 CLI reasoning and sources display
 
 Progress: [############################------] 82% (28/34 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 57 (36 v0.0 + 14 v0.1 + 7 v0.2)
+- Total plans completed: 58 (36 v0.0 + 14 v0.1 + 8 v0.2)
 - Average duration: 3min
-- Total execution time: 1.66 hours
+- Total execution time: 1.69 hours
 
 **By Phase (v0.1):**
 
@@ -38,7 +38,7 @@ Progress: [############################------] 82% (28/34 phases)
 |-------|-------|-------|----------|
 | 30 | 1/1 | 3min | 3.0min |
 | 31 | 5/5 | 14min | 2.8min |
-| 32 | 1/3 | 6min | 6.0min |
+| 32 | 2/3 | 8min | 4.0min |
 
 ## Accumulated Context
 
@@ -58,6 +58,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 32-01]: Used reasoning-delta (not reasoning) part type to match AI SDK v6 fullStream API
 - [Phase 32-01]: Filter source parts by sourceType=url to handle document sources gracefully
 - [Phase 32-01]: Extended thinking budget set to 8000 tokens as moderate starting point
+- [Phase 32-02]: Reasoning message added before text message in array so it appears above response content
+- [Phase 32-02]: StreamingMessage renders when reasoning OR text present to show early reasoning
 
 ### Roadmap Evolution
 
@@ -81,5 +83,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 32-01-PLAN.md (Gateway structured streaming protocol)
+Stopped at: Completed 32-02-PLAN.md (Desktop reasoning and sources)
 Resume file: None
