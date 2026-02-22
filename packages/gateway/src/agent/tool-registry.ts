@@ -17,6 +17,8 @@ import {
 	type ApprovalPolicy,
 } from "./approval-gate.js";
 import { createMemoryReadTool, createMemoryWriteTool } from "../tools/memory.js";
+import { createTodoWriteTool } from "../tools/todo.js";
+import type { TodoItem } from "../tools/todo.js";
 import {
 	createWebSearchTool,
 	createImageGenTool,
@@ -43,6 +45,7 @@ export interface ToolRegistryOptions {
 	veniceApiKey?: string;
 	braveApiKey?: string;
 	agentId?: string;
+	onTodoUpdate?: (todos: TodoItem[]) => void;
 }
 
 /**
@@ -323,6 +326,16 @@ export async function buildToolRegistry(
 	if (approvalPolicy) {
 		approvalPolicy.perTool.memory_read = "auto";
 		approvalPolicy.perTool.memory_write = "session";
+	}
+
+	// 8. Add todo tracking tool (always available, auto-approved)
+	if (options.onTodoUpdate) {
+		const todoWrite = createTodoWriteTool(options.onTodoUpdate);
+		tools.todo_write = todoWrite;
+		// Todo tracking is informational, no approval needed
+		if (approvalPolicy) {
+			approvalPolicy.perTool.todo_write = "auto";
+		}
 	}
 
 	logger.info(`Tool registry built with ${Object.keys(tools).length} tools`);

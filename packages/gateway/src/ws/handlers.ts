@@ -374,6 +374,19 @@ export async function handleChatSend(
 					veniceApiKey: getKey("venice") ?? undefined,
 					braveApiKey: getKey("brave") ?? undefined,
 					agentId,
+					onTodoUpdate: (todos) => {
+						connState.activeTodos = todos;
+						transport.send({
+							type: "todo.update",
+							requestId: msg.id,
+							todos: todos.map(t => ({
+								id: t.id,
+								content: t.content,
+								status: t.status,
+								...(t.activeForm ? { activeForm: t.activeForm } : {}),
+							})),
+						});
+					},
 				});
 				connState.tools = tools;
 			}
@@ -422,6 +435,7 @@ export async function handleChatSend(
 
 	connState.streaming = true;
 	connState.streamRequestId = msg.id;
+	connState.activeTodos = []; // Clear stale todos from previous request
 
 	transport.send({
 		type: "chat.stream.start",
@@ -841,6 +855,7 @@ export async function handlePreflightApproval(
 
 	connState.streaming = true;
 	connState.streamRequestId = requestId;
+	connState.activeTodos = []; // Clear stale todos from previous request
 
 	transport.send({
 		type: "chat.stream.start",

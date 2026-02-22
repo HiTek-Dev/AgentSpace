@@ -27,6 +27,7 @@ const RESPONSE_FORMAT_PROMPT = [
 	"- Use > blockquotes for important notes or warnings",
 	"- Keep responses conversational when a simple reply suffices",
 	"- Do NOT wrap entire responses in a single code block",
+	"- For complex multi-step tasks (3+ steps), use the todo_write tool to track your progress and update task status as you work",
 ].join("\n");
 
 const logger = createLogger("assembler");
