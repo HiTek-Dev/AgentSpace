@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 
 ## Current Position
 
-Phase: 33 of 34 (Todo System Display in CLI and Desktop)
-Plan: 3 of 3
-Status: Complete
-Last activity: 2026-02-22 — Completed 33-03 Desktop todo display
+Phase: 34 of 34 (CLI Chat UX Overhaul)
+Plan: 1 of 2
+Status: In Progress
+Last activity: 2026-02-22 — Completed 34-01 Fullscreen layout
 
-Progress: [############################------] 82% (28/34 phases)
+Progress: [#################################-] 97% (33/34 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 62 (36 v0.0 + 14 v0.1 + 12 v0.2)
+- Total plans completed: 63 (36 v0.0 + 14 v0.1 + 13 v0.2)
 - Average duration: 3min
-- Total execution time: 1.84 hours
+- Total execution time: 1.89 hours
 
 **By Phase (v0.1):**
 
@@ -40,6 +40,7 @@ Progress: [############################------] 82% (28/34 phases)
 | 31 | 5/5 | 14min | 2.8min |
 | 32 | 3/3 | 11min | 3.7min |
 | 33 | 3/3 | 9min | 3.0min |
+| 34 | 1/2 | 3min | 3.0min |
 
 ## Accumulated Context
 
@@ -70,6 +71,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 33-02]: Todos clear on stream start (not stream end) so they persist after completion until next request
 - [Phase 33-03]: TodoPanel positioned between usage/cost footer and ChatInput in flex column
 - [Phase 33-03]: Todos cleared on stream start and error, preserved on stream end until next request
+- [Phase 34-01]: Manual alternate screen buffer escape codes instead of fullscreen-ink dependency
+- [Phase 34-01]: Render prop pattern for FullScreenWrapper to pass terminal dimensions
+- [Phase 34-01]: Heuristic message windowing (~3 lines/msg) with overflow hidden for ConversationScroll
+- [Phase 34-01]: isActive prop pattern replaces isStreaming for InputBar (disabled during streaming OR approval)
 
 ### Roadmap Evolution
 
@@ -93,5 +98,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 33-02-PLAN.md (CLI todo display)
+Stopped at: Completed 34-01-PLAN.md (Fullscreen layout)
 Resume file: None

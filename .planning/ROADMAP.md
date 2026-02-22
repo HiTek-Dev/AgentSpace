@@ -113,7 +113,7 @@ Plans:
 **Goal:** CLI chat mimics Claude Code / Kimicode UX — fixed bottom input area that expands as user types, status section pinned below input, streaming responses scroll above, clean separation between user entry zone and conversation history
 **Depends on:** None (fresh start)
 **Requirements:** [CLIX-01, CLIX-02, CLIX-03, CLIX-04, CLIX-05, CLIX-06, CLIX-07, CLIX-08]
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 34-01-PLAN.md -- Fullscreen layout skeleton, cursor-aware input zone, bottom status bar

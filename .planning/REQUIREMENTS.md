@@ -190,10 +190,10 @@ Requirements for the Chat Experience & Providers milestone. Each maps to roadmap
 
 ### CLI Chat UX Overhaul (Phase 34)
 
-- [ ] **CLIX-01**: CLI chat runs in fullscreen mode (alternate screen buffer) with a fixed-height viewport that fills the terminal, handling resize events dynamically
-- [ ] **CLIX-02**: Fixed bordered input zone at bottom with cursor-aware editing (left/right arrows, Home/End, insert/delete at position), expandable up to 6 lines, `>` prompt prefix, placeholder text, and hint line showing keyboard shortcuts
-- [ ] **CLIX-03**: Single status line pinned below input (bottom of screen) showing model name, connection status dot, token usage/cost, and permission mode; top status bar removed entirely
-- [ ] **CLIX-04**: Conversation history rendered in a windowed scroll area (replacing `<Static>` component) that fills available space above the input zone, with auto-scroll to latest content
+- [x] **CLIX-01**: CLI chat runs in fullscreen mode (alternate screen buffer) with a fixed-height viewport that fills the terminal, handling resize events dynamically
+- [x] **CLIX-02**: Fixed bordered input zone at bottom with cursor-aware editing (left/right arrows, Home/End, insert/delete at position), expandable up to 6 lines, `>` prompt prefix, placeholder text, and hint line showing keyboard shortcuts
+- [x] **CLIX-03**: Single status line pinned below input (bottom of screen) showing model name, connection status dot, token usage/cost, and permission mode; top status bar removed entirely
+- [x] **CLIX-04**: Conversation history rendered in a windowed scroll area (replacing `<Static>` component) that fills available space above the input zone, with auto-scroll to latest content
 - [ ] **CLIX-05**: Tool calls rendered inline in conversation flow with colored Unicode icon prefixes per tool type (e.g., bash=green triangle, read=cyan circle, edit=blue pencil), replacing the separate ToolPanel
 - [ ] **CLIX-06**: Approval prompts rendered as boxed dialogs inline in conversation area; input zone stays visible but disabled during approval with selectable Yes/No/Always options
 - [ ] **CLIX-07**: Inline file diffs with red/green line coloring in conversation flow, auto-collapsed above a threshold with expand-on-demand
