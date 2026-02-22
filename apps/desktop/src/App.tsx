@@ -3,6 +3,7 @@ import { useAppStore } from "@/stores/app-store";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
 import { LandingView } from "@/views/LandingView";
+import { ChatView } from "@/views/ChatView";
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const message =
@@ -23,25 +24,13 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   );
 }
 
-function ChatViewPlaceholder() {
-  return (
-    <div className="flex h-full items-center justify-center text-muted-foreground">
-      Chat coming soon
-    </div>
-  );
-}
-
 export function App() {
   const currentView = useAppStore((s) => s.currentView);
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <Layout>
-        {currentView === "landing" ? (
-          <LandingView />
-        ) : (
-          <ChatViewPlaceholder />
-        )}
+        {currentView === "landing" ? <LandingView /> : <ChatView />}
       </Layout>
     </ErrorBoundary>
   );
