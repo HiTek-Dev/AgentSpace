@@ -66,6 +66,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 33-01]: Used inputSchema (not parameters) to match existing AI SDK v6 tool() pattern in codebase
 - [Phase 33-01]: Todo tool uses auto approval via perTool policy, not wrapToolWithApproval wrapper
 - [Phase 33-01]: activeTodos cleared in both handleChatSend and handlePreflightApproval stream start paths
+- [Phase 33-02]: TodoPanel placed after StreamingResponse and before ToolPanel for natural reading order
+- [Phase 33-02]: Todos clear on stream start (not stream end) so they persist after completion until next request
 - [Phase 33-03]: TodoPanel positioned between usage/cost footer and ChatInput in flex column
 - [Phase 33-03]: Todos cleared on stream start and error, preserved on stream end until next request
 
@@ -91,5 +93,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 33-03-PLAN.md (Desktop todo display)
+Stopped at: Completed 33-02-PLAN.md (CLI todo display)
 Resume file: None

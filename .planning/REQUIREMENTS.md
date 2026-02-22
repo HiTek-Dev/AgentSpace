@@ -184,7 +184,7 @@ Requirements for the Chat Experience & Providers milestone. Each maps to roadmap
 - [x] **TODO-02**: WS protocol extended with `todo.update` server message type carrying the full todo list (id, content, status, activeForm) from gateway to connected clients
 - [x] **TODO-03**: Todo tool is auto-approved (no user approval needed) and registered in the tool registry alongside existing tools
 - [x] **TODO-04**: Base system prompt includes instruction for agents to use `todo_write` for complex multi-step tasks (3+ steps)
-- [ ] **TODO-05**: CLI displays active todos as a compact panel between streaming response and input bar, with spinner for in-progress, checkmark for completed, circle for pending
+- [x] **TODO-05**: CLI displays active todos as a compact panel between streaming response and input bar, with spinner for in-progress, checkmark for completed, circle for pending
 - [x] **TODO-06**: Desktop displays active todos as a compact panel above the chat input, with animated spinner for in-progress, green checkmark for completed, muted circle for pending
 - [x] **TODO-07**: Todo state is cleared on `chat.stream.start` of the next request so stale todos from previous requests don't persist
 
