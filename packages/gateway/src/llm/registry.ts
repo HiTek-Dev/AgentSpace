@@ -12,8 +12,6 @@ const logger = createLogger("llm-registry");
 type ProviderRegistry = ReturnType<typeof createProviderRegistry>;
 type ProviderMap = Parameters<typeof createProviderRegistry>[0];
 
-let cachedRegistry: ProviderRegistry | null = null;
-
 /**
  * Build a provider registry with the given API keys.
  * If no keys are provided, reads them from the vault.
@@ -81,17 +79,14 @@ export function buildRegistry(keys?: {
 }
 
 /**
- * Get the singleton provider registry instance.
- * Lazy-initializes on first call, then caches for subsequent calls.
+ * Get a provider registry instance.
+ * Rebuilds each call to pick up newly-added API keys from the keychain.
  */
 export function getRegistry(): ProviderRegistry {
-	if (!cachedRegistry) {
-		const cfg = loadConfig();
-		cachedRegistry = buildRegistry({
-			ollamaEndpoints: cfg?.ollamaEndpoints ?? undefined,
-		});
-	}
-	return cachedRegistry;
+	const cfg = loadConfig();
+	return buildRegistry({
+		ollamaEndpoints: cfg?.ollamaEndpoints ?? undefined,
+	});
 }
 
 /**

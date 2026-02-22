@@ -10,23 +10,24 @@ interface InputBarProps {
 }
 
 /**
- * Bordered multiline input bar with cursor-aware editing and history support.
+ * Bordered multiline input bar with editing and history support.
  *
- * - Full cursor navigation: left/right, Home (Ctrl+A), End (Ctrl+E)
- * - Insert/delete at cursor position
  * - Enter: submit message
  * - Shift+Enter: insert newline
+ * - Backspace/Delete: delete character before cursor
  * - Up/Down arrows (when input empty): cycle message history
  * - Escape: clear input
- * - Expands up to 6 visible lines, then scrolls internally
+ * - Expands up to 6 visible lines
  * - Bordered box with round style and cyan border
- * - Hint line below the border
+ * - Blinking bar cursor
  *
- * Uses refs for text/cursor to avoid stale closure issues with useInput.
+ * Note: macOS terminals send \x7F for backspace, which Ink maps to key.delete
+ * (not key.backspace). We treat both as "delete char before cursor".
  */
 export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeightChange }: InputBarProps) {
 	const [text, setText] = useState("");
 	const [cursorPos, setCursorPos] = useState(0);
+	const [cursorVisible, setCursorVisible] = useState(true);
 	const history = useInputHistory();
 
 	// Refs to avoid stale closures in useInput callback
@@ -42,6 +43,20 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 		? lines
 		: lines.slice(totalLines - maxVisibleLines);
 	const hiddenLineCount = totalLines > maxVisibleLines ? totalLines - maxVisibleLines : 0;
+
+	// Blink cursor every 530ms
+	useEffect(() => {
+		if (!isActive) return;
+		const timer = setInterval(() => {
+			setCursorVisible((v) => !v);
+		}, 530);
+		return () => clearInterval(timer);
+	}, [isActive]);
+
+	// Reset cursor visible on any text/cursor change
+	useEffect(() => {
+		setCursorVisible(true);
+	}, [text, cursorPos]);
 
 	// Report content line count to parent for layout calculation
 	useEffect(() => {
@@ -127,19 +142,13 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 				return;
 			}
 
-			// Backspace: delete character before cursor
-			if (key.backspace || input === "\x7F" || input === "\x08") {
+			// Backspace / Delete: delete character before cursor
+			// On macOS, the backspace key sends \x7F which Ink maps to key.delete
+			// (not key.backspace). We treat both the same: remove char before cursor.
+			if (key.backspace || key.delete) {
 				if (cur > 0) {
 					setText(txt.slice(0, cur - 1) + txt.slice(cur));
 					setCursorPos(cur - 1);
-				}
-				return;
-			}
-
-			// Delete: delete character at cursor
-			if (key.delete) {
-				if (cur < txt.length) {
-					setText(txt.slice(0, cur) + txt.slice(cur + 1));
 				}
 				return;
 			}
@@ -155,8 +164,8 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 
 	useInput(handleInput, { isActive });
 
-	// Render cursor within text: split into before/after cursor segments
-	const renderLineWithCursor = (line: string, lineStartIndex: number, lineIndex: number, isLastVisibleLine: boolean) => {
+	// Render a line with optional blinking bar cursor
+	const renderLine = (line: string, lineStartIndex: number, lineIndex: number, isLastVisibleLine: boolean) => {
 		const lineEndIndex = lineStartIndex + line.length;
 		const cursorInThisLine = cursorPos >= lineStartIndex && cursorPos <= lineEndIndex;
 
@@ -178,16 +187,28 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 		if (cursorInThisLine) {
 			const localCursorPos = cursorPos - lineStartIndex;
 			const before = line.slice(0, localCursorPos);
-			const cursorChar = line[localCursorPos] ?? " ";
-			const after = line.slice(localCursorPos + 1);
+			const after = line.slice(localCursorPos);
 
 			return (
 				<Box key={lineIndex}>
 					{prefix}
 					<Text>
 						{before}
-						<Text inverse>{cursorChar}</Text>
+						{cursorVisible ? <Text color="cyan" bold>{"\u2502"}</Text> : <Text> </Text>}
 						{after}
+					</Text>
+				</Box>
+			);
+		}
+
+		// Cursor at end of text, past last line
+		if (isLastVisibleLine && cursorPos === textRef.current.length && cursorPos === lineEndIndex) {
+			return (
+				<Box key={lineIndex}>
+					{prefix}
+					<Text>
+						{line}
+						{cursorVisible ? <Text color="cyan" bold>{"\u2502"}</Text> : null}
 					</Text>
 				</Box>
 			);
@@ -197,10 +218,6 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 			<Box key={lineIndex}>
 				{prefix}
 				<Text>{line}</Text>
-				{/* Show cursor block at end of last visible line if cursor is past all content */}
-				{isLastVisibleLine && cursorPos === text.length && (
-					<Text inverse>{" "}</Text>
-				)}
 			</Box>
 		);
 	};
@@ -233,7 +250,8 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 				{isActive && text === "" ? (
 					<Box>
 						<Text bold color="cyan">{"> "}</Text>
-						<Text dimColor>Ask anything... (! for bash, / for commands)</Text>
+						{cursorVisible ? <Text color="cyan" bold>{"\u2502"}</Text> : null}
+						<Text dimColor> Ask anything... (! for bash, / for commands)</Text>
 					</Box>
 				) : !isActive ? (
 					<Box>
@@ -242,7 +260,7 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 					</Box>
 				) : (
 					visibleLines.map((line, i) =>
-						renderLineWithCursor(
+						renderLine(
 							line,
 							lineStartIndices[i],
 							i,
@@ -251,7 +269,7 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 					)
 				)}
 			</Box>
-			<Text dimColor>{"  Enter to send \u00B7 Shift+Enter for newline \u00B7 Esc to clear \u00B7 arrows to move"}</Text>
+			<Text dimColor>{"  Enter to send \u00B7 Shift+Enter for newline \u00B7 Esc to clear"}</Text>
 		</Box>
 	);
 }

@@ -338,12 +338,25 @@ export async function handleChatSend(
 
 	if (!explicitModel) {
 		// Auto mode: route silently, include routing info in stream.start
-		const decision = routeMessage(msg.content, sessionMessages.length);
-		model = `${decision.provider}:${decision.model}`;
-		routingInfo = { tier: decision.tier, reason: decision.reason };
-		logger.info(
-			`Auto-routed to ${model} (tier: ${decision.tier}, confidence: ${decision.confidence})`,
-		);
+		// Pass the session's current model as fallback so the router can use it
+		// when all default tiers point to unavailable providers (e.g. Anthropic when only Ollama is configured)
+		const decision = routeMessage(msg.content, sessionMessages.length, { fallbackModel: model });
+		const routedModel = `${decision.provider}:${decision.model}`;
+
+		// Validate the routed provider is actually available
+		const routedProvider = routedModel.split(":")[0];
+		if (isProviderAvailable(routedProvider)) {
+			model = routedModel;
+			routingInfo = { tier: decision.tier, reason: decision.reason };
+			logger.info(
+				`Auto-routed to ${model} (tier: ${decision.tier}, confidence: ${decision.confidence})`,
+			);
+		} else {
+			// Keep session's original model (already validated above)
+			logger.warn(
+				`Auto-routing selected unavailable provider '${routedProvider}', keeping session model: ${model}`,
+			);
+		}
 	}
 
 	// Build tool registry lazily (cached on connection state)

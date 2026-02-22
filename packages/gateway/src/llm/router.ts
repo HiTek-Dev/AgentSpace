@@ -95,7 +95,7 @@ function buildReason(
 export function routeMessage(
 	message: string,
 	historyLength: number,
-	opts?: { tiers?: TierConfig; rules?: RoutingRule[] },
+	opts?: { tiers?: TierConfig; rules?: RoutingRule[]; fallbackModel?: string },
 ): RoutingDecision {
 	const tiers = opts?.tiers ?? DEFAULT_TIERS;
 	const { tier, confidence } = classifyComplexity(
@@ -138,8 +138,35 @@ export function routeMessage(
 		}
 	}
 
-	// Last resort: return original decision even if provider unavailable
-	// (will error at streaming time with a clear message)
+	// Last resort: use the caller-provided fallback model (e.g. session default)
+	if (opts?.fallbackModel && opts.fallbackModel.includes(":")) {
+		const [fbProvider, ...fbParts] = opts.fallbackModel.split(":");
+		const fbModel = fbParts.join(":");
+		if (available.includes(fbProvider)) {
+			return {
+				tier: "standard",
+				provider: fbProvider,
+				model: fbModel,
+				reason: `Fallback: no configured tier providers available, using session default`,
+				confidence: confidence * 0.5,
+			};
+		}
+	}
+
+	// Absolute last resort: use first available provider
+	// This handles the case where only Ollama (or another local provider) is configured
+	const firstAvailable = available[0];
+	if (firstAvailable) {
+		return {
+			tier: "standard",
+			provider: firstAvailable,
+			model: firstAvailable === "ollama" ? "llama3" : "default",
+			reason: `Fallback: no configured tier providers available, using ${firstAvailable}`,
+			confidence: confidence * 0.3,
+		};
+	}
+
+	// Nothing available at all — return original (will error with clear message)
 	return {
 		tier,
 		provider,
