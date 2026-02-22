@@ -146,6 +146,17 @@ Requirements for the Product Polish milestone. Each maps to roadmap phases.
 - [x] **TEST-05**: Approval gate policy tests cover auto/session/always tier logic
 - [x] **TEST-06**: Context assembly tests verify system prompt construction with soul/memory/identity
 
+## v0.2 Requirements
+
+Requirements for the Chat Experience & Providers milestone. Each maps to roadmap phases.
+
+### Ollama Auto-Discovery & Remote Setup (Phase 30)
+
+- [ ] **OLLM-01**: Tek auto-detects a locally running Ollama instance and lists its available models during setup (no API key required)
+- [ ] **OLLM-02**: Discovered Ollama models appear in the default model selection alongside cloud provider models during onboarding
+- [ ] **OLLM-03**: User can enter a remote Ollama IP:port during setup, with connectivity validation and model listing
+- [ ] **OLLM-04**: Remote Ollama endpoints are saved to config and registered as additional providers in the gateway registry
+
 ## Future Requirements
 
 Deferred to future milestones. Tracked but not in current roadmap.
@@ -263,6 +274,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 - Mapped to phases: 29
 - Unmapped: 0
 
+### v0.2 (Current Milestone)
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| OLLM-01 | Phase 30 | Planned |
+| OLLM-02 | Phase 30 | Planned |
+| OLLM-03 | Phase 30 | Planned |
+| OLLM-04 | Phase 30 | Planned |
+
+**Coverage:**
+- v0.2 requirements (so far): 4 total
+- Mapped to phases: 4
+- Unmapped: 0
+
 ---
 *Requirements defined: 2026-02-15*
-*Last updated: 2026-02-20 after v0.1 roadmap creation*
+*Last updated: 2026-02-21 after v0.2 Phase 30 planning*

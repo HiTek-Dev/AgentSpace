@@ -64,10 +64,11 @@
 
 **Goal:** Ollama provider detects locally available models automatically (no API key needed), lists them during setup like other providers, and supports manual IP:port + model entry for remote Ollama instances on the network
 **Depends on:** None (fresh start)
-**Plans:** 0 plans
+**Requirements:** [OLLM-01, OLLM-02, OLLM-03, OLLM-04]
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 30 to break down)
+- [ ] 30-01-PLAN.md -- Ollama discovery client, dynamic model catalog, and onboarding integration
 
 ### Phase 31: Desktop Chat App Rebuild
 
@@ -112,7 +113,7 @@ Phases 30, 32, and 34 can start in parallel (no dependencies). Phase 31 follows 
 
 | Phase | Plans | Status |
 |-------|-------|--------|
-| 30. Ollama Auto-Discovery & Remote Setup | 0/TBD | Not started |
+| 30. Ollama Auto-Discovery & Remote Setup | 0/1 | Planned |
 | 31. Desktop Chat App Rebuild | 0/TBD | Not started (blocked by 32) |
 | 32. Structured Streaming & Chat Formatting | 0/TBD | Not started |
 | 33. Todo System Display | 0/TBD | Not started (blocked by 31, 34) |
