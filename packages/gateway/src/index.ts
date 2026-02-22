@@ -175,12 +175,28 @@ if (isDirectRun) {
 		const { getKey } = await import("@tek/core/vault");
 		const telegramToken = getKey("telegram");
 		if (telegramToken) {
-			const pkg = "@tek/telegram";
-			const { startTelegramBot } = await import(/* @vite-ignore */ pkg);
-			await startTelegramBot(telegramToken);
-			const { createLogger } = await import("@tek/core");
-			const logger = createLogger("gateway");
-			logger.info("Telegram bot auto-started");
+			// Try to import from both package name and file path
+			let startTelegramBot: ((token: string) => Promise<void>) | undefined;
+			try {
+				// Try workspace package import first
+				const telegramPkg = await import("@tek/telegram" as string);
+				startTelegramBot = telegramPkg.startTelegramBot;
+			} catch {
+				// Fallback to file path import (for dev installations)
+				try {
+					const telegramPath = new URL("../telegram/dist/index.js", import.meta.url).href;
+					const telegramPkg = await import(telegramPath);
+					startTelegramBot = telegramPkg.startTelegramBot;
+				} catch {
+					// Both imports failed
+				}
+			}
+			if (startTelegramBot) {
+				await startTelegramBot(telegramToken);
+				const { createLogger } = await import("@tek/core");
+				const logger = createLogger("gateway");
+				logger.info("Telegram bot auto-started");
+			}
 		}
 	} catch (err) {
 		const { createLogger } = await import("@tek/core");
