@@ -1,6 +1,7 @@
 import { writeFileSync, unlinkSync } from "node:fs";
 import Fastify, { type FastifyInstance } from "fastify";
 import bearerAuth from "@fastify/bearer-auth";
+import cors from "@fastify/cors";
 import { loadConfig, RUNTIME_PATH, createLogger } from "@tek/core";
 import { getAuthKeys } from "./auth.js";
 import { registerHealthRoute, registerKeyRoutes } from "./routes.js";
@@ -37,6 +38,12 @@ export async function createServer(opts?: { port?: number }): Promise<{
 				},
 			},
 		},
+	});
+
+	// Allow CORS for desktop app (Tauri dev webview on localhost)
+	await server.register(cors, {
+		origin: true,
+		methods: ["GET", "POST", "OPTIONS"],
 	});
 
 	// Register health route in root scope (no auth required)

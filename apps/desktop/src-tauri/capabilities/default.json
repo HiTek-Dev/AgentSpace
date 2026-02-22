@@ -4,6 +4,7 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
+    "core:path:default",
     "websocket:default",
     "fs:default",
     {
@@ -23,16 +24,6 @@
       ]
     },
     "process:default",
-    "shell:default",
-    {
-      "identifier": "shell:allow-open",
-      "allow": [
-        {
-          "name": "open",
-          "cmd": "",
-          "args": true
-        }
-      ]
-    }
+    "shell:default"
   ]
 }

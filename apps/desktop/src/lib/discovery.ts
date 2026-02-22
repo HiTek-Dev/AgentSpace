@@ -18,7 +18,8 @@ export async function discoverGateway(): Promise<RuntimeInfo | null> {
     const home = await homeDir();
     const path = await join(home, ".config", "tek", "runtime.json");
 
-    if (!(await exists(path))) {
+    const fileExists = await exists(path);
+    if (!fileExists) {
       return null;
     }
 
@@ -29,13 +30,19 @@ export async function discoverGateway(): Promise<RuntimeInfo | null> {
       return null;
     }
 
-    // Health check to detect stale runtime.json (gateway crashed without cleanup)
-    const res = await fetch(`http://127.0.0.1:${data.port}/health`, {
-      signal: AbortSignal.timeout(2000),
-    });
-
-    if (!res.ok) {
-      return null;
+    // Health check to detect stale runtime.json (gateway crashed without cleanup).
+    // If it fails due to CORS (Tauri dev webview), still trust the file —
+    // a stale file is cleaned up on gateway exit, and the WS connection
+    // will fail fast if the gateway isn't actually running.
+    try {
+      const res = await fetch(`http://127.0.0.1:${data.port}/health`, {
+        signal: AbortSignal.timeout(2000),
+      });
+      if (!res.ok) {
+        return null;
+      }
+    } catch {
+      // CORS or network error — trust runtime.json, WS will validate
     }
 
     return {
@@ -44,7 +51,6 @@ export async function discoverGateway(): Promise<RuntimeInfo | null> {
       startedAt: data.startedAt,
     };
   } catch {
-    // File read error, JSON parse error, network error, timeout -- all mean "no gateway"
     return null;
   }
 }
