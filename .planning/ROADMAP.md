@@ -55,7 +55,7 @@
 - [x] **Phase 30: Ollama Auto-Discovery & Remote Setup** - Detect local models, list in setup, manual IP/model for remote (completed 2026-02-22)
 - [x] **Phase 31: Desktop Chat App Rebuild** - Opcode-style Tauri chat, gateway status landing, agent selection, streaming display (completed 2026-02-22)
 - [x] **Phase 32: Structured Streaming & Chat Formatting** - JSON streaming protocol, reasoning blocks, source attribution, system prompt formatting (completed 2026-02-22)
-- [ ] **Phase 33: Todo System Display in CLI and Desktop** - Todo progress in CLI bottom bar and desktop chat
+- [x] **Phase 33: Todo System Display in CLI and Desktop** - Todo progress in CLI bottom bar and desktop chat (completed 2026-02-22)
 - [ ] **Phase 34: CLI Chat UX Overhaul** - Fixed bottom input, expandable entry, Claude Code/Kimicode-style terminal
 
 ## Phase Details
@@ -101,7 +101,7 @@ Plans:
 **Goal:** Build a todo tracking system where agents call a `todo_write` tool to track progress on multi-step tasks, with real-time display in both CLI (Ink) and desktop (React/Tailwind) via `todo.update` WS protocol messages
 **Depends on:** Phase 31
 **Requirements:** [TODO-01, TODO-02, TODO-03, TODO-04, TODO-05, TODO-06, TODO-07]
-**Plans:** 1/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 33-01-PLAN.md -- Gateway todo tool, WS protocol extension, tool registry wiring, system prompt
@@ -127,4 +127,4 @@ Phases 30, 32, and 34 can start in parallel (no dependencies). Phase 31 follows 
 | 30. Ollama Auto-Discovery & Remote Setup | 1/1 | Complete |
 | 31. Desktop Chat App Rebuild | 5/5 | Complete |
 | 32. Structured Streaming & Chat Formatting | 3/3 | Complete |
-| 33. Todo System Display | 1/3 | In Progress|  | 34. CLI Chat UX Overhaul | 0/TBD | Not started |
+| 33. Todo System Display | 3/3 | Complete   | 2026-02-22 | 34. CLI Chat UX Overhaul | 0/TBD | Not started |

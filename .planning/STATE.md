@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 33 of 34 (Todo System Display in CLI and Desktop)
-Plan: 1 of 3
-Status: In progress
-Last activity: 2026-02-22 — Completed 33-01 Gateway todo system
+Plan: 3 of 3
+Status: Complete
+Last activity: 2026-02-22 — Completed 33-03 Desktop todo display
 
 Progress: [############################------] 82% (28/34 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 60 (36 v0.0 + 14 v0.1 + 10 v0.2)
+- Total plans completed: 62 (36 v0.0 + 14 v0.1 + 12 v0.2)
 - Average duration: 3min
-- Total execution time: 1.74 hours
+- Total execution time: 1.84 hours
 
 **By Phase (v0.1):**
 
@@ -39,7 +39,7 @@ Progress: [############################------] 82% (28/34 phases)
 | 30 | 1/1 | 3min | 3.0min |
 | 31 | 5/5 | 14min | 2.8min |
 | 32 | 3/3 | 11min | 3.7min |
-| 33 | 1/3 | 3min | 3.0min |
+| 33 | 3/3 | 9min | 3.0min |
 
 ## Accumulated Context
 
@@ -66,6 +66,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 33-01]: Used inputSchema (not parameters) to match existing AI SDK v6 tool() pattern in codebase
 - [Phase 33-01]: Todo tool uses auto approval via perTool policy, not wrapToolWithApproval wrapper
 - [Phase 33-01]: activeTodos cleared in both handleChatSend and handlePreflightApproval stream start paths
+- [Phase 33-03]: TodoPanel positioned between usage/cost footer and ChatInput in flex column
+- [Phase 33-03]: Todos cleared on stream start and error, preserved on stream end until next request
 
 ### Roadmap Evolution
 
@@ -89,5 +91,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 33-01-PLAN.md (Gateway todo system)
+Stopped at: Completed 33-03-PLAN.md (Desktop todo display)
 Resume file: None
