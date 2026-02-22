@@ -173,36 +173,53 @@ if (isDirectRun) {
 	// Optionally start Telegram bot if token is configured
 	try {
 		const { getKey } = await import("@tek/core/vault");
+		const { createLogger } = await import("@tek/core");
+		const logger = createLogger("telegram-bot");
+
 		const telegramToken = getKey("telegram");
+		logger.info(`Telegram token present: ${!!telegramToken}`);
+
 		if (telegramToken) {
 			// Try to import from both package name and file path
 			let startTelegramBot: ((token: string) => Promise<void>) | undefined;
+			let importError: Error | undefined;
+
 			try {
 				// Try workspace package import first
+				logger.info("Trying workspace import: @tek/telegram");
 				const telegramPkg = await import("@tek/telegram" as string);
 				startTelegramBot = telegramPkg.startTelegramBot;
-			} catch {
+				logger.info(`Workspace import success, startTelegramBot found: ${!!startTelegramBot}`);
+			} catch (e) {
+				importError = e as Error;
+				logger.info(`Workspace import failed: ${importError.message}`);
 				// Fallback to file path import (for dev installations)
 				try {
-					const telegramPath = new URL("../telegram/dist/index.js", import.meta.url).href;
+					// Correct relative path: gateway/dist/index.ts -> ../../telegram/dist/index.js
+					const telegramPath = new URL("../../telegram/dist/index.js", import.meta.url).href;
+					logger.info(`Trying file path import: ${telegramPath}`);
 					const telegramPkg = await import(telegramPath);
 					startTelegramBot = telegramPkg.startTelegramBot;
-				} catch {
-					// Both imports failed
+					logger.info(`File path import success, startTelegramBot found: ${!!startTelegramBot}`);
+				} catch (e2) {
+					importError = e2 as Error;
+					logger.warn(`File path import also failed: ${importError.message}`);
 				}
 			}
+
 			if (startTelegramBot) {
+				logger.info("Starting Telegram bot...");
 				await startTelegramBot(telegramToken);
-				const { createLogger } = await import("@tek/core");
-				const logger = createLogger("gateway");
 				logger.info("Telegram bot auto-started");
+			} else {
+				logger.warn(`Could not find startTelegramBot function`);
 			}
 		}
 	} catch (err) {
 		const { createLogger } = await import("@tek/core");
-		const logger = createLogger("gateway");
+		const logger = createLogger("telegram-bot");
 		logger.warn(
-			`Telegram bot not started: ${err instanceof Error ? err.message : String(err)}`,
+			`Telegram bot startup error: ${err instanceof Error ? err.message : String(err)}`,
 		);
 	}
 }
