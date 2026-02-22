@@ -36,14 +36,16 @@ export interface OllamaTagsResponse {
  */
 export async function listOllamaModels(
 	baseUrl = "http://localhost:11434",
-	timeoutMs = 3000,
+	timeoutMs = 5000,
 ): Promise<OllamaModel[]> {
+	// Normalize: strip trailing slash to avoid double-slash in URL
+	const url = baseUrl.replace(/\/+$/, "");
 	const controller = new AbortController();
 	const timer = setTimeout(() => controller.abort(), timeoutMs);
 
 	try {
 		// Try native API first (richer metadata)
-		const res = await fetch(`${baseUrl}/api/tags`, {
+		const res = await fetch(`${url}/api/tags`, {
 			signal: controller.signal,
 		});
 		if (res.ok) {
@@ -60,7 +62,7 @@ export async function listOllamaModels(
 	const controller2 = new AbortController();
 	const timer2 = setTimeout(() => controller2.abort(), timeoutMs);
 	try {
-		const res = await fetch(`${baseUrl}/v1/models`, {
+		const res = await fetch(`${url}/v1/models`, {
 			signal: controller2.signal,
 		});
 		if (res.ok) {
@@ -99,12 +101,13 @@ export async function listOllamaModels(
  */
 export async function isOllamaReachable(
 	baseUrl = "http://localhost:11434",
-	timeoutMs = 2000,
+	timeoutMs = 5000,
 ): Promise<boolean> {
+	const url = baseUrl.replace(/\/+$/, "");
 	const controller = new AbortController();
 	const timer = setTimeout(() => controller.abort(), timeoutMs);
 	try {
-		const res = await fetch(`${baseUrl}/api/tags`, {
+		const res = await fetch(`${url}/api/tags`, {
 			signal: controller.signal,
 		});
 		return res.ok;

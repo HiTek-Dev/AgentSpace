@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Box, Text, useInput } from "ink";
 import { useInputHistory } from "../hooks/useInputHistory.js";
 
@@ -22,12 +22,18 @@ interface InputBarProps {
  * - Bordered box with round style and cyan border
  * - Hint line below the border
  *
- * TODO: Use string-width for non-ASCII cursor positioning (CJK/emoji).
+ * Uses refs for text/cursor to avoid stale closure issues with useInput.
  */
 export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeightChange }: InputBarProps) {
 	const [text, setText] = useState("");
 	const [cursorPos, setCursorPos] = useState(0);
 	const history = useInputHistory();
+
+	// Refs to avoid stale closures in useInput callback
+	const textRef = useRef(text);
+	const cursorRef = useRef(cursorPos);
+	textRef.current = text;
+	cursorRef.current = cursorPos;
 
 	const lines = text.split("\n");
 	const totalLines = lines.length;
@@ -43,13 +49,16 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 		onHeightChange?.(reportedLines);
 	}, [totalLines, onHeightChange]);
 
-	useInput(
-		(input, key) => {
+	const handleInput = useCallback(
+		(input: string, key: any) => {
+			const cur = cursorRef.current;
+			const txt = textRef.current;
+
 			// Enter without Shift: submit
 			if (key.return && !key.shift) {
-				const trimmed = text.trim();
+				const trimmed = txt.trim();
 				if (trimmed) {
-					history.push(text);
+					history.push(txt);
 					onSubmit(trimmed);
 					setText("");
 					setCursorPos(0);
@@ -59,8 +68,8 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 
 			// Shift+Enter: insert newline at cursor
 			if (key.return && key.shift) {
-				setText((prev) => prev.slice(0, cursorPos) + "\n" + prev.slice(cursorPos));
-				setCursorPos((p) => p + 1);
+				setText(txt.slice(0, cur) + "\n" + txt.slice(cur));
+				setCursorPos(cur + 1);
 				return;
 			}
 
@@ -73,13 +82,13 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 
 			// Left arrow: move cursor left
 			if (key.leftArrow) {
-				setCursorPos((p) => Math.max(0, p - 1));
+				setCursorPos(Math.max(0, cur - 1));
 				return;
 			}
 
 			// Right arrow: move cursor right
 			if (key.rightArrow) {
-				setCursorPos((p) => Math.min(text.length, p + 1));
+				setCursorPos(Math.min(txt.length, cur + 1));
 				return;
 			}
 
@@ -91,12 +100,12 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 
 			// End (Ctrl+E): move cursor to end
 			if (key.ctrl && input === "e") {
-				setCursorPos(text.length);
+				setCursorPos(txt.length);
 				return;
 			}
 
 			// Up arrow when input is empty: cycle history backward
-			if (key.upArrow && text === "") {
+			if (key.upArrow && txt === "") {
 				const prev = history.back();
 				if (prev !== undefined) {
 					setText(prev);
@@ -106,7 +115,7 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 			}
 
 			// Down arrow when input is empty: cycle history forward
-			if (key.downArrow && text === "") {
+			if (key.downArrow && txt === "") {
 				const next = history.forward();
 				if (next !== undefined) {
 					setText(next);
@@ -119,31 +128,32 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 			}
 
 			// Backspace: delete character before cursor
-			// Check both key.backspace and raw bytes (\x7F, \x08) for terminal compatibility
 			if (key.backspace || input === "\x7F" || input === "\x08") {
-				if (cursorPos > 0) {
-					setText((prev) => prev.slice(0, cursorPos - 1) + prev.slice(cursorPos));
-					setCursorPos((p) => p - 1);
+				if (cur > 0) {
+					setText(txt.slice(0, cur - 1) + txt.slice(cur));
+					setCursorPos(cur - 1);
 				}
 				return;
 			}
 
 			// Delete: delete character at cursor
 			if (key.delete) {
-				if (cursorPos < text.length) {
-					setText((prev) => prev.slice(0, cursorPos) + prev.slice(cursorPos + 1));
+				if (cur < txt.length) {
+					setText(txt.slice(0, cur) + txt.slice(cur + 1));
 				}
 				return;
 			}
 
 			// Regular character input (no ctrl/meta modifiers)
 			if (input && !key.ctrl && !key.meta) {
-				setText((prev) => prev.slice(0, cursorPos) + input + prev.slice(cursorPos));
-				setCursorPos((p) => p + input.length);
+				setText(txt.slice(0, cur) + input + txt.slice(cur));
+				setCursorPos(cur + input.length);
 			}
 		},
-		{ isActive },
+		[history, onSubmit],
 	);
+
+	useInput(handleInput, { isActive });
 
 	// Render cursor within text: split into before/after cursor segments
 	const renderLineWithCursor = (line: string, lineStartIndex: number, lineIndex: number, isLastVisibleLine: boolean) => {
