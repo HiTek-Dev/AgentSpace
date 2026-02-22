@@ -14,88 +14,97 @@ import { LOG_PATH, getInstallDir } from "@tek/core";
 import { discoverGateway } from "../lib/discovery.js";
 import { formatLogLine } from "../lib/log-formatter.js";
 
-export const gatewayCommand = new Command("gateway").description(
-	"Manage the Tek gateway process",
-);
+// Extract start action into a shared function
+async function startGateway(options: { foreground?: boolean } = {}) {
+	const existing = discoverGateway();
+	if (existing) {
+		console.log(
+			chalk.yellow(
+				`Gateway already running on 127.0.0.1:${existing.port} (PID ${existing.pid})`,
+			),
+		);
+		return;
+	}
+
+	const installDir = getInstallDir();
+	const entryPoint = resolve(
+		installDir,
+		"packages",
+		"gateway",
+		"dist",
+		"index.js",
+	);
+
+	if (options.foreground) {
+		const child = spawn(process.execPath, [entryPoint], {
+			stdio: ["ignore", "inherit", "pipe"],
+		});
+		if (child.stderr) {
+			const rl = createInterface({ input: child.stderr });
+			rl.on("line", (line) => {
+				console.log(formatLogLine(line));
+			});
+		}
+		// Handle Ctrl+C gracefully
+		process.on("SIGINT", () => {
+			child.kill("SIGTERM");
+		});
+		child.on("exit", (code) => {
+			process.exit(code ?? 1);
+		});
+		return;
+	}
+
+	// Background mode — redirect stdout/stderr to log file
+	const logFd = openSync(LOG_PATH, "a");
+	const child = spawn(process.execPath, [entryPoint], {
+		detached: true,
+		stdio: ["ignore", logFd, logFd],
+	});
+	child.unref();
+	closeSync(logFd);
+
+	// Poll for gateway to become available
+	const maxWait = 10_000;
+	const interval = 250;
+	const start = Date.now();
+
+	while (Date.now() - start < maxWait) {
+		await new Promise((r) => setTimeout(r, interval));
+		const info = discoverGateway();
+		if (info) {
+			console.log(
+				chalk.green(
+					`Gateway started on 127.0.0.1:${info.port} (PID ${info.pid})`,
+				),
+			);
+			console.log(chalk.dim(`  Logs: tek gateway logs`));
+			return;
+		}
+	}
+
+	console.log(
+		chalk.red(
+			"Gateway did not start within 10 seconds. Check logs for errors.",
+		),
+	);
+	process.exit(1);
+}
+
+export const gatewayCommand = new Command("gateway")
+	.description("Manage the Tek gateway process")
+	.option("--foreground", "Run in the foreground instead of background")
+	.action(async (options: { foreground?: boolean }) => {
+		// Default: start the gateway
+		await startGateway(options);
+	});
 
 gatewayCommand
 	.command("start")
 	.description("Start the gateway")
 	.option("--foreground", "Run in the foreground instead of background")
 	.action(async (options: { foreground?: boolean }) => {
-		const existing = discoverGateway();
-		if (existing) {
-			console.log(
-				chalk.yellow(
-					`Gateway already running on 127.0.0.1:${existing.port} (PID ${existing.pid})`,
-				),
-			);
-			return;
-		}
-
-		const installDir = getInstallDir();
-		const entryPoint = resolve(
-			installDir,
-			"packages",
-			"gateway",
-			"dist",
-			"index.js",
-		);
-
-		if (options.foreground) {
-			const child = spawn(process.execPath, [entryPoint], {
-				stdio: ["ignore", "inherit", "pipe"],
-			});
-			if (child.stderr) {
-				const rl = createInterface({ input: child.stderr });
-				rl.on("line", (line) => {
-					console.log(formatLogLine(line));
-				});
-			}
-			// Handle Ctrl+C gracefully
-			process.on("SIGINT", () => {
-				child.kill("SIGTERM");
-			});
-			child.on("exit", (code) => {
-				process.exit(code ?? 1);
-			});
-			return;
-		}
-
-		// Background mode — redirect stdout/stderr to log file
-		const logFd = openSync(LOG_PATH, "a");
-		const child = spawn(process.execPath, [entryPoint], {
-			detached: true,
-			stdio: ["ignore", logFd, logFd],
-		});
-		child.unref();
-		closeSync(logFd);
-
-		// Poll for gateway to become available
-		const maxWait = 10_000;
-		const interval = 250;
-		const start = Date.now();
-
-		while (Date.now() - start < maxWait) {
-			await new Promise((r) => setTimeout(r, interval));
-			const info = discoverGateway();
-			if (info) {
-				console.log(
-					chalk.green(
-						`Gateway started on 127.0.0.1:${info.port} (PID ${info.pid})`,
-					),
-				);
-				console.log(chalk.dim(`  Logs: tek gateway logs`));
-				return;
-			}
-		}
-
-		console.log(
-			chalk.red(
-				"Gateway did not start within 10 seconds. Check logs for errors.",
-			),
-		);
-		process.exit(1);
+		await startGateway(options);
 	});
 
 gatewayCommand
