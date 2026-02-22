@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Every interaction with your AI agent is transparent, secure, and under your control -- you see exactly what's being sent, what tools are running, and can approve or skip permissions at any granularity.
-**Current focus:** Phase 29 — Sandbox Bug Fixes & Desktop Rebuild (not started)
+**Current focus:** v0.2 Chat Experience & Providers — Phases 30-34 (not started)
 
 ## Current Position
 
-Phase: 29 of 34 (Sandbox Bug Fixes & Desktop Rebuild)
+Phase: 30 of 34 (Ollama Auto-Discovery & Remote Setup)
 Plan: 0 of 0
 Status: Not started (plans TBD)
-Last activity: 2026-02-21 — Added phases 30-34, completed Phase 28 (Testing Foundation), shipped v0.1
+Last activity: 2026-02-21 — Closed out v0.1, removed Phase 29, created v0.2 milestone (phases 30-34)
 
-Progress: [########################------] 82% (28/34 phases)
+Progress: [############################------] 82% (28/34 phases)
 
 ## Performance Metrics
 
@@ -38,18 +38,20 @@ Progress: [########################------] 82% (28/34 phases)
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
-### Pending Todos
-
-- **Daemon mode for gateway** — launchd service for background gateway
-- **Verify update process end-to-end** — update.sh with daemon, config migration
-
 ### Roadmap Evolution
 
+- Phase 29 (Sandbox Bug Fixes & Desktop Rebuild) removed — superseded by v0.2 phases
 - Phase 30 added: Ollama Auto-Discovery and Remote Setup
 - Phase 31 added: Desktop Chat App Rebuild (modeled on opcode)
 - Phase 32 added: Structured Streaming and Chat Formatting
 - Phase 33 added: Todo System Display in CLI and Desktop
 - Phase 34 added: CLI Chat UX Overhaul (Claude Code / Kimicode style)
+- v0.2 milestone created: Chat Experience & Providers
+
+### Pending Todos
+
+- **Daemon mode for gateway** — launchd service for background gateway
+- **Verify update process end-to-end** — update.sh with daemon, config migration
 
 ### Blockers/Concerns
 
@@ -58,5 +60,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: All v0.0 and v0.1 milestones shipped. Phase 29 not started.
+Stopped at: v0.2 milestone created with phases 30-34. Ready for planning.
 Resume file: None
