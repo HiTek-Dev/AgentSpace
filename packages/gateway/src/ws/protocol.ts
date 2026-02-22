@@ -339,6 +339,22 @@ const ChatStreamDeltaSchema = z.object({
 	type: z.literal("chat.stream.delta"),
 	requestId: z.string(),
 	delta: z.string(),
+	contentType: z.enum(["text", "code"]).optional(),
+});
+
+const ChatStreamReasoningSchema = z.object({
+	type: z.literal("chat.stream.reasoning"),
+	requestId: z.string(),
+	delta: z.string(),
+});
+
+const ChatStreamSourceSchema = z.object({
+	type: z.literal("chat.stream.source"),
+	requestId: z.string(),
+	source: z.object({
+		url: z.string(),
+		title: z.string().optional(),
+	}),
 });
 
 const ChatStreamEndSchema = z.object({
@@ -685,6 +701,8 @@ const TerminalProxyStartSchema = z.object({
 export const ServerMessageSchema = z.discriminatedUnion("type", [
 	ChatStreamStartSchema,
 	ChatStreamDeltaSchema,
+	ChatStreamReasoningSchema,
+	ChatStreamSourceSchema,
 	ChatStreamEndSchema,
 	ChatRouteProposalSchema,
 	ContextInspectionSchema,
@@ -721,6 +739,8 @@ export const ServerMessageSchema = z.discriminatedUnion("type", [
 export type ServerMessage = z.infer<typeof ServerMessageSchema>;
 export type ChatStreamStart = z.infer<typeof ChatStreamStartSchema>;
 export type ChatStreamDelta = z.infer<typeof ChatStreamDeltaSchema>;
+export type ChatStreamReasoning = z.infer<typeof ChatStreamReasoningSchema>;
+export type ChatStreamSource = z.infer<typeof ChatStreamSourceSchema>;
 export type ChatStreamEnd = z.infer<typeof ChatStreamEndSchema>;
 export type ChatRouteProposal = z.infer<typeof ChatRouteProposalSchema>;
 export type ContextInspection = z.infer<typeof ContextInspectionSchema>;

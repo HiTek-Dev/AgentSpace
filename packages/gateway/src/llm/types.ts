@@ -30,7 +30,18 @@ export interface StreamToolResult {
 	result: unknown;
 }
 
-export type StreamChunk = StreamDelta | StreamDone | StreamToolCall | StreamToolResult;
+export interface StreamReasoning {
+	type: "reasoning";
+	text: string;
+}
+
+export interface StreamSource {
+	type: "source";
+	url: string;
+	title?: string;
+}
+
+export type StreamChunk = StreamDelta | StreamDone | StreamToolCall | StreamToolResult | StreamReasoning | StreamSource;
 
 // ── Routing Types ─────────────────────────────────────────────────────
 
