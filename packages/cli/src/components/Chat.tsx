@@ -15,10 +15,6 @@ import { Divider } from "./Divider.js";
 import { StreamingResponse } from "./StreamingResponse.js";
 import { InputBar } from "./InputBar.js";
 import { StatusBar } from "./StatusBar.js";
-import { ToolPanel } from "./ToolPanel.js";
-import { ToolApprovalPrompt } from "./ToolApprovalPrompt.js";
-import { SkillApprovalPrompt } from "./SkillApprovalPrompt.js";
-import { PreflightChecklist } from "./PreflightChecklist.js";
 import { TodoPanel } from "./TodoPanel.js";
 
 interface ChatProps {
@@ -35,9 +31,9 @@ interface ChatProps {
  * Layout structure:
  *   FullScreenWrapper (alternate screen buffer)
  *     ConversationScroll (flexGrow=1, windowed messages)
- *       WelcomeScreen | MessageBubbles | StreamingResponse | TodoPanel | ToolPanel | Approvals
+ *       WelcomeScreen | MessageBubbles | StreamingResponse | TodoPanel | InlineApproval
  *     Divider (thin horizontal rule)
- *     InputBar (bordered, fixed at bottom, cursor-aware editing)
+ *     InputBar (bordered, fixed at bottom, cursor-aware editing, always visible)
  *     StatusBar (single compact line at very bottom)
  */
 export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyRequest }: ChatProps) {
@@ -64,7 +60,6 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyReq
 		approveToolCall,
 		approvePreflight,
 		todos,
-		toolCalls,
 	} = useChat({ initialModel, resumeSessionId });
 
 	const { send } = useWebSocket({
@@ -181,7 +176,7 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyReq
 		[pendingPreflight, approvePreflight, send],
 	);
 
-	// Determine if input should be active (not during streaming or approvals)
+	// Input is always visible but disabled during streaming or approvals
 	const isInputActive = !isStreaming && !pendingApproval && !pendingPreflight;
 
 	return (
@@ -200,51 +195,16 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyReq
 							messages={messages}
 							availableHeight={conversationHeight}
 							isStreaming={isStreaming}
+							pendingApproval={pendingApproval}
+							pendingPreflight={pendingPreflight}
+							onToolApproval={handleToolApproval}
+							onPreflightApproval={handlePreflightApproval}
 						>
 							{isStreaming && (
 								<StreamingResponse text={streamingText} reasoningText={streamingReasoning} model={model} />
 							)}
 
 							<TodoPanel todos={todos} />
-
-							{toolCalls.length > 0 &&
-								toolCalls[toolCalls.length - 1].status === "pending" && (
-									<ToolPanel
-										toolName={toolCalls[toolCalls.length - 1].toolName}
-										status={toolCalls[toolCalls.length - 1].status}
-										input={
-											typeof toolCalls[toolCalls.length - 1].args === "string"
-												? (toolCalls[toolCalls.length - 1].args as string)
-												: JSON.stringify(toolCalls[toolCalls.length - 1].args, null, 2)
-										}
-										isFocused={!isStreaming && !pendingApproval && !pendingPreflight}
-									/>
-								)}
-
-							{pendingApproval && (
-								pendingApproval.toolName === "skill_register" ? (
-									<SkillApprovalPrompt
-										toolName={pendingApproval.toolName}
-										toolCallId={pendingApproval.toolCallId}
-										args={pendingApproval.args}
-										onResponse={handleToolApproval}
-									/>
-								) : (
-									<ToolApprovalPrompt
-										toolName={pendingApproval.toolName}
-										toolCallId={pendingApproval.toolCallId}
-										args={pendingApproval.args}
-										onResponse={handleToolApproval}
-									/>
-								)
-							)}
-
-							{pendingPreflight && (
-								<PreflightChecklist
-									checklist={pendingPreflight}
-									onResponse={handlePreflightApproval}
-								/>
-							)}
 						</ConversationScroll>
 
 						<Divider />

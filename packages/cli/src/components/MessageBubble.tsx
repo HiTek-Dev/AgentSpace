@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Text } from "ink";
 import type { ChatMessage } from "../lib/gateway-client.js";
 import { MarkdownRenderer } from "./MarkdownRenderer.js";
+import { InlineToolCall } from "./InlineToolCall.js";
 
 interface MessageBubbleProps {
 	message: ChatMessage;
@@ -76,18 +77,14 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 		}
 
 		case "tool_call": {
-			const statusIcon =
-				message.status === "complete" ? <Text color="green">{"✓"}</Text> :
-				message.status === "error" ? <Text color="red">{"✗"}</Text> :
-				<Text color="yellow">{"⋯"}</Text>;
 			return (
 				<Box>
 					<Box justifyContent="space-between" width="100%">
-						<Box gap={1}>
-							<Text dimColor>{"▶"}</Text>
-							<Text bold color="blue">{message.toolName}</Text>
-							{statusIcon}
-						</Box>
+						<InlineToolCall
+							toolName={message.toolName}
+							status={message.status}
+							input={message.input}
+						/>
 						{ts}
 					</Box>
 				</Box>
@@ -95,21 +92,20 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 		}
 
 		case "bash_command": {
-			const cmdPreview = message.command.length > 60
-				? message.command.slice(0, 57) + "..."
-				: message.command;
-			const exitIcon =
-				message.exitCode === undefined ? <Text color="yellow">{"⋯"}</Text> :
-				message.exitCode === 0 ? <Text color="green">{"✓"}</Text> :
-				<Text color="red">{"✗"}</Text>;
+			const bashStatus: "pending" | "complete" | "error" =
+				message.exitCode === undefined
+					? "pending"
+					: message.exitCode === 0
+						? "complete"
+						: "error";
 			return (
 				<Box>
 					<Box justifyContent="space-between" width="100%">
-						<Box gap={1}>
-							<Text bold color="green">{"$"}</Text>
-							<Text dimColor>{cmdPreview}</Text>
-							{exitIcon}
-						</Box>
+						<InlineToolCall
+							toolName="bash_command"
+							status={bashStatus}
+							input={message.command}
+						/>
 						{ts}
 					</Box>
 				</Box>
