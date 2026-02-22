@@ -46,6 +46,19 @@ export interface ChatStreamDelta {
   type: 'chat.stream.delta';
   requestId: string;
   delta: string;
+  contentType?: 'text' | 'code';
+}
+
+export interface ChatStreamReasoning {
+  type: 'chat.stream.reasoning';
+  requestId: string;
+  delta: string;
+}
+
+export interface ChatStreamSource {
+  type: 'chat.stream.source';
+  requestId: string;
+  source: { url: string; title?: string };
 }
 
 export interface ChatStreamEnd {
@@ -117,6 +130,8 @@ export type ServerMessage =
   | ChatStreamStart
   | ChatStreamDelta
   | ChatStreamEnd
+  | ChatStreamReasoning
+  | ChatStreamSource
   | SessionCreated
   | SessionListResponse
   | ToolCallNotify
@@ -154,6 +169,18 @@ export type ChatMessage =
       args: unknown;
       risk?: string;
       status: 'pending' | 'approved' | 'denied';
+    }
+  | {
+      type: 'reasoning';
+      id: string;
+      content: string;
+      timestamp: number;
+    }
+  | {
+      type: 'sources';
+      id: string;
+      sources: Array<{ url: string; title?: string }>;
+      timestamp: number;
     };
 
 // ── Factory Functions ───────────────────────────────────────────────────
