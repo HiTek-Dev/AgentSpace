@@ -18,6 +18,7 @@ import { ToolPanel } from "./ToolPanel.js";
 import { ToolApprovalPrompt } from "./ToolApprovalPrompt.js";
 import { SkillApprovalPrompt } from "./SkillApprovalPrompt.js";
 import { PreflightChecklist } from "./PreflightChecklist.js";
+import { TodoPanel } from "./TodoPanel.js";
 
 interface ChatProps {
 	wsUrl: string;
@@ -54,6 +55,7 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyReq
 		setSessionId,
 		approveToolCall,
 		approvePreflight,
+		todos,
 		toolCalls,
 	} = useChat({ initialModel, resumeSessionId });
 
@@ -184,6 +186,8 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyReq
 			{isStreaming && (
 				<StreamingResponse text={streamingText} reasoningText={streamingReasoning} model={model} />
 			)}
+
+			<TodoPanel todos={todos} />
 
 			{toolCalls.length > 0 &&
 				toolCalls[toolCalls.length - 1].status === "pending" && (
