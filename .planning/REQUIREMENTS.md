@@ -170,12 +170,12 @@ Requirements for the Chat Experience & Providers milestone. Each maps to roadmap
 
 ### Structured Streaming & Chat Formatting (Phase 32)
 
-- [ ] **STRM-01**: Gateway uses `fullStream` in both streaming paths (stream.ts and tool-loop.ts) to capture reasoning, sources, and typed text deltas
-- [ ] **STRM-02**: WS protocol extended with `chat.stream.reasoning` and `chat.stream.source` server message types, and optional `contentType` field on `chat.stream.delta`
-- [ ] **STRM-03**: Gateway conditionally enables extended thinking (`providerOptions.anthropic.thinking`) for supported Claude models
+- [x] **STRM-01**: Gateway uses `fullStream` in both streaming paths (stream.ts and tool-loop.ts) to capture reasoning, sources, and typed text deltas
+- [x] **STRM-02**: WS protocol extended with `chat.stream.reasoning` and `chat.stream.source` server message types, and optional `contentType` field on `chat.stream.delta`
+- [x] **STRM-03**: Gateway conditionally enables extended thinking (`providerOptions.anthropic.thinking`) for supported Claude models
 - [ ] **STRM-04**: Desktop displays reasoning blocks as collapsible UI elements (collapsed by default, expandable to show full reasoning text)
 - [ ] **STRM-05**: CLI displays reasoning blocks inline as dimmed italic text during streaming and in message history
-- [ ] **STRM-06**: Base system prompt injected into every context assembly instructing agents to use markdown formatting for structured responses
+- [x] **STRM-06**: Base system prompt injected into every context assembly instructing agents to use markdown formatting for structured responses
 - [ ] **STRM-07**: Source attributions from providers are relayed to clients via protocol and displayed as footnote-style links
 
 ## Future Requirements

@@ -89,7 +89,7 @@ Plans:
 **Goal:** Gateway streams structured JSON data to clients (CLI + desktop) enabling real-time stylized rendering — markdown formatting, code highlighting, reasoning blocks, tool call displays — with base system prompt instructing agents on response format for clean presentation
 **Depends on:** None (fresh start)
 **Requirements:** [STRM-01, STRM-02, STRM-03, STRM-04, STRM-05, STRM-06, STRM-07]
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
 - [ ] 32-01-PLAN.md -- Protocol extension, gateway fullStream refactor, reasoning options, formatting system prompt
@@ -123,6 +123,5 @@ Phases 30, 32, and 34 can start in parallel (no dependencies). Phase 31 follows 
 |-------|-------|--------|
 | 30. Ollama Auto-Discovery & Remote Setup | 1/1 | Complete |
 | 31. Desktop Chat App Rebuild | 5/5 | Complete |
-| 32. Structured Streaming & Chat Formatting | 0/3 | Not started |
-| 33. Todo System Display | 0/TBD | Not started (blocked by 31, 34) |
+| 32. Structured Streaming & Chat Formatting | 1/3 | In Progress|  | 33. Todo System Display | 0/TBD | Not started (blocked by 31, 34) |
 | 34. CLI Chat UX Overhaul | 0/TBD | Not started |

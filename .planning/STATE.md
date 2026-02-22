@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 
 ## Current Position
 
-Phase: 31 of 34 (Desktop Chat App Rebuild)
-Plan: 5 of 5
-Status: Phase 31 complete
-Last activity: 2026-02-21 — Completed 31-05 tool approval, session list, and E2E verification
+Phase: 32 of 34 (Structured Streaming and Chat Formatting)
+Plan: 1 of 3
+Status: In progress
+Last activity: 2026-02-21 — Completed 32-01 gateway structured streaming protocol
 
 Progress: [############################------] 82% (28/34 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 56 (36 v0.0 + 14 v0.1 + 6 v0.2)
+- Total plans completed: 57 (36 v0.0 + 14 v0.1 + 7 v0.2)
 - Average duration: 3min
-- Total execution time: 1.56 hours
+- Total execution time: 1.66 hours
 
 **By Phase (v0.1):**
 
@@ -38,6 +38,7 @@ Progress: [############################------] 82% (28/34 phases)
 |-------|-------|-------|----------|
 | 30 | 1/1 | 3min | 3.0min |
 | 31 | 5/5 | 14min | 2.8min |
+| 32 | 1/3 | 6min | 6.0min |
 
 ## Accumulated Context
 
@@ -54,6 +55,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 31-05]: ToolCallCard uses border-left accent colors for status indication
 - [Phase 31-05]: Session sidebar 280px fixed width, collapsible via header toggle
 - [Phase 31-05]: MessageCard delegates tool_call rendering to standalone ToolCallCard
+- [Phase 32-01]: Used reasoning-delta (not reasoning) part type to match AI SDK v6 fullStream API
+- [Phase 32-01]: Filter source parts by sourceType=url to handle document sources gracefully
+- [Phase 32-01]: Extended thinking budget set to 8000 tokens as moderate starting point
 
 ### Roadmap Evolution
 
@@ -77,5 +81,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 31-05-PLAN.md (Tool approval, session list, E2E verification) — Phase 31 complete
+Stopped at: Completed 32-01-PLAN.md (Gateway structured streaming protocol)
 Resume file: None
