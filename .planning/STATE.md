@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 
 ## Current Position
 
-Phase: 29 of 29 (Sandbox Bug Fixes & Desktop Rebuild)
+Phase: 29 of 34 (Sandbox Bug Fixes & Desktop Rebuild)
 Plan: 0 of 0
 Status: Not started (plans TBD)
-Last activity: 2026-02-21 — Completed Phase 28 (Testing Foundation), shipped v0.1
+Last activity: 2026-02-21 — Added phases 30-34, completed Phase 28 (Testing Foundation), shipped v0.1
 
-Progress: [############################-] 97% (28/29 phases)
+Progress: [########################------] 82% (28/34 phases)
 
 ## Performance Metrics
 
@@ -42,6 +42,14 @@ Decisions are logged in PROJECT.md Key Decisions table.
 
 - **Daemon mode for gateway** — launchd service for background gateway
 - **Verify update process end-to-end** — update.sh with daemon, config migration
+
+### Roadmap Evolution
+
+- Phase 30 added: Ollama Auto-Discovery and Remote Setup
+- Phase 31 added: Desktop Chat App Rebuild (modeled on opcode)
+- Phase 32 added: Structured Streaming and Chat Formatting
+- Phase 33 added: Todo System Display in CLI and Desktop
+- Phase 34 added: CLI Chat UX Overhaul (Claude Code / Kimicode style)
 
 ### Blockers/Concerns
 

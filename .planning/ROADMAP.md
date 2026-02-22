@@ -155,3 +155,48 @@ Phase 25 first, then Phases 26, 27, and 28 can run in parallel.
 **Plans:** 0/TBD (run /gsd:plan-phase 29 to break down)
 
 Plans: TBD
+
+### Phase 30: Ollama Auto-Discovery and Remote Setup
+
+**Goal:** Ollama provider detects locally available models automatically (no API key needed), lists them during setup like other providers, and supports manual IP:port + model entry for remote Ollama instances on the network
+**Depends on:** Phase 29
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 30 to break down)
+
+### Phase 31: Desktop Chat App Rebuild
+
+**Goal:** Rebuild the Tauri desktop app as a polished chat session system modeled on [opcode](https://github.com/winfunc/opcode) — landing page shows gateway connection status and stats, chat selects from available agents (or auto-selects if only one), clean message cards with real-time streaming display
+**Depends on:** Phase 29, Phase 32
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 31 to break down)
+
+### Phase 32: Structured Streaming and Chat Formatting
+
+**Goal:** Gateway streams structured JSON data to clients (CLI + desktop) enabling real-time stylized rendering — markdown formatting, code highlighting, reasoning blocks, tool call displays — with base system prompt instructing agents on response format for clean presentation
+**Depends on:** Phase 29
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 32 to break down)
+
+### Phase 33: Todo System Display in CLI and Desktop
+
+**Goal:** Display the existing todo system in the CLI bottom status area and desktop chat interface — showing active tasks, progress, and status updates as agents work, similar to Claude Code's task tracking display
+**Depends on:** Phase 31, Phase 34
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 33 to break down)
+
+### Phase 34: CLI Chat UX Overhaul
+
+**Goal:** CLI chat mimics Claude Code / Kimicode UX — fixed bottom input area that expands as user types, status section pinned below input, streaming responses scroll above, clean separation between user entry zone and conversation history
+**Depends on:** Phase 29
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 34 to break down)
