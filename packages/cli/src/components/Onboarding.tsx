@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Box, Text } from "ink";
 import { Select, TextInput, ConfirmInput, MultiSelect } from "@inkjs/ui";
-import { type SecurityMode, DISPLAY_NAME, CLI_COMMAND } from "@tek/core";
+import { DISPLAY_NAME, CLI_COMMAND } from "@tek/core";
 import type { Provider } from "@tek/core/vault";
 import { PROVIDERS } from "@tek/core/vault";
 import { buildModelOptions, buildOllamaModelOptions } from "../lib/models.js";
 
 type OnboardingStep =
 	| "welcome"
-	| "mode"
-	| "keys-ask"
-	| "keys-provider"
-	| "keys-input"
-	| "keys-more"
+	| "provider-choice"
+	| "external-provider"
+	| "external-key-input"
+	| "ollama-options"
+	| "ollama-local-probe"
+	| "ollama-network-input"
+	| "ollama-network-more"
 	| "telegram-ask"
 	| "telegram-input"
 	| "brave-ask"
 	| "brave-input"
-	| "ollama-detect"
-	| "ollama-remote-ask"
-	| "ollama-remote-input"
 	| "model-select"
 	| "model-alias-select"
 	| "model-alias-name"
@@ -32,7 +31,6 @@ interface ModelAliasEntry {
 }
 
 export interface OnboardingResult {
-	securityMode: SecurityMode;
 	keys: { provider: Provider; key: string }[];
 	defaultModel?: string;
 	modelAliases?: ModelAliasEntry[];
@@ -43,7 +41,6 @@ export interface OnboardingResult {
 export interface OnboardingProps {
 	onComplete: (result: OnboardingResult) => void;
 	existingConfig?: {
-		securityMode?: SecurityMode;
 		defaultModel?: string;
 		modelAliases?: ModelAliasEntry[];
 		configuredProviders?: string[];
@@ -52,10 +49,8 @@ export interface OnboardingProps {
 
 export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 	const [step, setStep] = useState<OnboardingStep>("welcome");
-	const [mode, setMode] = useState<SecurityMode>(existingConfig?.securityMode ?? "full-control");
 	const [keys, setKeys] = useState<{ provider: Provider; key: string }[]>([]);
 	const [currentProvider, setCurrentProvider] = useState<Provider>("anthropic");
-	const [currentKey, setCurrentKey] = useState("");
 
 	// Model selection state
 	const [defaultModel, setDefaultModel] = useState<string>(existingConfig?.defaultModel ?? "");
@@ -76,8 +71,8 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 	// Ollama state
 	const [ollamaEndpoints, setOllamaEndpoints] = useState<Array<{ name: string; url: string }>>([]);
 	const [ollamaModels, setOllamaModels] = useState<Array<{ label: string; value: string }>>([]);
-	const [ollamaProbing, setOllamaProbing] = useState(false);
-	const [ollamaLocalDetected, setOllamaLocalDetected] = useState(false);
+	const [ollamaLocalAdded, setOllamaLocalAdded] = useState(false);
+	const [ollamaNetworkSelected, setOllamaNetworkSelected] = useState(false);
 	const [ollamaRemoteError, setOllamaRemoteError] = useState("");
 
 	/** Build the list of available models from the full catalog for configured providers, including discovered Ollama models. */
@@ -100,11 +95,6 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 		return models;
 	}
 
-	/** Transition to telegram-ask step (from keys flow). */
-	function goToTelegramAsk() {
-		setStep("telegram-ask");
-	}
-
 	/** Transition to model-select, or skip to summary if no models available. */
 	function goToModelSelect() {
 		const models = buildAvailableModels();
@@ -116,6 +106,29 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 		}
 	}
 
+	/** Build a status line showing what's been configured so far. */
+	function getConfiguredStatus(): string {
+		const parts: string[] = [];
+		// External API keys
+		const apiProviders = keys.filter((k) => k.provider !== "brave" && k.provider !== "telegram").map((k) => k.provider);
+		if (existingConfig?.configuredProviders) {
+			for (const p of existingConfig.configuredProviders) {
+				if (!apiProviders.includes(p as Provider)) {
+					apiProviders.push(p as Provider);
+				}
+			}
+		}
+		if (apiProviders.length > 0) {
+			parts.push(...apiProviders);
+		}
+		// Ollama endpoints
+		for (const ep of ollamaEndpoints) {
+			parts.push(`ollama (${ep.name})`);
+		}
+		return parts.length > 0 ? parts.join(", ") : "";
+	}
+
+	// ── Welcome ──
 	if (step === "welcome") {
 		return (
 			<Box flexDirection="column" padding={1}>
@@ -133,41 +146,58 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 				<Text dimColor>Press Enter to continue...</Text>
 				<TextInput
 					placeholder=""
-					onSubmit={() => setStep("mode")}
+					onSubmit={() => setStep("provider-choice")}
 				/>
 			</Box>
 		);
 	}
 
-	if (step === "mode") {
-		const modeOptions: Array<{ label: string; value: string }> = [];
-		if (existingConfig?.securityMode) {
-			const currentLabel = existingConfig.securityMode === "full-control" ? "Full Control" : "Limited Control";
-			modeOptions.push({ label: `Keep current: ${currentLabel}`, value: "__keep__" });
-		}
-		modeOptions.push(
-			{
-				label: "Full Control \u2014 OS-level access with explicit permission grants per capability",
-				value: "full-control",
-			},
-			{
-				label: "Limited Control \u2014 Agent restricted to a designated workspace directory",
-				value: "limited-control",
-			},
+	// ── Provider Choice Hub ──
+	if (step === "provider-choice") {
+		const configuredStatus = getConfiguredStatus();
+
+		// Build available external providers (exclude already-added and non-API providers)
+		const addedApiProviders = keys.filter((k) => k.provider !== "brave" && k.provider !== "telegram").map((k) => k.provider);
+		const remainingExternal = PROVIDERS.filter(
+			(p) => !addedApiProviders.includes(p) && p !== "telegram" && p !== "brave",
 		);
+
+		const hubOptions: Array<{ label: string; value: string }> = [];
+		if (remainingExternal.length > 0) {
+			hubOptions.push({ label: "Add External Provider (API key)", value: "external" });
+		}
+		if (!ollamaLocalAdded) {
+			hubOptions.push({ label: "Add Local Ollama", value: "ollama-local" });
+		}
+		hubOptions.push({ label: "Add Network Ollama", value: "ollama-network" });
+		hubOptions.push({ label: "Done -- continue setup", value: "done" });
 
 		return (
 			<Box flexDirection="column" padding={1}>
-				<Text bold>Choose your security mode:</Text>
+				<Text bold>Configure AI Providers</Text>
+				{configuredStatus ? (
+					<Text>Configured: <Text bold color="green">{configuredStatus}</Text></Text>
+				) : (
+					<Text dimColor>No providers configured yet. Add at least one to get started.</Text>
+				)}
+				<Text dimColor>
+					You can always add more later with: {CLI_COMMAND} keys add
+				</Text>
 				<Text />
 				<Select
-					options={modeOptions}
+					options={hubOptions}
 					onChange={(value) => {
-						if (value === "__keep__") {
-							setStep("keys-ask");
+						if (value === "external") {
+							setStep("external-provider");
+						} else if (value === "ollama-local") {
+							setStep("ollama-local-probe");
+						} else if (value === "ollama-network") {
+							setOllamaRemoteError("");
+							setOllamaNetworkSelected(true);
+							setStep("ollama-network-input");
 						} else {
-							setMode(value as SecurityMode);
-							setStep("keys-ask");
+							// "done" — proceed to telegram setup
+							setStep("telegram-ask");
 						}
 					}}
 				/>
@@ -175,38 +205,15 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 		);
 	}
 
-	if (step === "keys-ask") {
-		const hasExistingProviders = existingConfig?.configuredProviders && existingConfig.configuredProviders.length > 0;
-		return (
-			<Box flexDirection="column" padding={1}>
-				{hasExistingProviders && (
-					<Text>Currently configured: <Text bold>{existingConfig!.configuredProviders!.join(", ")}</Text></Text>
-				)}
-				<Text bold>{hasExistingProviders ? "Would you like to change API keys?" : "Would you like to add an API key now?"}</Text>
-				<Text dimColor>
-					You can always add keys later with: {CLI_COMMAND} keys add
-				</Text>
-				<Text />
-				<ConfirmInput
-					onConfirm={() => setStep("keys-provider")}
-					onCancel={() => {
-						// Skip keys -- move to telegram
-						goToTelegramAsk();
-					}}
-				/>
-			</Box>
-		);
-	}
-
-	if (step === "keys-provider") {
-		const configuredProviders = keys.map((k) => k.provider);
+	// ── External Provider Selection ──
+	if (step === "external-provider") {
+		const addedApiProviders = keys.filter((k) => k.provider !== "brave" && k.provider !== "telegram").map((k) => k.provider);
 		const availableProviders = PROVIDERS.filter(
-			(p) => !configuredProviders.includes(p) && p !== "telegram",
+			(p) => !addedApiProviders.includes(p) && p !== "telegram" && p !== "brave",
 		);
 
 		if (availableProviders.length === 0) {
-			// All providers configured, move to telegram
-			goToTelegramAsk();
+			setStep("provider-choice");
 			return null;
 		}
 
@@ -221,15 +228,15 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 					}))}
 					onChange={(value) => {
 						setCurrentProvider(value as Provider);
-						setCurrentKey("");
-						setStep("keys-input");
+						setStep("external-key-input");
 					}}
 				/>
 			</Box>
 		);
 	}
 
-	if (step === "keys-input") {
+	// ── External Key Input ──
+	if (step === "external-key-input") {
 		return (
 			<Box flexDirection="column" padding={1}>
 				<Text bold>
@@ -246,41 +253,81 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 								{ provider: currentProvider, key: value.trim() },
 							]);
 						}
-						setCurrentKey("");
-						setStep("keys-more");
+						// Return to hub
+						setStep("provider-choice");
 					}}
 				/>
 			</Box>
 		);
 	}
 
-	if (step === "keys-more") {
-		const configuredProviders = keys.map((k) => k.provider);
-		const remaining = PROVIDERS.filter(
-			(p) => !configuredProviders.includes(p) && p !== "telegram",
+	// ── Ollama Local Probe ──
+	if (step === "ollama-local-probe") {
+		return (
+			<OllamaDetectStep
+				onModelsFound={(models) => {
+					setOllamaLocalAdded(true);
+					setOllamaModels((prev) => {
+						const seen = new Set(prev.map((m) => m.value));
+						return [...prev, ...models.filter((m) => !seen.has(m.value))];
+					});
+					setOllamaEndpoints((prev) => [...prev, { name: "localhost", url: "http://localhost:11434" }]);
+					// Return to hub
+					setStep("provider-choice");
+				}}
+				onSkip={() => setStep("provider-choice")}
+				onAddRemote={() => {
+					setOllamaRemoteError("");
+					setOllamaNetworkSelected(true);
+					setStep("ollama-network-input");
+				}}
+			/>
 		);
+	}
 
-		if (remaining.length === 0) {
-			// All providers configured, move to telegram
-			goToTelegramAsk();
-			return null;
-		}
+	// ── Ollama Network Input ──
+	if (step === "ollama-network-input") {
+		return (
+			<OllamaRemoteInputStep
+				error={ollamaRemoteError}
+				onSuccess={(url, models) => {
+					const hostname = url.replace(/^https?:\/\//, "").replace(/:\d+$/, "");
+					setOllamaEndpoints((prev) => [...prev, { name: hostname, url }]);
+					setOllamaModels((prev) => {
+						const seen = new Set(prev.map((m) => m.value));
+						return [...prev, ...models.filter((m) => !seen.has(m.value))];
+					});
+					setOllamaRemoteError("");
+					// Ask if they want to add another network endpoint
+					setStep("ollama-network-more");
+				}}
+				onError={(msg) => setOllamaRemoteError(msg)}
+				onSkip={() => setStep("provider-choice")}
+			/>
+		);
+	}
 
+	// ── Ollama Network More ──
+	if (step === "ollama-network-more") {
 		return (
 			<Box flexDirection="column" padding={1}>
-				<Text bold>Add another API key?</Text>
+				<Text bold>Add another network Ollama instance?</Text>
+				<Text dimColor>
+					e.g., another GPU server on your LAN
+				</Text>
 				<Text />
 				<ConfirmInput
-					onConfirm={() => setStep("keys-provider")}
-					onCancel={() => {
-						// Done adding keys, move to telegram
-						goToTelegramAsk();
+					onConfirm={() => {
+						setOllamaRemoteError("");
+						setStep("ollama-network-input");
 					}}
+					onCancel={() => setStep("provider-choice")}
 				/>
 			</Box>
 		);
 	}
 
+	// ── Telegram Ask ──
 	if (step === "telegram-ask") {
 		return (
 			<Box flexDirection="column" padding={1}>
@@ -320,6 +367,7 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 		);
 	}
 
+	// ── Brave Ask ──
 	if (step === "brave-ask") {
 		return (
 			<Box flexDirection="column" padding={1}>
@@ -330,7 +378,7 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 				<Text />
 				<ConfirmInput
 					onConfirm={() => setStep("brave-input")}
-					onCancel={() => setStep("ollama-detect")}
+					onCancel={() => goToModelSelect()}
 				/>
 			</Box>
 		);
@@ -351,70 +399,14 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 							setBraveApiKey(value.trim());
 							setKeys((prev) => [...prev, { provider: "brave" as Provider, key: value.trim() }]);
 						}
-						setStep("ollama-detect");
+						goToModelSelect();
 					}}
 				/>
 			</Box>
 		);
 	}
 
-	if (step === "ollama-detect") {
-		return (
-			<OllamaDetectStep
-				onModelsFound={(models) => {
-					setOllamaLocalDetected(true);
-					setOllamaModels((prev) => {
-						const seen = new Set(prev.map((m) => m.value));
-						return [...prev, ...models.filter((m) => !seen.has(m.value))];
-					});
-					setOllamaEndpoints((prev) => [...prev, { name: "localhost", url: "http://localhost:11434" }]);
-					setStep("ollama-remote-ask");
-				}}
-				onSkip={() => goToModelSelect()}
-				onAddRemote={() => setStep("ollama-remote-input")}
-			/>
-		);
-	}
-
-	if (step === "ollama-remote-ask") {
-		return (
-			<Box flexDirection="column" padding={1}>
-				<Text bold>Add a remote Ollama instance?</Text>
-				<Text dimColor>
-					e.g., a GPU server on your LAN at 192.168.1.100:11434
-				</Text>
-				<Text />
-				<ConfirmInput
-					onConfirm={() => {
-						setOllamaRemoteError("");
-						setStep("ollama-remote-input");
-					}}
-					onCancel={() => goToModelSelect()}
-				/>
-			</Box>
-		);
-	}
-
-	if (step === "ollama-remote-input") {
-		return (
-			<OllamaRemoteInputStep
-				error={ollamaRemoteError}
-				onSuccess={(url, models) => {
-					const hostname = url.replace(/^https?:\/\//, "").replace(/:\d+$/, "");
-					setOllamaEndpoints((prev) => [...prev, { name: hostname, url }]);
-					setOllamaModels((prev) => {
-						const seen = new Set(prev.map((m) => m.value));
-						return [...prev, ...models.filter((m) => !seen.has(m.value))];
-					});
-					setOllamaRemoteError("");
-					setStep("ollama-remote-ask");
-				}}
-				onError={(msg) => setOllamaRemoteError(msg)}
-				onSkip={() => goToModelSelect()}
-			/>
-		);
-	}
-
+	// ── Model Select ──
 	if (step === "model-select") {
 		const options: Array<{ label: string; value: string }> = [];
 		if (existingConfig?.defaultModel) {
@@ -452,6 +444,7 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 		);
 	}
 
+	// ── Model Alias Select ──
 	if (step === "model-alias-select") {
 		const hasExistingAliases = existingConfig?.modelAliases && existingConfig.modelAliases.length > 0;
 
@@ -514,6 +507,7 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 		);
 	}
 
+	// ── Model Alias Name ──
 	if (step === "model-alias-name") {
 		if (aliasIndex >= modelsToAlias.length) {
 			setStep("summary");
@@ -561,6 +555,7 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 		);
 	}
 
+	// ── Summary ──
 	if (step === "summary") {
 		return (
 			<Box flexDirection="column" padding={1}>
@@ -568,12 +563,6 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 					Setup Summary
 				</Text>
 				<Text />
-				<Text>
-					Security mode:{" "}
-					<Text bold>
-						{mode === "full-control" ? "Full Control" : "Limited Control"}
-					</Text>
-				</Text>
 				<Text>
 					API keys:{" "}
 					<Text bold>
@@ -629,7 +618,6 @@ export function Onboarding({ onComplete, existingConfig }: OnboardingProps) {
 					onSubmit={() => {
 						setStep("done");
 						onComplete({
-							securityMode: mode,
 							keys,
 							defaultModel: defaultModel || undefined,
 							modelAliases:

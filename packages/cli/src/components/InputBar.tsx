@@ -208,7 +208,7 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 					{prefix}
 					<Text>
 						{line}
-						{cursorVisible ? <Text color="cyan" bold>{"\u2502"}</Text> : null}
+						{cursorVisible ? <Text color="cyan" bold>{"\u2502"}</Text> : <Text> </Text>}
 					</Text>
 				</Box>
 			);
@@ -250,7 +250,7 @@ export function InputBar({ onSubmit, isActive, screenWidth: _screenWidth, onHeig
 				{isActive && text === "" ? (
 					<Box>
 						<Text bold color="cyan">{"> "}</Text>
-						{cursorVisible ? <Text color="cyan" bold>{"\u2502"}</Text> : null}
+						{cursorVisible ? <Text color="cyan" bold>{"\u2502"}</Text> : <Text> </Text>}
 						<Text dimColor> Ask anything... (! for bash, / for commands)</Text>
 					</Box>
 				) : !isActive ? (

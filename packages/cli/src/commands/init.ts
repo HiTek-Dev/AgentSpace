@@ -56,7 +56,6 @@ export const initCommand = new Command("init")
 			const { waitUntilExit } = render(
 				React.createElement(Onboarding, {
 					existingConfig: existing ? {
-						securityMode: existing.securityMode,
 						defaultModel: existing.defaultModel,
 						modelAliases: existing.modelAliases,
 						configuredProviders: configuredProviderNames,
@@ -74,7 +73,7 @@ export const initCommand = new Command("init")
 
 						// Save config (app-level only, no agent-specific fields)
 						const config: AppConfig = {
-							securityMode: result.securityMode,
+							securityMode: "full-control",
 							apiEndpoint: { port: 3271, host: "127.0.0.1" },
 							onboardingComplete: true,
 							createdAt: new Date().toISOString(),
@@ -91,7 +90,7 @@ export const initCommand = new Command("init")
 						recordAuditEvent({
 							event: "mode_changed",
 							details: {
-								mode: result.securityMode,
+								mode: "full-control",
 								source: "onboarding",
 							},
 						});

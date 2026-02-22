@@ -36,6 +36,7 @@ interface UseChatReturn {
   streamingText: string;
   streamingReasoning: string;
   isStreaming: boolean;
+  isSending: boolean;
   currentModel: string | null;
   usage: { inputTokens: number; outputTokens: number; totalTokens: number } | null;
   cost: { totalCost: number } | null;
@@ -61,6 +62,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
   const [streamingReasoning, setStreamingReasoning] = useState('');
   const [_streamingRequestId, setStreamingRequestId] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [currentModel, setCurrentModel] = useState<string | null>(null);
   const [usage, setUsage] = useState<UseChatReturn['usage']>(null);
   const [cost, setCost] = useState<UseChatReturn['cost']>(null);
@@ -88,6 +90,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
 
       switch (msg.type) {
         case 'chat.stream.start': {
+          setIsSending(false);
           setIsStreaming(true);
           setStreamingText('');
           streamingTextRef.current = '';
@@ -243,6 +246,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
         }
 
         case 'error': {
+          setIsSending(false);
           setTodos([]);
           setMessages((prev) => [
             ...prev,
@@ -285,6 +289,8 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
         },
       ]);
 
+      setIsSending(true);
+
       // Get sessionId from app store
       const sessionId = useAppStore.getState().sessionId ?? undefined;
 
@@ -326,6 +332,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
     setTodos([]);
     setStreamingRequestId(null);
     setIsStreaming(false);
+    setIsSending(false);
     setCurrentModel(null);
     setUsage(null);
     setCost(null);
@@ -336,6 +343,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
     streamingText,
     streamingReasoning,
     isStreaming,
+    isSending,
     currentModel,
     usage,
     cost,

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, ArrowDown } from "lucide-react";
 import { MessageCard } from "@/components/MessageCard";
@@ -11,6 +10,7 @@ interface MessageListProps {
   streamingText: string;
   streamingReasoning?: string;
   isStreaming: boolean;
+  isSending?: boolean;
   model?: string | null;
 }
 
@@ -21,6 +21,7 @@ export function MessageList({
   streamingText,
   streamingReasoning,
   isStreaming,
+  isSending,
   model,
 }: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -60,7 +61,7 @@ export function MessageList({
   }, []);
 
   // Empty state
-  if (messages.length === 0 && !isStreaming) {
+  if (messages.length === 0 && !isStreaming && !isSending) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
         <MessageSquare className="size-10 opacity-30" />
@@ -70,40 +71,50 @@ export function MessageList({
   }
 
   return (
-    <ScrollArea className="h-full">
-      <div
-        ref={scrollRef}
-        className="flex h-full flex-col gap-3 overflow-y-auto p-4"
-        onScroll={checkNearBottom}
-      >
-        {messages.map((msg) => (
-          <MessageCard key={msg.id} message={msg} model={model} />
-        ))}
+    <div
+      ref={scrollRef}
+      className="flex h-full flex-col gap-3 overflow-y-auto p-4"
+      onScroll={checkNearBottom}
+    >
+      {messages.map((msg) => (
+        <MessageCard key={msg.id} message={msg} model={model} />
+      ))}
 
-        {isStreaming && (streamingText || streamingReasoning) && (
-          <StreamingMessage
-            text={streamingText}
-            reasoning={streamingReasoning}
-            isStreaming={isStreaming}
-            model={model}
-          />
-        )}
+      {isStreaming && (streamingText || streamingReasoning) && (
+        <StreamingMessage
+          text={streamingText}
+          reasoning={streamingReasoning}
+          isStreaming={isStreaming}
+          model={model}
+        />
+      )}
 
-        {/* Scroll-to-bottom button */}
-        {showScrollButton && (
-          <div className="sticky bottom-2 flex justify-center">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="rounded-full shadow-md"
-              onClick={scrollToBottom}
-            >
-              <ArrowDown className="mr-1 size-3.5" />
-              Scroll to bottom
-            </Button>
-          </div>
-        )}
-      </div>
-    </ScrollArea>
+      {/* Sending indicator — shown after user sends, before stream starts */}
+      {isSending && !isStreaming && (
+        <div className="mr-auto flex items-center gap-2 px-4 py-2">
+          <span className="flex items-center gap-1">
+            <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:0ms]" />
+            <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:150ms]" />
+            <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:300ms]" />
+          </span>
+          <span className="text-xs text-muted-foreground">Thinking...</span>
+        </div>
+      )}
+
+      {/* Scroll-to-bottom button */}
+      {showScrollButton && (
+        <div className="sticky bottom-2 flex justify-center">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="rounded-full shadow-md"
+            onClick={scrollToBottom}
+          >
+            <ArrowDown className="mr-1 size-3.5" />
+            Scroll to bottom
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }

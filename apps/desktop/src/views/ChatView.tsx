@@ -30,6 +30,7 @@ export function ChatView({ sidebarOpen }: ChatViewProps) {
     streamingText,
     streamingReasoning,
     isStreaming,
+    isSending,
     currentModel,
     usage,
     cost,
@@ -153,6 +154,7 @@ export function ChatView({ sidebarOpen }: ChatViewProps) {
             streamingText={streamingText}
             streamingReasoning={streamingReasoning}
             isStreaming={isStreaming}
+            isSending={isSending}
             model={currentModel}
           />
         </div>
