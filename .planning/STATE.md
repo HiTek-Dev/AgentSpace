@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 Phase: 31 of 34 (Desktop Chat App Rebuild)
 Plan: 3 of 5
 Status: Executing phase 31
-Last activity: 2026-02-22 — Completed 31-03 WebSocket and chat hooks
+Last activity: 2026-02-22 — Completed 31-02 gateway discovery and landing view
 
 Progress: [############################------] 82% (28/34 phases)
 
@@ -45,6 +45,8 @@ Progress: [############################------] 82% (28/34 phases)
 
 Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 31]: Used @streamdown/code@^1.0.3 (research had outdated ^0.2.1)
+- [Phase 31-02]: GatewayStatus compact mode for header, full mode for landing page
+- [Phase 31-02]: Config loading uses local React state (read-once, not Zustand)
 - [Phase 31-03]: Local TypeScript interfaces instead of importing @tek/gateway (Node.js won't work in webview)
 - [Phase 31-03]: Ref-based streaming text accumulation to avoid stale closure issues in React
 
@@ -70,5 +72,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 31-03-PLAN.md (WebSocket and chat hooks with auto-reconnect and streaming)
+Stopped at: Completed 31-02-PLAN.md (Gateway discovery and landing view with auto-transition)
 Resume file: None
