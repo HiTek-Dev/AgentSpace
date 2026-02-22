@@ -11,6 +11,13 @@ import {
 
 export type { SessionListResponse };
 
+interface TodoItem {
+  id: string;
+  content: string;
+  status: 'pending' | 'in_progress' | 'completed';
+  activeForm?: string;
+}
+
 interface SessionSummary {
   sessionId: string;
   sessionKey: string;
@@ -32,6 +39,7 @@ interface UseChatReturn {
   currentModel: string | null;
   usage: { inputTokens: number; outputTokens: number; totalTokens: number } | null;
   cost: { totalCost: number } | null;
+  todos: TodoItem[];
   sessions: SessionSummary[];
   sendMessage: (content: string) => void;
   approveToolCall: (toolCallId: string, approved: boolean, sessionApprove?: boolean) => void;
@@ -56,6 +64,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
   const [currentModel, setCurrentModel] = useState<string | null>(null);
   const [usage, setUsage] = useState<UseChatReturn['usage']>(null);
   const [cost, setCost] = useState<UseChatReturn['cost']>(null);
+  const [todos, setTodos] = useState<TodoItem[]>([]);
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
 
   // Ref for accumulating streaming text to avoid stale closure issues
@@ -85,6 +94,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
           setStreamingReasoning('');
           streamingReasoningRef.current = '';
           pendingSourcesRef.current = [];
+          setTodos([]);
           setStreamingRequestId(msg.requestId);
           setCurrentModel(msg.model);
           // Save sessionId to app store
@@ -227,7 +237,13 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
           break;
         }
 
+        case 'todo.update': {
+          setTodos(msg.todos);
+          break;
+        }
+
         case 'error': {
+          setTodos([]);
           setMessages((prev) => [
             ...prev,
             {
@@ -307,6 +323,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
     setStreamingReasoning('');
     streamingReasoningRef.current = '';
     pendingSourcesRef.current = [];
+    setTodos([]);
     setStreamingRequestId(null);
     setIsStreaming(false);
     setCurrentModel(null);
@@ -322,6 +339,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
     currentModel,
     usage,
     cost,
+    todos,
     sessions,
     sendMessage,
     approveToolCall,

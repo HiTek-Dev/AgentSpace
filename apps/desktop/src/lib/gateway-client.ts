@@ -126,6 +126,17 @@ export interface ErrorMessage {
   message: string;
 }
 
+export interface TodoUpdate {
+  type: 'todo.update';
+  requestId: string;
+  todos: Array<{
+    id: string;
+    content: string;
+    status: 'pending' | 'in_progress' | 'completed';
+    activeForm?: string;
+  }>;
+}
+
 export type ServerMessage =
   | ChatStreamStart
   | ChatStreamDelta
@@ -138,7 +149,8 @@ export type ServerMessage =
   | ToolResultNotify
   | ToolErrorNotify
   | ToolApprovalRequest
-  | ErrorMessage;
+  | ErrorMessage
+  | TodoUpdate;
 
 // ── ChatMessage (display state) ─────────────────────────────────────────
 
