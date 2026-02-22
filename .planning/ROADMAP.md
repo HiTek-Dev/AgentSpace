@@ -53,7 +53,7 @@
 **Milestone Goal:** Deliver a premium chat experience across CLI and desktop — Ollama auto-discovery, opcode-style Tauri desktop app with structured JSON streaming, Claude Code-style CLI with fixed bottom input, and integrated todo display across both interfaces.
 
 - [x] **Phase 30: Ollama Auto-Discovery & Remote Setup** - Detect local models, list in setup, manual IP/model for remote (completed 2026-02-22)
-- [ ] **Phase 31: Desktop Chat App Rebuild** - Opcode-style Tauri chat, gateway status landing, agent selection, streaming display
+- [x] **Phase 31: Desktop Chat App Rebuild** - Opcode-style Tauri chat, gateway status landing, agent selection, streaming display (completed 2026-02-22)
 - [ ] **Phase 32: Structured Streaming & Chat Formatting** - JSON streaming protocol, MD/code rendering, system prompt formatting
 - [ ] **Phase 33: Todo System Display in CLI and Desktop** - Todo progress in CLI bottom bar and desktop chat
 - [ ] **Phase 34: CLI Chat UX Overhaul** - Fixed bottom input, expandable entry, Claude Code/Kimicode-style terminal
@@ -75,7 +75,7 @@ Plans:
 **Goal:** Rebuild the Tauri desktop app as a polished chat session system modeled on [opcode](https://github.com/winfunc/opcode) — landing page shows gateway connection status and stats, chat selects from available agents (or auto-selects if only one), clean message cards with real-time streaming display
 **Depends on:** Phase 32
 **Requirements:** [DESK-01, DESK-02, DESK-03, DESK-04, DESK-05, DESK-06, DESK-07, DESK-08]
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [ ] 31-01-PLAN.md -- Tauri app scaffold with React, Vite, Tailwind v4, shadcn/ui, Rust plugins
@@ -119,6 +119,7 @@ Phases 30, 32, and 34 can start in parallel (no dependencies). Phase 31 follows 
 | Phase | Plans | Status |
 |-------|-------|--------|
 | 30. Ollama Auto-Discovery & Remote Setup | 1/1 | Complete |
-| 31. Desktop Chat App Rebuild | 4/5 | In Progress|  | 32. Structured Streaming & Chat Formatting | 0/TBD | Not started |
+| 31. Desktop Chat App Rebuild | 5/5 | Complete |
+| 32. Structured Streaming & Chat Formatting | 0/TBD | Not started |
 | 33. Todo System Display | 0/TBD | Not started (blocked by 31, 34) |
 | 34. CLI Chat UX Overhaul | 0/TBD | Not started |

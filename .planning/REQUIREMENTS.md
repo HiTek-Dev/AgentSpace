@@ -165,8 +165,8 @@ Requirements for the Chat Experience & Providers milestone. Each maps to roadmap
 - [x] **DESK-04**: User can select from available agents before chatting (auto-selects if only one agent exists)
 - [x] **DESK-05**: User can type and send messages via auto-resizing textarea with Enter to send
 - [x] **DESK-06**: Assistant responses stream in real-time with flicker-free markdown rendering via Streamdown
-- [ ] **DESK-07**: User can approve, deny, or session-approve tool calls via modal dialog with argument preview
-- [ ] **DESK-08**: Past sessions listed in collapsible side panel with preview, timestamp, and click-to-resume
+- [x] **DESK-07**: User can approve, deny, or session-approve tool calls via modal dialog with argument preview
+- [x] **DESK-08**: Past sessions listed in collapsible side panel with preview, timestamp, and click-to-resume
 
 ## Future Requirements
 
