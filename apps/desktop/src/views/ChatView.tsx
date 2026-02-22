@@ -27,6 +27,7 @@ export function ChatView({ sidebarOpen }: ChatViewProps) {
   const {
     messages,
     streamingText,
+    streamingReasoning,
     isStreaming,
     currentModel,
     usage,
@@ -147,6 +148,7 @@ export function ChatView({ sidebarOpen }: ChatViewProps) {
           <MessageList
             messages={messages}
             streamingText={streamingText}
+            streamingReasoning={streamingReasoning}
             isStreaming={isStreaming}
             model={currentModel}
           />

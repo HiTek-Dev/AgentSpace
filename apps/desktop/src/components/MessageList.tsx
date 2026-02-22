@@ -9,6 +9,7 @@ import type { ChatMessage } from "@/lib/gateway-client";
 interface MessageListProps {
   messages: ChatMessage[];
   streamingText: string;
+  streamingReasoning?: string;
   isStreaming: boolean;
   model?: string | null;
 }
@@ -18,6 +19,7 @@ const NEAR_BOTTOM_THRESHOLD = 100;
 export function MessageList({
   messages,
   streamingText,
+  streamingReasoning,
   isStreaming,
   model,
 }: MessageListProps) {
@@ -78,9 +80,10 @@ export function MessageList({
           <MessageCard key={msg.id} message={msg} model={model} />
         ))}
 
-        {isStreaming && streamingText && (
+        {isStreaming && (streamingText || streamingReasoning) && (
           <StreamingMessage
             text={streamingText}
+            reasoning={streamingReasoning}
             isStreaming={isStreaming}
             model={model}
           />

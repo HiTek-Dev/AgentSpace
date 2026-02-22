@@ -27,6 +27,7 @@ interface UseChatParams {
 interface UseChatReturn {
   messages: ChatMessage[];
   streamingText: string;
+  streamingReasoning: string;
   isStreaming: boolean;
   currentModel: string | null;
   usage: { inputTokens: number; outputTokens: number; totalTokens: number } | null;
@@ -49,6 +50,7 @@ interface UseChatReturn {
 export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [streamingText, setStreamingText] = useState('');
+  const [streamingReasoning, setStreamingReasoning] = useState('');
   const [streamingRequestId, setStreamingRequestId] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentModel, setCurrentModel] = useState<string | null>(null);
@@ -58,6 +60,8 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
 
   // Ref for accumulating streaming text to avoid stale closure issues
   const streamingTextRef = useRef('');
+  const streamingReasoningRef = useRef('');
+  const pendingSourcesRef = useRef<Array<{ url: string; title?: string }>>([]);
 
   const setSessionId = useAppStore((s) => s.setSessionId);
 
@@ -78,6 +82,9 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
           setIsStreaming(true);
           setStreamingText('');
           streamingTextRef.current = '';
+          setStreamingReasoning('');
+          streamingReasoningRef.current = '';
+          pendingSourcesRef.current = [];
           setStreamingRequestId(msg.requestId);
           setCurrentModel(msg.model);
           // Save sessionId to app store
@@ -91,25 +98,64 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
           break;
         }
 
+        case 'chat.stream.reasoning': {
+          streamingReasoningRef.current += msg.delta;
+          setStreamingReasoning(streamingReasoningRef.current);
+          break;
+        }
+
+        case 'chat.stream.source': {
+          pendingSourcesRef.current.push(msg.source);
+          break;
+        }
+
         case 'chat.stream.end': {
-          // Move accumulated streaming text to a completed assistant message
+          // Promote accumulated content to completed messages
+          const completedReasoning = streamingReasoningRef.current;
           const completedText = streamingTextRef.current;
-          if (completedText) {
-            setMessages((prev) => [
-              ...prev,
-              {
+          const collectedSources = pendingSourcesRef.current;
+          const now = Date.now();
+
+          setMessages((prev) => {
+            const next = [...prev];
+            // Add reasoning message before text (appears above response)
+            if (completedReasoning) {
+              next.push({
+                type: 'reasoning',
+                id: crypto.randomUUID(),
+                content: completedReasoning,
+                timestamp: now,
+              });
+            }
+            // Add assistant text message
+            if (completedText) {
+              next.push({
                 type: 'text',
                 id: crypto.randomUUID(),
                 role: 'assistant',
                 content: completedText,
-                timestamp: Date.now(),
+                timestamp: now,
                 model: currentModel ?? undefined,
-              },
-            ]);
-          }
+              });
+            }
+            // Add sources message after text
+            if (collectedSources.length > 0) {
+              next.push({
+                type: 'sources',
+                id: crypto.randomUUID(),
+                sources: [...collectedSources],
+                timestamp: now,
+              });
+            }
+            return next;
+          });
+
           // Clear streaming state
           setStreamingText('');
           streamingTextRef.current = '';
+          setStreamingReasoning('');
+          streamingReasoningRef.current = '';
+          pendingSourcesRef.current = [];
           setStreamingRequestId(null);
           setIsStreaming(false);
           // Save usage and cost
@@ -258,6 +304,9 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
     setMessages([]);
     setStreamingText('');
     streamingTextRef.current = '';
+    setStreamingReasoning('');
+    streamingReasoningRef.current = '';
+    pendingSourcesRef.current = [];
     setStreamingRequestId(null);
     setIsStreaming(false);
     setCurrentModel(null);
@@ -268,6 +317,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
   return {
     messages,
     streamingText,
+    streamingReasoning,
     isStreaming,
     currentModel,
     usage,

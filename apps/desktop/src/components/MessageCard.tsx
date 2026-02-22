@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { ToolCallCard } from "@/components/ToolCallCard";
+import { ReasoningBlock } from "@/components/ReasoningBlock";
 import type { ChatMessage } from "@/lib/gateway-client";
 
 interface MessageCardProps {
@@ -33,6 +34,38 @@ export function MessageCard({ message, model }: MessageCardProps) {
         error={message.error}
         status={message.status}
       />
+    );
+  }
+
+  if (message.type === "reasoning") {
+    return (
+      <div className="mr-auto max-w-[80%]">
+        <ReasoningBlock content={message.content} />
+      </div>
+    );
+  }
+
+  if (message.type === "sources") {
+    return (
+      <div className="mr-auto max-w-[80%] px-4 py-1">
+        <p className="text-[10px] font-medium text-muted-foreground mb-1">
+          Sources
+        </p>
+        <ul className="space-y-0.5">
+          {message.sources.map((s, i) => (
+            <li key={i} className="text-[11px] text-muted-foreground">
+              <a
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground transition-colors"
+              >
+                {s.title || s.url}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   }
 
