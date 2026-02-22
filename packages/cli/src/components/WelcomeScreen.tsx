@@ -8,7 +8,7 @@ import { DISPLAY_NAME } from "@tek/core";
  */
 export function WelcomeScreen() {
 	return (
-		<Box flexDirection="column" padding={1}>
+		<Box flexDirection="column">
 			<Text bold color="cyan">
 				{DISPLAY_NAME}
 			</Text>

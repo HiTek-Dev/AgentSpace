@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Box } from "ink";
 import { useApp } from "ink";
 import { useWebSocket } from "../hooks/useWebSocket.js";
@@ -9,11 +9,12 @@ import {
 	createToolApprovalResponse,
 	createPreflightApprovalResponse,
 } from "../lib/gateway-client.js";
-import { MessageList } from "./MessageList.js";
+import { FullScreenWrapper } from "./FullScreenWrapper.js";
+import { ConversationScroll } from "./ConversationScroll.js";
+import { Divider } from "./Divider.js";
 import { StreamingResponse } from "./StreamingResponse.js";
 import { InputBar } from "./InputBar.js";
 import { StatusBar } from "./StatusBar.js";
-import { WelcomeScreen } from "./WelcomeScreen.js";
 import { ToolPanel } from "./ToolPanel.js";
 import { ToolApprovalPrompt } from "./ToolApprovalPrompt.js";
 import { SkillApprovalPrompt } from "./SkillApprovalPrompt.js";
@@ -29,8 +30,15 @@ interface ChatProps {
 }
 
 /**
- * Full chat interface component. Wires together StatusBar, MessageList,
- * StreamingResponse, InputBar, and slash command dispatch.
+ * Full chat interface component with fullscreen layout.
+ *
+ * Layout structure:
+ *   FullScreenWrapper (alternate screen buffer)
+ *     ConversationScroll (flexGrow=1, windowed messages)
+ *       WelcomeScreen | MessageBubbles | StreamingResponse | TodoPanel | ToolPanel | Approvals
+ *     Divider (thin horizontal rule)
+ *     InputBar (bordered, fixed at bottom, cursor-aware editing)
+ *     StatusBar (single compact line at very bottom)
  */
 export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyRequest }: ChatProps) {
 	const { exit } = useApp();
@@ -66,6 +74,9 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyReq
 	});
 
 	const { processInput } = useSlashCommands();
+
+	// Track input height for layout calculation (border=2 + content lines + hint=1)
+	const [inputContentLines, setInputContentLines] = useState(1);
 
 	const handleSubmit = useCallback(
 		(input: string) => {
@@ -170,63 +181,89 @@ export function Chat({ wsUrl, initialModel, resumeSessionId, agentId, onProxyReq
 		[pendingPreflight, approvePreflight, send],
 	);
 
+	// Determine if input should be active (not during streaming or approvals)
+	const isInputActive = !isStreaming && !pendingApproval && !pendingPreflight;
+
 	return (
-		<Box flexDirection="column" padding={1}>
-			<StatusBar
-				connected={connected}
-				sessionId={sessionId}
-				model={model}
-				usage={usage}
-			/>
+		<FullScreenWrapper>
+			{({ width, height }) => {
+				// Calculate available height for conversation area
+				// InputBar: border top(1) + content lines + border bottom(1) + hint line(1)
+				const inputHeight = 2 + inputContentLines + 1;
+				const statusHeight = 1;
+				const dividerHeight = 1;
+				const conversationHeight = Math.max(1, height - inputHeight - statusHeight - dividerHeight);
 
-			{messages.length === 0 && !isStreaming && <WelcomeScreen />}
+				return (
+					<>
+						<ConversationScroll
+							messages={messages}
+							availableHeight={conversationHeight}
+							isStreaming={isStreaming}
+						>
+							{isStreaming && (
+								<StreamingResponse text={streamingText} reasoningText={streamingReasoning} model={model} />
+							)}
 
-			<MessageList messages={messages} />
+							<TodoPanel todos={todos} />
 
-			{isStreaming && (
-				<StreamingResponse text={streamingText} reasoningText={streamingReasoning} model={model} />
-			)}
+							{toolCalls.length > 0 &&
+								toolCalls[toolCalls.length - 1].status === "pending" && (
+									<ToolPanel
+										toolName={toolCalls[toolCalls.length - 1].toolName}
+										status={toolCalls[toolCalls.length - 1].status}
+										input={
+											typeof toolCalls[toolCalls.length - 1].args === "string"
+												? (toolCalls[toolCalls.length - 1].args as string)
+												: JSON.stringify(toolCalls[toolCalls.length - 1].args, null, 2)
+										}
+										isFocused={!isStreaming && !pendingApproval && !pendingPreflight}
+									/>
+								)}
 
-			<TodoPanel todos={todos} />
+							{pendingApproval && (
+								pendingApproval.toolName === "skill_register" ? (
+									<SkillApprovalPrompt
+										toolName={pendingApproval.toolName}
+										toolCallId={pendingApproval.toolCallId}
+										args={pendingApproval.args}
+										onResponse={handleToolApproval}
+									/>
+								) : (
+									<ToolApprovalPrompt
+										toolName={pendingApproval.toolName}
+										toolCallId={pendingApproval.toolCallId}
+										args={pendingApproval.args}
+										onResponse={handleToolApproval}
+									/>
+								)
+							)}
 
-			{toolCalls.length > 0 &&
-				toolCalls[toolCalls.length - 1].status === "pending" && (
-					<ToolPanel
-						toolName={toolCalls[toolCalls.length - 1].toolName}
-						status={toolCalls[toolCalls.length - 1].status}
-						input={
-							typeof toolCalls[toolCalls.length - 1].args === "string"
-								? (toolCalls[toolCalls.length - 1].args as string)
-								: JSON.stringify(toolCalls[toolCalls.length - 1].args, null, 2)
-						}
-						isFocused={!isStreaming && !pendingApproval && !pendingPreflight}
-					/>
-				)}
+							{pendingPreflight && (
+								<PreflightChecklist
+									checklist={pendingPreflight}
+									onResponse={handlePreflightApproval}
+								/>
+							)}
+						</ConversationScroll>
 
-			{pendingApproval ? (
-				pendingApproval.toolName === "skill_register" ? (
-					<SkillApprovalPrompt
-						toolName={pendingApproval.toolName}
-						toolCallId={pendingApproval.toolCallId}
-						args={pendingApproval.args}
-						onResponse={handleToolApproval}
-					/>
-				) : (
-					<ToolApprovalPrompt
-						toolName={pendingApproval.toolName}
-						toolCallId={pendingApproval.toolCallId}
-						args={pendingApproval.args}
-						onResponse={handleToolApproval}
-					/>
-				)
-			) : pendingPreflight ? (
-				<PreflightChecklist
-					checklist={pendingPreflight}
-					onResponse={handlePreflightApproval}
-				/>
-			) : (
-				<InputBar onSubmit={handleSubmit} isStreaming={isStreaming} />
-			)}
-		</Box>
+						<Divider />
+
+						<InputBar
+							onSubmit={handleSubmit}
+							isActive={isInputActive}
+							screenWidth={width}
+							onHeightChange={setInputContentLines}
+						/>
+
+						<StatusBar
+							connected={connected}
+							model={model}
+							usage={usage}
+						/>
+					</>
+				);
+			}}
+		</FullScreenWrapper>
 	);
 }

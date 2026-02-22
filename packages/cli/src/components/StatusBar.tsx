@@ -1,22 +1,23 @@
 import React from "react";
 import { Box, Text } from "ink";
-import { DISPLAY_NAME } from "@tek/core";
 
 interface StatusBarProps {
 	connected: boolean;
-	sessionId: string | null;
 	model: string;
 	usage: {
 		totalTokens: number;
 		totalCost: number;
 	};
+	permissionMode?: string;
 }
 
 /**
- * Compact single-line status bar with three zones: connection + name, model, usage.
- * No border — saves 2 vertical lines compared to the old bordered layout.
+ * Compact single-line status bar pinned at the bottom of the screen.
+ * No border, no padding -- a single compact line.
+ *
+ * Layout: connection dot + model name (left) | token count + cost + permission mode (right)
  */
-export function StatusBar({ connected, model, usage }: StatusBarProps) {
+export function StatusBar({ connected, model, usage, permissionMode }: StatusBarProps) {
 	// Shorten model name for display (e.g., "claude-sonnet-4-5-20250929" -> "sonnet-4-5")
 	const shortModel = model
 		.replace("claude-", "")
@@ -25,14 +26,18 @@ export function StatusBar({ connected, model, usage }: StatusBarProps) {
 	return (
 		<Box justifyContent="space-between">
 			<Box>
-				<Text color={connected ? "green" : "red"}>{"● "}</Text>
-				<Text bold>{DISPLAY_NAME}</Text>
+				<Text color={connected ? "green" : "red"}>{"\u25CF "}</Text>
+				<Text color="cyan">{shortModel}</Text>
 			</Box>
-			<Text color="cyan">{shortModel}</Text>
-			<Text dimColor>
-				{usage.totalTokens.toLocaleString()} tok · $
-				{usage.totalCost.toFixed(2)}
-			</Text>
+			<Box>
+				<Text dimColor>
+					{usage.totalTokens.toLocaleString()} tok {"\u00B7"} $
+					{usage.totalCost.toFixed(2)}
+				</Text>
+				{permissionMode && (
+					<Text dimColor>{" \u00B7 "}{permissionMode}</Text>
+				)}
+			</Box>
 		</Box>
 	);
 }
