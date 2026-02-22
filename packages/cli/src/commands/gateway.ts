@@ -38,6 +38,7 @@ async function startGateway(options: { foreground?: boolean } = {}) {
 	if (options.foreground) {
 		const child = spawn(process.execPath, [entryPoint], {
 			stdio: ["ignore", "inherit", "pipe"],
+			cwd: installDir,
 		});
 		if (child.stderr) {
 			const rl = createInterface({ input: child.stderr });
@@ -60,6 +61,7 @@ async function startGateway(options: { foreground?: boolean } = {}) {
 	const child = spawn(process.execPath, [entryPoint], {
 		detached: true,
 		stdio: ["ignore", logFd, logFd],
+		cwd: installDir,
 	});
 	child.unref();
 	closeSync(logFd);
