@@ -188,6 +188,17 @@ Requirements for the Chat Experience & Providers milestone. Each maps to roadmap
 - [x] **TODO-06**: Desktop displays active todos as a compact panel above the chat input, with animated spinner for in-progress, green checkmark for completed, muted circle for pending
 - [x] **TODO-07**: Todo state is cleared on `chat.stream.start` of the next request so stale todos from previous requests don't persist
 
+### CLI Chat UX Overhaul (Phase 34)
+
+- [ ] **CLIX-01**: CLI chat runs in fullscreen mode (alternate screen buffer) with a fixed-height viewport that fills the terminal, handling resize events dynamically
+- [ ] **CLIX-02**: Fixed bordered input zone at bottom with cursor-aware editing (left/right arrows, Home/End, insert/delete at position), expandable up to 6 lines, `>` prompt prefix, placeholder text, and hint line showing keyboard shortcuts
+- [ ] **CLIX-03**: Single status line pinned below input (bottom of screen) showing model name, connection status dot, token usage/cost, and permission mode; top status bar removed entirely
+- [ ] **CLIX-04**: Conversation history rendered in a windowed scroll area (replacing `<Static>` component) that fills available space above the input zone, with auto-scroll to latest content
+- [ ] **CLIX-05**: Tool calls rendered inline in conversation flow with colored Unicode icon prefixes per tool type (e.g., bash=green triangle, read=cyan circle, edit=blue pencil), replacing the separate ToolPanel
+- [ ] **CLIX-06**: Approval prompts rendered as boxed dialogs inline in conversation area; input zone stays visible but disabled during approval with selectable Yes/No/Always options
+- [ ] **CLIX-07**: Inline file diffs with red/green line coloring in conversation flow, auto-collapsed above a threshold with expand-on-demand
+- [ ] **CLIX-08**: Todo/task progress displayed in Claude Code-style nested tree with colored status icons (green checkmark completed, spinner in-progress, muted circle pending) and indented hierarchy
+
 ## Future Requirements
 
 Deferred to future milestones. Tracked but not in current roadmap.
@@ -336,12 +347,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TODO-05 | Phase 33 | Planned |
 | TODO-06 | Phase 33 | Planned |
 | TODO-07 | Phase 33 | Planned |
+| CLIX-01 | Phase 34 | Planned |
+| CLIX-02 | Phase 34 | Planned |
+| CLIX-03 | Phase 34 | Planned |
+| CLIX-04 | Phase 34 | Planned |
+| CLIX-05 | Phase 34 | Planned |
+| CLIX-06 | Phase 34 | Planned |
+| CLIX-07 | Phase 34 | Planned |
+| CLIX-08 | Phase 34 | Planned |
 
 **Coverage:**
-- v0.2 requirements (so far): 26 total
-- Mapped to phases: 26
+- v0.2 requirements (so far): 34 total
+- Mapped to phases: 34
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-15*
-*Last updated: 2026-02-21 after v0.2 Phase 33 planning*
+*Last updated: 2026-02-21 after v0.2 Phase 34 planning*

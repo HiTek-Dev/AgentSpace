@@ -112,10 +112,12 @@ Plans:
 
 **Goal:** CLI chat mimics Claude Code / Kimicode UX — fixed bottom input area that expands as user types, status section pinned below input, streaming responses scroll above, clean separation between user entry zone and conversation history
 **Depends on:** None (fresh start)
-**Plans:** 0 plans
+**Requirements:** [CLIX-01, CLIX-02, CLIX-03, CLIX-04, CLIX-05, CLIX-06, CLIX-07, CLIX-08]
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 34 to break down)
+- [ ] 34-01-PLAN.md -- Fullscreen layout skeleton, cursor-aware input zone, bottom status bar
+- [ ] 34-02-PLAN.md -- Inline tool calls, approval dialogs, file diffs, todo restyle
 
 ## Progress
 
@@ -127,4 +129,5 @@ Phases 30, 32, and 34 can start in parallel (no dependencies). Phase 31 follows 
 | 30. Ollama Auto-Discovery & Remote Setup | 1/1 | Complete |
 | 31. Desktop Chat App Rebuild | 5/5 | Complete |
 | 32. Structured Streaming & Chat Formatting | 3/3 | Complete |
-| 33. Todo System Display | 3/3 | Complete    | 2026-02-22 | 34. CLI Chat UX Overhaul | 0/TBD | Not started |
+| 33. Todo System Display | 3/3 | Complete |
+| 34. CLI Chat UX Overhaul | 0/2 | Not started |
