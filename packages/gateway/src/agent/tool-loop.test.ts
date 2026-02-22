@@ -64,6 +64,7 @@ function createMockConnState(): ConnectionState {
 		terminalControlGranted: false,
 		pendingWorkflowApprovals: new Map(),
 		claudeCodeSessions: new Map(),
+		activeTodos: [],
 	};
 }
 

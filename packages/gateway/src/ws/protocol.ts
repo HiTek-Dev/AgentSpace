@@ -698,6 +698,19 @@ const TerminalProxyStartSchema = z.object({
 	args: z.array(z.string()).optional(),
 });
 
+const TodoUpdateSchema = z.object({
+	type: z.literal("todo.update"),
+	requestId: z.string(),
+	todos: z.array(
+		z.object({
+			id: z.string(),
+			content: z.string(),
+			status: z.enum(["pending", "in_progress", "completed"]),
+			activeForm: z.string().optional(),
+		}),
+	),
+});
+
 export const ServerMessageSchema = z.discriminatedUnion("type", [
 	ChatStreamStartSchema,
 	ChatStreamDeltaSchema,
@@ -734,6 +747,7 @@ export const ServerMessageSchema = z.discriminatedUnion("type", [
 	HeartbeatAlertSchema,
 	HeartbeatConfiguredSchema,
 	SoulEvolutionProposeSchema,
+	TodoUpdateSchema,
 ]);
 
 export type ServerMessage = z.infer<typeof ServerMessageSchema>;
@@ -772,3 +786,4 @@ export type ScheduleUpdated = z.infer<typeof ScheduleUpdatedSchema>;
 export type HeartbeatAlert = z.infer<typeof HeartbeatAlertSchema>;
 export type HeartbeatConfigured = z.infer<typeof HeartbeatConfiguredSchema>;
 export type SoulEvolutionPropose = z.infer<typeof SoulEvolutionProposeSchema>;
+export type TodoUpdate = z.infer<typeof TodoUpdateSchema>;

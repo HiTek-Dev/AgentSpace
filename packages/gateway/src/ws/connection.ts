@@ -1,3 +1,5 @@
+import type { TodoItem } from "../tools/todo.js";
+
 export interface PendingRouting {
 	requestId: string;
 	sessionId: string;
@@ -29,6 +31,7 @@ export interface ConnectionState {
 	pendingWorkflowApprovals: Map<string, { executionId: string; resolve: (approved: boolean) => void }>;
 	claudeCodeSessions: Map<string, string>;
 	lastAgentId?: string;
+	activeTodos: TodoItem[];
 }
 
 const connections = new Map<string, ConnectionState>();
@@ -50,6 +53,7 @@ export function initConnection(transportId: string): ConnectionState {
 		terminalControlGranted: false,
 		pendingWorkflowApprovals: new Map(),
 		claudeCodeSessions: new Map(),
+		activeTodos: [],
 	};
 	connections.set(transportId, state);
 	return state;
