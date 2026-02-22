@@ -7,6 +7,7 @@ import { ChatInput } from "@/components/ChatInput";
 import { AgentSelector, type Agent } from "@/components/AgentSelector";
 import { ToolApprovalModal } from "@/components/ToolApprovalModal";
 import { SessionList } from "@/components/SessionList";
+import { TodoPanel } from "@/components/TodoPanel";
 import { Badge } from "@/components/ui/badge";
 import { Wifi, WifiOff } from "lucide-react";
 import { createSessionList } from "@/lib/gateway-client";
@@ -32,6 +33,7 @@ export function ChatView({ sidebarOpen }: ChatViewProps) {
     currentModel,
     usage,
     cost,
+    todos,
     sessions,
     sendMessage,
     approveToolCall,
@@ -169,6 +171,9 @@ export function ChatView({ sidebarOpen }: ChatViewProps) {
             )}
           </div>
         )}
+
+        {/* Todo progress panel */}
+        <TodoPanel todos={todos} />
 
         {/* Chat input (fixed at bottom) */}
         <ChatInput onSend={sendMessage} disabled={isStreaming} />
