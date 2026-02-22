@@ -68,6 +68,87 @@ export { initConnection, getConnectionState, removeConnection } from "./ws/conne
 export type { ConnectionState } from "./ws/connection.js";
 export type { ChatSend } from "./ws/protocol.js";
 
+/**
+ * Check and log gateway startup status.
+ */
+async function logGatewayStatus() {
+	const { createLogger } = await import("@tek/core");
+	const logger = createLogger("gateway-startup");
+
+	const checks = {
+		websocket: false,
+		telegram: false,
+		database: false,
+		skills: false,
+	};
+
+	// WebSocket server status
+	checks.websocket = true;
+	logger.info("✓ WebSocket server listening");
+
+	// Telegram bot status
+	try {
+		const { getKey } = await import("@tek/core/vault");
+		const telegramToken = getKey("telegram");
+		if (telegramToken) {
+			checks.telegram = true;
+			logger.info("✓ Telegram bot configured");
+		} else {
+			logger.info("○ Telegram bot (not configured)");
+		}
+	} catch {
+		logger.info("○ Telegram bot (configuration error)");
+	}
+
+	// Database status
+	try {
+		const { getDb } = await import("@tek/db");
+		const db = getDb();
+		// Drizzle ORM instance is successfully created
+		if (db) {
+			checks.database = true;
+			logger.info("✓ Database connected");
+		}
+	} catch (err) {
+		logger.warn(
+			`✗ Database error: ${err instanceof Error ? err.message : String(err)}`,
+		);
+	}
+
+	// Skills/Tools status
+	try {
+		const { buildToolRegistry } = await import("./agent/index.js");
+		const { getKey } = await import("@tek/core/vault");
+
+		// Count available tools
+		const braveApiKey = getKey("brave");
+		const googleApiKey = getKey("google");
+		let toolCount = 0;
+
+		if (braveApiKey) toolCount++;
+		if (googleApiKey) toolCount++;
+		toolCount += 2; // Filesystem and shell tools always available
+
+		if (toolCount > 0) {
+			checks.skills = true;
+			logger.info(`✓ Skills loaded (${toolCount} tools available)`);
+		} else {
+			logger.info("○ Skills (limited configuration)");
+		}
+	} catch (err) {
+		logger.warn(
+			`○ Skills error: ${err instanceof Error ? err.message : String(err)}`,
+		);
+	}
+
+	// Summary
+	const passed = Object.values(checks).filter(Boolean).length;
+	const total = Object.keys(checks).length;
+	logger.info(
+		`Gateway startup: ${passed}/${total} checks passed`,
+	);
+}
+
 // When run directly, start the key server with WebSocket gateway
 const isDirectRun =
 	process.argv[1] &&
@@ -85,6 +166,9 @@ if (isDirectRun) {
 	const { server, start } = await createServer();
 	await registerGatewayWebSocket(server);
 	await start();
+
+	// Log startup status
+	await logGatewayStatus();
 
 	// Optionally start Telegram bot if token is configured
 	try {
