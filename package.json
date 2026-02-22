@@ -1,6 +1,6 @@
 {
   "name": "tek",
-  "version": "0.0.28",
+  "version": "0.0.34",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "engines": {

@@ -33,7 +33,7 @@ const program = new Command();
 
 program
 	.name(CLI_COMMAND)
-	.version("0.1.0")
+	.version("0.0.34")
 	.description(
 		`${DISPLAY_NAME} - A self-hosted AI agent platform with secure credential management`,
 	);

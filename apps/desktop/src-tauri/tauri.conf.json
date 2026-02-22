@@ -1,6 +1,6 @@
 {
   "productName": "Tek",
-  "version": "0.2.0",
+  "version": "0.0.34",
   "identifier": "com.tek.desktop",
   "build": {
     "beforeDevCommand": "pnpm dev",
