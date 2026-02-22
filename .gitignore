@@ -4,3 +4,8 @@ dist
 *.tsbuildinfo
 .env
 .DS_Store
+
+# Tauri / Rust
+target
+apps/desktop/src-tauri/gen
+Cargo.lock
