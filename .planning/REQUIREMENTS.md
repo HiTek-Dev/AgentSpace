@@ -168,6 +168,16 @@ Requirements for the Chat Experience & Providers milestone. Each maps to roadmap
 - [x] **DESK-07**: User can approve, deny, or session-approve tool calls via modal dialog with argument preview
 - [x] **DESK-08**: Past sessions listed in collapsible side panel with preview, timestamp, and click-to-resume
 
+### Structured Streaming & Chat Formatting (Phase 32)
+
+- [ ] **STRM-01**: Gateway uses `fullStream` in both streaming paths (stream.ts and tool-loop.ts) to capture reasoning, sources, and typed text deltas
+- [ ] **STRM-02**: WS protocol extended with `chat.stream.reasoning` and `chat.stream.source` server message types, and optional `contentType` field on `chat.stream.delta`
+- [ ] **STRM-03**: Gateway conditionally enables extended thinking (`providerOptions.anthropic.thinking`) for supported Claude models
+- [ ] **STRM-04**: Desktop displays reasoning blocks as collapsible UI elements (collapsed by default, expandable to show full reasoning text)
+- [ ] **STRM-05**: CLI displays reasoning blocks inline as dimmed italic text during streaming and in message history
+- [ ] **STRM-06**: Base system prompt injected into every context assembly instructing agents to use markdown formatting for structured responses
+- [ ] **STRM-07**: Source attributions from providers are relayed to clients via protocol and displayed as footnote-style links
+
 ## Future Requirements
 
 Deferred to future milestones. Tracked but not in current roadmap.
@@ -302,9 +312,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DESK-07 | Phase 31 | Planned |
 | DESK-08 | Phase 31 | Planned |
 
+| STRM-01 | Phase 32 | Planned |
+| STRM-02 | Phase 32 | Planned |
+| STRM-03 | Phase 32 | Planned |
+| STRM-04 | Phase 32 | Planned |
+| STRM-05 | Phase 32 | Planned |
+| STRM-06 | Phase 32 | Planned |
+| STRM-07 | Phase 32 | Planned |
+
 **Coverage:**
-- v0.2 requirements (so far): 12 total
-- Mapped to phases: 12
+- v0.2 requirements (so far): 19 total
+- Mapped to phases: 19
 - Unmapped: 0
 
 ---
