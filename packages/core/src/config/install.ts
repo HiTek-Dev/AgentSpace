@@ -66,9 +66,14 @@ export function validateUninstallTarget(dir: string): string | null {
 		return `Refusing to delete "/" — this is the root filesystem`;
 	}
 
-	// Must contain .version file (proof it's a tek installation)
-	if (!existsSync(join(dir, ".version"))) {
-		return `Refusing to delete "${dir}" — no .version file found (not a tek installation)`;
+	// Check for .version file (production installations) or tek packages structure (dev installations)
+	const hasVersionFile = existsSync(join(dir, ".version"));
+	const hasDevStructure =
+		existsSync(join(dir, "packages", "cli", "dist")) &&
+		existsSync(join(dir, "packages", "gateway", "dist"));
+
+	if (!hasVersionFile && !hasDevStructure) {
+		return `Refusing to delete "${dir}" — not a valid tek installation (missing .version file or packages structure)`;
 	}
 
 	return null;

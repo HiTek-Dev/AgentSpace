@@ -8,7 +8,7 @@ import {
 } from "@tek/gateway";
 import type { ChatSend } from "@tek/gateway";
 import { TelegramTransport } from "../transport.js";
-import { getPairedUser } from "../auth/pairing.js";
+import { getPairedUser, isTelegramUserApproved } from "../auth/pairing.js";
 import { registerChatTransport } from "./callback.js";
 
 const logger = createLogger("telegram-message");
@@ -48,6 +48,24 @@ export async function handleTelegramMessage(
 		logger.info(`[REPLY] Sending pairing instruction to ${chatId}`);
 		await ctx.reply(
 			"Please pair first. Send /start for instructions.",
+		);
+		return;
+	}
+
+	// Check if user is approved (by user ID)
+	const userId = ctx.from?.id;
+	if (!userId) {
+		logger.error(`[APPROVAL] No user ID found for chat ${chatId}`);
+		await ctx.reply("Error: Could not determine your user ID.");
+		return;
+	}
+
+	const approved = isTelegramUserApproved(userId);
+	logger.info(`[APPROVAL] User ${userId} approved: ${approved ? "yes" : "no"}`);
+	if (!approved) {
+		logger.info(`[REPLY] Sending approval pending message to chat ${chatId}`);
+		await ctx.reply(
+			"Your account is pending approval. Please wait for the administrator to approve your access.",
 		);
 		return;
 	}

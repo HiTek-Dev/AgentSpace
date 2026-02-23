@@ -24,7 +24,11 @@ async function handleStart(ctx: CommandContext<Context>): Promise<void> {
 		return;
 	}
 
-	const code = generatePairingCode(chatId, ctx.from?.username ?? null);
+	const code = generatePairingCode(
+		chatId,
+		ctx.from?.id ?? null,
+		ctx.from?.username ?? null,
+	);
 	await ctx.reply(
 		`Welcome to ${DISPLAY_NAME}! Your pairing code is: <code>${code}</code>\n\nEnter this code in your CLI: ${CLI_COMMAND} pair telegram ${code}\n\nCode expires in 1 hour.`,
 		{ parse_mode: "HTML" },
@@ -36,7 +40,11 @@ async function handleStart(ctx: CommandContext<Context>): Promise<void> {
  */
 async function handlePair(ctx: CommandContext<Context>): Promise<void> {
 	const chatId = ctx.chat.id;
-	const code = generatePairingCode(chatId, ctx.from?.username ?? null);
+	const code = generatePairingCode(
+		chatId,
+		ctx.from?.id ?? null,
+		ctx.from?.username ?? null,
+	);
 	await ctx.reply(
 		`Your pairing code is: <code>${code}</code>\n\nEnter this code in your CLI: ${CLI_COMMAND} pair telegram ${code}\n\nCode expires in 1 hour.`,
 		{ parse_mode: "HTML" },

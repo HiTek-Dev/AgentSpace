@@ -148,14 +148,17 @@ export function getDb() {
 		CREATE TABLE IF NOT EXISTS telegram_users (
 			id TEXT PRIMARY KEY,
 			telegram_chat_id INTEGER NOT NULL UNIQUE,
+			telegram_user_id INTEGER NOT NULL,
 			telegram_username TEXT,
 			paired_at TEXT NOT NULL,
-			active INTEGER NOT NULL DEFAULT 1
+			active INTEGER NOT NULL DEFAULT 1,
+			approved INTEGER NOT NULL DEFAULT 0
 		);
 
 		CREATE TABLE IF NOT EXISTS pairing_codes (
 			code TEXT PRIMARY KEY,
 			telegram_chat_id INTEGER NOT NULL,
+			telegram_user_id INTEGER,
 			telegram_username TEXT,
 			created_at TEXT NOT NULL,
 			expires_at TEXT NOT NULL,

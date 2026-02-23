@@ -21,6 +21,7 @@
     "@tek/core": "workspace:*",
     "@tek/db": "workspace:*",
     "@tek/gateway": "workspace:^",
+    "@tek/telegram": "workspace:*",
     "ansis": "^4.0.0",
     "chalk": "^5.0.0",
     "commander": "^12.0.0",

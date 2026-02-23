@@ -13,6 +13,7 @@ const generateCode = customAlphabet("0123456789ABCDEFGHJKLMNPQRSTUVWXYZ", 6);
  */
 export function generatePairingCode(
 	telegramChatId: number,
+	telegramUserId: number | null,
 	telegramUsername: string | null,
 ): string {
 	const db = getDb();
@@ -24,6 +25,7 @@ export function generatePairingCode(
 		.values({
 			code,
 			telegramChatId,
+			telegramUserId,
 			telegramUsername,
 			createdAt: now.toISOString(),
 			expiresAt: expiresAt.toISOString(),
@@ -36,12 +38,12 @@ export function generatePairingCode(
 
 /**
  * Verify a pairing code and link the Telegram user to Tek.
- * Returns the chatId and username if valid, null otherwise.
+ * Returns the userId, chatId and username if valid, null otherwise.
  * Marks the code as used and creates/updates the telegram_users record.
  */
 export function verifyPairingCode(
 	code: string,
-): { chatId: number; username: string | null } | null {
+): { userId: number; chatId: number; username: string | null } | null {
 	const db = getDb();
 	const now = new Date().toISOString();
 
@@ -54,6 +56,7 @@ export function verifyPairingCode(
 	if (!record) return null;
 	if (record.used) return null;
 	if (record.expiresAt < now) return null;
+	if (!record.telegramUserId) return null; // User ID required
 
 	// Mark code as used
 	db.update(pairingCodes)
@@ -74,6 +77,7 @@ export function verifyPairingCode(
 			.set({
 				pairedAt: new Date().toISOString(),
 				active: true,
+				telegramUserId: record.telegramUserId,
 				telegramUsername: record.telegramUsername,
 			})
 			.where(eq(telegramUsers.id, existingUser.id))
@@ -84,6 +88,7 @@ export function verifyPairingCode(
 			.values({
 				id: nanoid(),
 				telegramChatId: record.telegramChatId,
+				telegramUserId: record.telegramUserId,
 				telegramUsername: record.telegramUsername,
 				pairedAt: new Date().toISOString(),
 				active: true,
@@ -92,6 +97,7 @@ export function verifyPairingCode(
 	}
 
 	return {
+		userId: record.telegramUserId,
 		chatId: record.telegramChatId,
 		username: record.telegramUsername,
 	};
@@ -137,4 +143,72 @@ export function cleanExpiredCodes(): void {
 			),
 		)
 		.run();
+}
+
+/**
+ * Approve a Telegram user by user ID to send messages.
+ * Returns true if approved successfully, false if user not found or already approved.
+ */
+export function approveTelegramUser(userId: number): boolean {
+	const db = getDb();
+
+	const user = db
+		.select()
+		.from(telegramUsers)
+		.where(eq(telegramUsers.telegramUserId, userId))
+		.get();
+
+	if (!user) return false;
+	if (user.approved) return false; // Already approved
+
+	db.update(telegramUsers)
+		.set({ approved: true })
+		.where(eq(telegramUsers.id, user.id))
+		.run();
+
+	return true;
+}
+
+/**
+ * Disapprove a Telegram user by user ID from sending messages.
+ * Returns true if disapproved successfully, false if user not found or already disapproved.
+ */
+export function disapproveTelegramUser(userId: number): boolean {
+	const db = getDb();
+
+	const user = db
+		.select()
+		.from(telegramUsers)
+		.where(eq(telegramUsers.telegramUserId, userId))
+		.get();
+
+	if (!user) return false;
+	if (!user.approved) return false; // Already disapproved
+
+	db.update(telegramUsers)
+		.set({ approved: false })
+		.where(eq(telegramUsers.id, user.id))
+		.run();
+
+	return true;
+}
+
+/**
+ * Check if a Telegram user is approved by user ID.
+ */
+export function isTelegramUserApproved(userId: number): boolean {
+	const db = getDb();
+
+	const user = db
+		.select()
+		.from(telegramUsers)
+		.where(
+			and(
+				eq(telegramUsers.telegramUserId, userId),
+				eq(telegramUsers.active, true),
+			),
+		)
+		.get();
+
+	return user ? user.approved : false;
 }
