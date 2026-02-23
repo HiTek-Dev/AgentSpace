@@ -9,3 +9,5 @@ dist
 target
 apps/desktop/src-tauri/gen
 Cargo.lock
+.build/
+.release/
