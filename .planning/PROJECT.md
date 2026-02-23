@@ -40,16 +40,21 @@ Every interaction with your AI agent is transparent, secure, and under your cont
 
 ### Active
 
-## Current Milestone: v0.1 Product Polish
+## Current Milestone: v0.3 Desktop UX & Configuration
 
-**Goal:** Transform Tek from functional infrastructure into a polished, product-grade experience — CLI that feels like Claude Code, desktop app that feels like Claudia.
+**Goal:** Bring setup, onboarding, and configuration into the desktop app with observable, async tool handling and sub-process monitoring.
 
 **Target features:**
-- CLI visual overhaul (StatusBar, MessageBubble, InputBar, collapsible sections, syntax highlighting)
-- Desktop app visual overhaul (markdown rendering, tool approval UI, conversation history, design system)
-- Architecture cleanup (extract vault, fix circular dependency)
-- Testing foundation (WS protocol, agent loop, router, config tests)
-- Quick wins (error boundaries, auto-reconnect, empty states, timestamps)
+- Left sidebar menu (Chat, Gateway, Agent Setup with subsections)
+- First-run detection and onboarding flow
+- Providers page (API keys, model aliases, fallbacks, custom models, Ollama support)
+- Shared Services setup (Telegram whitelist/deny, Brave, extensible for more)
+- Agents configuration UI (soul/files, model training setup)
+- Async tool call handling with background processing
+- Sub-process monitoring panel (right-side, live logs, status)
+- Model switching with context carry-over option
+- Local database context dumps before compression
+- Gateway overview with live logs and manual restart
 
 ### Out of Scope
 
@@ -149,4 +154,4 @@ AgentSpace draws architectural inspiration from OpenClaw (github.com/openclaw/op
 | Claude Code-style CLI over custom TUI | Better UX pattern — shows real commands and reasoning, not a chat bubble interface | — Pending |
 
 ---
-*Last updated: 2026-02-20 after milestone v0.1 start*
+*Last updated: 2026-02-22 after milestone v0.3 start*
