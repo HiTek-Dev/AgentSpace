@@ -10,16 +10,16 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 35 (Desktop App UX Polish)
-Plan: 2 of 3
-Status: Executing
-Last activity: 2026-02-24 — Plan 35-02 complete
+Plan: 3 of 3
+Status: Phase Complete
+Last activity: 2026-02-24 — Plan 35-03 complete
 
-Progress: [======---] 2/3 plans complete
+Progress: [=========] 3/3 plans complete
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 66 (36 v0.0 + 14 v0.1 + 14 v0.2 + 2 v0.3)
+- Total plans completed: 67 (36 v0.0 + 14 v0.1 + 14 v0.2 + 3 v0.3)
 - Average duration: 3min
 - Total execution time: 1.96 hours
 
@@ -46,7 +46,7 @@ Progress: [======---] 2/3 plans complete
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 35 | 2/3 | 7min | 3.5min |
+| 35 | 3/3 | 10min | 3.3min |
 
 ## Accumulated Context
 
@@ -91,6 +91,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 35-01]: Replaced shell:default with shell:allow-open + shell:allow-execute + shell:allow-kill for Tauri v2
 - [Phase 35-01]: Exclusive grid/detail rendering pattern using ternary operator for provider and service views
 - [Phase 35-01]: ArrowLeft back button with muted-foreground hover transition for inline detail navigation
+- [Phase 35-03]: SERVICE_KEYS filter excludes telegram/brave/tavily from LLM provider checks
+- [Phase 35-03]: Startup provider check runs on gateway connect with fail-open on error
+- [Phase 35-03]: useAvailableModels chains vault.keys.list then provider.models.list per configured provider
+- [Phase 35-03]: Model labels use provider/name format (e.g. anthropic/Claude Sonnet 4)
 
 ### Roadmap Evolution
 
@@ -121,5 +125,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 35-02-PLAN.md (Ollama/Venice provider fixes)
+Stopped at: Completed 35-03-PLAN.md (Agent gating and dynamic model pickers) -- Phase 35 complete
 Resume file: None
