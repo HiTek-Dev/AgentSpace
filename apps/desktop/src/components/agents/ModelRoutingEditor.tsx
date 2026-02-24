@@ -1,5 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, Save, Route } from "lucide-react";
+import { useGatewayRpc } from "@/hooks/useGatewayRpc";
+import {
+  createAgentIdentityRead,
+  createAgentIdentityWrite,
+  type AgentIdentityReadResult,
+  type ServerMessage,
+} from "@/lib/gateway-client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -49,7 +56,47 @@ const MODEL_OPTIONS = [
 
 type TaskKey = (typeof TASK_TYPES)[number]["key"];
 
+const ROUTING_FILE = "ROUTING.md";
+
+/** Parse a ROUTING.md file back into routing state. */
+function parseRoutingMarkdown(md: string): Partial<Record<TaskKey, string>> {
+  const result: Partial<Record<TaskKey, string>> = {};
+  const lines = md.split("\n");
+  let currentTask: string | null = null;
+
+  for (const line of lines) {
+    const sectionMatch = line.match(/^## (.+)$/);
+    if (sectionMatch) {
+      // Convert section heading back to task key (e.g. "Code Generation" -> "code_generation")
+      const label = sectionMatch[1]!.trim();
+      const task = TASK_TYPES.find((t) => t.label === label);
+      currentTask = task ? task.key : null;
+      continue;
+    }
+    const modelMatch = line.match(/^Model:\s*(.+)$/);
+    if (modelMatch && currentTask) {
+      result[currentTask as TaskKey] = modelMatch[1]!.trim();
+      currentTask = null;
+    }
+  }
+  return result;
+}
+
+/** Format routing state as a ROUTING.md markdown file. */
+function formatRoutingMarkdown(routing: Record<TaskKey, string>): string {
+  const sections = TASK_TYPES
+    .filter((task) => routing[task.key])
+    .map((task) => `## ${task.label}\nModel: ${routing[task.key]}`);
+
+  if (sections.length === 0) {
+    return "# Model Routing\n\nNo task-specific routing configured.\n";
+  }
+  return `# Model Routing\n\n${sections.join("\n\n")}\n`;
+}
+
 export function ModelRoutingEditor({ agentId }: ModelRoutingEditorProps) {
+  const { request, connected } = useGatewayRpc();
+
   const [routing, setRouting] = useState<Record<TaskKey, string>>({
     research: "",
     code_generation: "",
@@ -57,8 +104,39 @@ export function ModelRoutingEditor({ agentId }: ModelRoutingEditorProps) {
     general_chat: "",
     summarization: "",
   });
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load existing routing on mount
+  useEffect(() => {
+    if (!connected) return;
+
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    request<AgentIdentityReadResult>(createAgentIdentityRead(agentId, ROUTING_FILE))
+      .then((res) => {
+        if (cancelled) return;
+        if (res.exists && res.content) {
+          const parsed = parseRoutingMarkdown(res.content);
+          setRouting((prev) => ({ ...prev, ...parsed }));
+        }
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : "Failed to load routing");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [agentId, connected, request]);
 
   const handleChange = (taskKey: TaskKey, model: string) => {
     setRouting((prev) => ({ ...prev, [taskKey]: model }));
@@ -66,15 +144,27 @@ export function ModelRoutingEditor({ agentId }: ModelRoutingEditorProps) {
   };
 
   const handleSave = async () => {
+    if (!connected) return;
+
     setSaving(true);
-    // In a real implementation this would send the routing config to the gateway
-    // via createAgentUpdate(agentId, { modelRouting: routing })
-    // For now, simulate a save
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setSaving(false);
-    setSaved(true);
-    // Suppress unused variable warning in development
-    void agentId;
+    setError(null);
+
+    try {
+      const content = formatRoutingMarkdown(routing);
+      const res = await request<ServerMessage>(
+        createAgentIdentityWrite(agentId, ROUTING_FILE, content),
+      );
+
+      if ("success" in res && res.success) {
+        setSaved(true);
+      } else if ("error" in res && typeof res.error === "string") {
+        setError(res.error);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save routing");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -95,7 +185,7 @@ export function ModelRoutingEditor({ agentId }: ModelRoutingEditorProps) {
           variant="outline"
           size="sm"
           onClick={handleSave}
-          disabled={saving}
+          disabled={saving || !connected}
         >
           {saving ? (
             <Loader2 className="size-4 animate-spin" />
@@ -110,6 +200,21 @@ export function ModelRoutingEditor({ agentId }: ModelRoutingEditorProps) {
         Map task types to specific models. When a task type is detected, the
         assigned model will be used instead of the agent&apos;s default model.
       </p>
+
+      {/* Error banner */}
+      {error && (
+        <div className="rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
+      {/* Loading state */}
+      {loading && (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="size-5 animate-spin text-muted-foreground" />
+          <span className="ml-2 text-sm text-muted-foreground">Loading routing...</span>
+        </div>
+      )}
 
       {/* Routing table */}
       <div className="flex flex-col gap-3">

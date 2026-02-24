@@ -15,11 +15,12 @@ import { ProcessPanel } from "@/components/ProcessPanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Wifi, WifiOff, PanelLeftOpen, PanelLeftClose, PanelRightOpen } from "lucide-react";
-import { createSessionList } from "@/lib/gateway-client";
+import { createSessionList, createChatModelSwitch } from "@/lib/gateway-client";
 
 export function ChatView() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pendingModelSwitch, setPendingModelSwitch] = useState<string | null>(null);
+  const [overrideModel, setOverrideModel] = useState<string | null>(null);
   const port = useAppStore((s) => s.gateway.port);
   const selectedAgentId = useAppStore((s) => s.selectedAgentId);
   const setSelectedAgentId = useAppStore((s) => s.setSelectedAgentId);
@@ -109,11 +110,28 @@ export function ChatView() {
   }, []);
 
   const handleModelSwitchConfirm = useCallback(
-    (_keepContext: boolean) => {
-      // TODO: Wire to chat.model.switch WS message when gateway handler is fully implemented
+    (keepContext: boolean) => {
+      const newModel = pendingModelSwitch;
+      if (!newModel) return;
+
+      if (keepContext) {
+        // Keep conversation context, just switch model for next messages
+        // If we have a session, notify the gateway
+        if (sessionId && send) {
+          const msg = createChatModelSwitch(sessionId, newModel, true);
+          send(JSON.stringify(msg));
+        }
+        setOverrideModel(newModel);
+      } else {
+        // Clear context: reset session and messages, switch model
+        clearMessages();
+        setSessionId(null);
+        setOverrideModel(newModel);
+      }
+
       setPendingModelSwitch(null);
     },
-    [],
+    [pendingModelSwitch, sessionId, send, clearMessages, setSessionId],
   );
 
   const wsConnected = wsStatus === "connected";
@@ -226,7 +244,7 @@ export function ChatView() {
               onSwitch={handleModelSwitch}
             />
           </div>
-          <ChatInput onSend={sendMessage} disabled={isStreaming} />
+          <ChatInput onSend={(content: string) => sendMessage(content, overrideModel ?? undefined)} disabled={isStreaming} />
         </div>
       </div>
 

@@ -6,12 +6,14 @@ import {
   createVaultKeysSet,
   createVaultKeysTest,
   createOllamaDiscover,
+  createProviderModelsList,
 } from "@/lib/gateway-client";
 import type {
   VaultKeysListResult,
   VaultKeysSetResult,
   VaultKeysTestResult,
   OllamaDiscoverResult,
+  ProviderModelsListResult,
 } from "@/lib/gateway-client";
 import { ProviderCard } from "@/components/providers/ProviderCard";
 import { ProviderDetail } from "@/components/providers/ProviderDetail";
@@ -113,6 +115,22 @@ export function ProvidersView() {
     }
   };
 
+  const handleModels = async (
+    provider: string,
+  ): Promise<Array<{ modelId: string; name: string; tier?: string }>> => {
+    if (!connected) return [];
+    try {
+      const msg = createProviderModelsList(provider);
+      const result = await request<ProviderModelsListResult>(msg);
+      if (result.type === "provider.models.list.result" && result.models) {
+        return result.models;
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  };
+
   const selected = providers.find((p) => p.provider === selectedProvider);
 
   if (loading && connected) {
@@ -176,6 +194,7 @@ export function ProvidersView() {
             onDiscover={
               selected.provider === "ollama" ? handleDiscover : undefined
             }
+            onModels={handleModels}
           />
         )}
       </div>

@@ -43,7 +43,7 @@ interface UseChatReturn {
   cost: { totalCost: number } | null;
   todos: TodoItem[];
   sessions: SessionSummary[];
-  sendMessage: (content: string) => void;
+  sendMessage: (content: string, model?: string) => void;
   approveToolCall: (toolCallId: string, approved: boolean, sessionApprove?: boolean) => void;
   clearMessages: () => void;
   send: (data: string) => void;
@@ -332,7 +332,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
   });
 
   const sendMessage = useCallback(
-    (content: string) => {
+    (content: string, model?: string) => {
       // Append user message to messages array
       setMessages((prev) => [
         ...prev,
@@ -354,6 +354,7 @@ export function useChat({ port, agentId }: UseChatParams): UseChatReturn {
       const msg = createChatSend(content, {
         sessionId,
         agentId: agentId ?? undefined,
+        model: model ?? undefined,
       });
       send(JSON.stringify(msg));
     },

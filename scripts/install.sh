@@ -105,20 +105,10 @@ cp "$SOURCE_DIR/package.json" "$INSTALL_DIR/package.json"
 cp "$SOURCE_DIR/pnpm-lock.yaml" "$INSTALL_DIR/pnpm-lock.yaml"
 cp "$SOURCE_DIR/pnpm-workspace.yaml" "$INSTALL_DIR/pnpm-workspace.yaml"
 
-# 9. Sync root node_modules
-echo "Syncing root node_modules..."
-rsync -a --delete "$SOURCE_DIR/node_modules/" "$INSTALL_DIR/node_modules/"
-
-# 10. Sync per-package node_modules
-echo "Syncing package node_modules..."
-for pkg in core db cli gateway telegram; do
-  if [ -d "$SOURCE_DIR/packages/$pkg/node_modules" ]; then
-    mkdir -p "$INSTALL_DIR/packages/$pkg/node_modules"
-    rsync -a --delete \
-      "$SOURCE_DIR/packages/$pkg/node_modules/" \
-      "$INSTALL_DIR/packages/$pkg/node_modules/"
-  fi
-done
+# 9. Install dependencies at install location
+#    pnpm uses symlinks that break when copied via rsync, so we install fresh
+echo "Installing dependencies at $INSTALL_DIR..."
+cd "$INSTALL_DIR" && pnpm install --prod --frozen-lockfile 2>/dev/null || pnpm install --prod
 
 # 11. Seed memory templates on first install
 mkdir -p "$CONFIG_DIR/memory/daily"

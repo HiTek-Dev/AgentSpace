@@ -65,43 +65,10 @@ cp "$SOURCE_DIR/package.json" "$SOURCE_DIR/dist/staging/package.json"
 cp "$SOURCE_DIR/pnpm-lock.yaml" "$SOURCE_DIR/dist/staging/pnpm-lock.yaml"
 cp "$SOURCE_DIR/pnpm-workspace.yaml" "$SOURCE_DIR/dist/staging/pnpm-workspace.yaml"
 
-# Sync root node_modules (preserve pnpm symlink structure, exclude build-time packages)
-rsync -a \
-  --exclude='.ignored_*' \
-  --exclude='.bin/' \
-  --exclude='*.wasm' \
-  --exclude='vendor/ripgrep/' \
-  --exclude='esbuild/' \
-  --exclude='@esbuild/' \
-  --exclude='@biomejs/' \
-  --exclude='@img/' \
-  --exclude='sharp/' \
-  --exclude='rollup/' \
-  --exclude='@rollup/' \
-  --exclude='vite/' \
-  --exclude='@vitest/' \
-  --exclude='vitest/' \
-  --exclude='turbo/' \
-  --exclude='turbo-darwin-arm64/' \
-  --exclude='postcss/' \
-  --exclude='tailwindcss/' \
-  --exclude='@tailwindcss/' \
-  --exclude='lightningcss/' \
-  --exclude='typescript/' \
-  --exclude='@tauri-apps/' \
-  "$SOURCE_DIR/node_modules/" "$SOURCE_DIR/dist/staging/node_modules/"
-
-# Sync per-package node_modules
-for pkg in core db cli gateway telegram; do
-  if [ -d "$SOURCE_DIR/packages/$pkg/node_modules" ]; then
-    mkdir -p "$SOURCE_DIR/dist/staging/packages/$pkg/node_modules"
-    rsync -a \
-      --exclude='.ignored_*' \
-      --exclude='.bin/' \
-      "$SOURCE_DIR/packages/$pkg/node_modules/" \
-      "$SOURCE_DIR/dist/staging/packages/$pkg/node_modules/"
-  fi
-done
+# Install production dependencies at staging location
+# pnpm uses symlinks that break when copied via rsync, so we install fresh
+echo "Installing production dependencies in staging..."
+cd "$SOURCE_DIR/dist/staging" && pnpm install --prod --frozen-lockfile 2>/dev/null || pnpm install --prod
 
 # Copy memory template files (so remote installer can seed them)
 mkdir -p "$SOURCE_DIR/dist/staging/memory-files"

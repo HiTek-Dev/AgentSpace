@@ -1,8 +1,23 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Eye, EyeOff, FlaskConical, Save, Search } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ModelTable } from "./ModelTable";
+import { FallbackChainEditor } from "./FallbackChainEditor";
+
+interface ModelRow {
+  modelId: string;
+  name: string;
+  enabled: boolean;
+  alias?: string;
+  tier?: string;
+}
+
+interface FallbackChain {
+  name: string;
+  models: string[];
+}
 
 interface ProviderDetailProps {
   provider: string;
@@ -11,6 +26,7 @@ interface ProviderDetailProps {
   onSave: (value: string) => void;
   onTest: (provider: string) => Promise<{ valid: boolean; error?: string }>;
   onDiscover?: (url: string) => void;
+  onModels?: (provider: string) => Promise<Array<{ modelId: string; name: string; tier?: string }>>;
 }
 
 export function ProviderDetail({
@@ -20,6 +36,7 @@ export function ProviderDetail({
   onSave,
   onTest,
   onDiscover,
+  onModels,
 }: ProviderDetailProps) {
   const [apiKey, setApiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
@@ -28,6 +45,60 @@ export function ProviderDetail({
     valid: boolean;
     error?: string;
   } | null>(null);
+
+  const [models, setModels] = useState<ModelRow[]>([]);
+  const [fallbackChains, setFallbackChains] = useState<FallbackChain[]>([]);
+  const [modelsLoading, setModelsLoading] = useState(false);
+
+  // Fetch models when provider is configured
+  const fetchModels = useCallback(async () => {
+    if (!configured || !onModels) return;
+    setModelsLoading(true);
+    try {
+      const result = await onModels(provider);
+      setModels(
+        result.map((m) => ({
+          modelId: m.modelId,
+          name: m.name,
+          enabled: true,
+          tier: m.tier ?? "standard",
+        })),
+      );
+    } catch {
+      // Models remain empty on error
+    } finally {
+      setModelsLoading(false);
+    }
+  }, [configured, onModels, provider]);
+
+  useEffect(() => {
+    fetchModels();
+  }, [fetchModels]);
+
+  const handleToggle = (modelId: string, enabled: boolean) => {
+    setModels((prev) =>
+      prev.map((m) => (m.modelId === modelId ? { ...m, enabled } : m)),
+    );
+  };
+
+  const handleAlias = (modelId: string, alias: string) => {
+    setModels((prev) =>
+      prev.map((m) => (m.modelId === modelId ? { ...m, alias } : m)),
+    );
+  };
+
+  const handleTier = (modelId: string, tier: string) => {
+    setModels((prev) =>
+      prev.map((m) => (m.modelId === modelId ? { ...m, tier } : m)),
+    );
+  };
+
+  const handleAddModel = (modelId: string) => {
+    setModels((prev) => [
+      ...prev,
+      { modelId, name: modelId, enabled: true, tier: "standard" },
+    ]);
+  };
 
   // Ollama uses a URL field instead of API key
   const isOllama = provider === "ollama";
@@ -158,13 +229,49 @@ export function ProviderDetail({
           </div>
         )}
 
-        {/* Model table placeholder */}
+        {/* Models */}
         <div className="space-y-2">
           <h3 className="text-sm font-medium text-foreground">Models</h3>
-          <div className="rounded-md border border-border bg-muted/50 px-4 py-8 text-center text-sm text-muted-foreground">
-            Models will appear here after configuration.
-          </div>
+          {!configured ? (
+            <div className="rounded-md border border-border bg-muted/50 px-4 py-8 text-center text-sm text-muted-foreground">
+              Models will appear here after configuration.
+            </div>
+          ) : modelsLoading ? (
+            <div className="rounded-md border border-border bg-muted/50 px-4 py-8 text-center text-sm text-muted-foreground">
+              Loading models...
+            </div>
+          ) : models.length === 0 ? (
+            <div className="rounded-md border border-border bg-muted/50 px-4 py-8 text-center text-sm text-muted-foreground">
+              No models found. Add a custom model below.
+            </div>
+          ) : null}
+          {configured && (
+            <ModelTable
+              models={models}
+              onToggle={handleToggle}
+              onAlias={handleAlias}
+              onTier={handleTier}
+              onAddModel={handleAddModel}
+            />
+          )}
         </div>
+
+        {/* Fallback Chains */}
+        {configured && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-foreground">
+              Fallback Chains
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Define ordered lists of models to try when the primary model is
+              unavailable.
+            </p>
+            <FallbackChainEditor
+              chains={fallbackChains}
+              onChange={setFallbackChains}
+            />
+          </div>
+        )}
 
         {/* Save button */}
         <div className="flex justify-end">
