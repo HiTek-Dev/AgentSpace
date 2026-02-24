@@ -24,6 +24,18 @@
       ]
     },
     "process:default",
-    "shell:default"
+    "shell:allow-open",
+    "shell:allow-execute",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "tek",
+          "cmd": "tek",
+          "args": true
+        }
+      ]
+    },
+    "shell:allow-kill"
   ]
 }
