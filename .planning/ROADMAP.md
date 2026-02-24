@@ -134,9 +134,12 @@ Phases 30, 32, and 34 can start in parallel (no dependencies). Phase 31 follows 
 
 ### Phase 35: Desktop app UX polish - provider setup flow, agent gating, service UI, Ollama/Venice fixes, gateway controls
 
-**Goal:** [To be planned]
+**Goal:** Polish desktop app UX with inline provider/service config flows, fix gateway shell controls, fix Ollama discovery and Venice key testing, gate agents behind provider configuration, and replace hardcoded model lists with dynamic provider/model pickers
 **Depends on:** Phase 34
-**Plans:** 0 plans
+**Requirements:** [UXP-01, UXP-02, UXP-03, UXP-04, UXP-05, UXP-06, UXP-07, UXP-08, UXP-09]
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 35 to break down)
+- [ ] 35-01-PLAN.md -- Gateway shell fix, provider inline detail pattern, service inline detail pattern
+- [ ] 35-02-PLAN.md -- Ollama discovery wiring and Venice key test fix with expanded models
+- [ ] 35-03-PLAN.md -- Provider gating for agents, startup check, dynamic model pickers

@@ -199,6 +199,18 @@ Requirements for the Chat Experience & Providers milestone. Each maps to roadmap
 - [x] **CLIX-07**: Inline file diffs with red/green line coloring in conversation flow, auto-collapsed above a threshold with expand-on-demand
 - [x] **CLIX-08**: Todo/task progress displayed in Claude Code-style nested tree with colored status icons (green checkmark completed, spinner in-progress, muted circle pending) and indented hierarchy
 
+### Desktop UX Polish (Phase 35)
+
+- [ ] **UXP-01**: Gateway start/stop/restart buttons work from desktop app via properly scoped Tauri shell permissions
+- [ ] **UXP-02**: Provider config UI uses inline detail pattern -- clicking a provider hides the grid and shows config form with back button to return
+- [ ] **UXP-03**: Service config UI uses same inline detail pattern as providers -- clicking a service hides grid, shows config form, back button to return
+- [ ] **UXP-04**: Ollama discovery finds local models at http://localhost:11434 and displays them in the model table; provider.models.list for Ollama calls discover endpoint internally
+- [ ] **UXP-05**: Venice key test works correctly -- combined Save & Test flow, expanded known models list (llama-3.3-70b, deepseek-r1-671b, dolphin-2.9.3-mistral-7b, llama-3.2-3b, nous-theta-8b), custom model entry
+- [ ] **UXP-06**: Agents tab disabled in nav sidebar until at least one provider is configured and working
+- [ ] **UXP-07**: App startup check: if no providers configured after gateway connects, redirect user to providers page before unlocking full UI
+- [ ] **UXP-08**: Agent model picker shows provider/model combos (e.g. "venice/llama-3.3-70b") fetched from configured providers, replacing hardcoded model lists
+- [ ] **UXP-09**: Model routing editor uses dynamic provider/model list instead of hardcoded MODEL_OPTIONS array
+
 ## Future Requirements
 
 Deferred to future milestones. Tracked but not in current roadmap.
@@ -355,12 +367,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CLIX-06 | Phase 34 | Planned |
 | CLIX-07 | Phase 34 | Planned |
 | CLIX-08 | Phase 34 | Planned |
+| UXP-01 | Phase 35 | Planned |
+| UXP-02 | Phase 35 | Planned |
+| UXP-03 | Phase 35 | Planned |
+| UXP-04 | Phase 35 | Planned |
+| UXP-05 | Phase 35 | Planned |
+| UXP-06 | Phase 35 | Planned |
+| UXP-07 | Phase 35 | Planned |
+| UXP-08 | Phase 35 | Planned |
+| UXP-09 | Phase 35 | Planned |
 
 **Coverage:**
-- v0.2 requirements (so far): 34 total
-- Mapped to phases: 34
+- v0.2 requirements (so far): 43 total
+- Mapped to phases: 43
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-15*
-*Last updated: 2026-02-21 after v0.2 Phase 34 planning*
+*Last updated: 2026-02-24 after v0.2 Phase 35 planning*
