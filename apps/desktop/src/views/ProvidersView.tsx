@@ -154,46 +154,15 @@ export function ProvidersView() {
   return (
     <div className="flex h-full flex-col overflow-y-auto">
       <div className="p-6">
-        {/* Header */}
-        <div className="mb-6 flex items-center gap-3">
-          <KeyRound className="size-6 text-muted-foreground" />
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">
-              Providers
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Manage API keys and model configuration for your AI providers.
-            </p>
-          </div>
-        </div>
-
-        {/* Connection warning */}
+        {/* Connection warning -- always visible */}
         {!connected && (
           <div className="mb-4 rounded-md border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
             Gateway is not connected. Start the gateway to manage provider keys.
           </div>
         )}
 
-        {/* Provider grid */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {providers.map((p) => (
-            <ProviderCard
-              key={p.provider}
-              name={p.name}
-              provider={p.provider}
-              configured={p.configured}
-              active={selectedProvider === p.provider}
-              onClick={() =>
-                setSelectedProvider(
-                  selectedProvider === p.provider ? null : p.provider,
-                )
-              }
-            />
-          ))}
-        </div>
-
-        {/* Detail panel */}
-        {selected && (
+        {selected ? (
+          /* Detail view -- replaces grid */
           <ProviderDetail
             provider={selected.provider}
             name={selected.name}
@@ -207,7 +176,38 @@ export function ProvidersView() {
             discoveredModels={
               selected.provider === "ollama" ? discoveredModels : undefined
             }
+            onBack={() => setSelectedProvider(null)}
           />
+        ) : (
+          /* Grid view */
+          <>
+            {/* Header */}
+            <div className="mb-6 flex items-center gap-3">
+              <KeyRound className="size-6 text-muted-foreground" />
+              <div>
+                <h1 className="text-xl font-semibold text-foreground">
+                  Providers
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Manage API keys and model configuration for your AI providers.
+                </p>
+              </div>
+            </div>
+
+            {/* Provider grid */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {providers.map((p) => (
+                <ProviderCard
+                  key={p.provider}
+                  name={p.name}
+                  provider={p.provider}
+                  configured={p.configured}
+                  active={false}
+                  onClick={() => setSelectedProvider(p.provider)}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

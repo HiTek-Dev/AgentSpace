@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Eye, EyeOff, FlaskConical, Save, Search } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, FlaskConical, Loader2, Save, Search } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ interface ProviderDetailProps {
   onDiscover?: (url: string) => void;
   onModels?: (provider: string) => Promise<Array<{ modelId: string; name: string; tier?: string }>>;
   discoveredModels?: Array<{ modelId: string; name: string; tier: string }>;
+  onBack?: () => void;
 }
 
 export function ProviderDetail({
@@ -39,6 +40,7 @@ export function ProviderDetail({
   onDiscover,
   onModels,
   discoveredModels,
+  onBack,
 }: ProviderDetailProps) {
   const [apiKey, setApiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
@@ -118,7 +120,22 @@ export function ProviderDetail({
   const isOllama = provider === "ollama";
   const [ollamaUrl, setOllamaUrl] = useState("http://localhost:11434");
 
-  const handleTest = async () => {
+  const handleSaveAndTest = async () => {
+    if (isOllama) {
+      // Ollama just saves the URL, no key test needed
+      onSave(ollamaUrl);
+      return;
+    }
+    if (!apiKey && !configured) return;
+
+    // If there's a new key entered, save it first
+    if (apiKey) {
+      onSave(apiKey);
+      // Small delay to let keychain persist
+      await new Promise((r) => setTimeout(r, 300));
+    }
+
+    // Now test the saved key
     setTesting(true);
     setTestResult(null);
     try {
@@ -131,19 +148,21 @@ export function ProviderDetail({
     }
   };
 
-  const handleSave = () => {
-    if (isOllama) {
-      onSave(ollamaUrl);
-    } else {
-      onSave(apiKey);
-    }
-  };
-
   return (
-    <Card className="mt-4">
-      <CardHeader>
-        <CardTitle className="text-lg">{name} Configuration</CardTitle>
-      </CardHeader>
+    <div>
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="mb-4 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="size-4" />
+          Back to Providers
+        </button>
+      )}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">{name} Configuration</CardTitle>
+        </CardHeader>
       <CardContent className="space-y-6">
         {/* API Key or URL input */}
         {isOllama ? (
@@ -212,11 +231,11 @@ export function ProviderDetail({
               </div>
               <Button
                 variant="outline"
-                onClick={handleTest}
+                onClick={handleSaveAndTest}
                 disabled={testing || (!apiKey && !configured)}
               >
-                <FlaskConical className="size-4" />
-                {testing ? "Testing..." : "Test Key"}
+                {testing ? <Loader2 className="size-4 animate-spin" /> : <FlaskConical className="size-4" />}
+                {testing ? "Testing..." : apiKey ? "Save & Test" : "Test Key"}
               </Button>
             </div>
             {configured && !apiKey && (
@@ -287,17 +306,17 @@ export function ProviderDetail({
           </div>
         )}
 
-        {/* Save button */}
-        <div className="flex justify-end">
-          <Button
-            onClick={handleSave}
-            disabled={!isOllama && !apiKey && !configured}
-          >
-            <Save className="size-4" />
-            Save
-          </Button>
-        </div>
+        {/* Save button (Ollama only -- non-Ollama uses inline Save & Test) */}
+        {isOllama && (
+          <div className="flex justify-end">
+            <Button onClick={() => onSave(ollamaUrl)}>
+              <Save className="size-4" />
+              Save
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
+    </div>
   );
 }
