@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, Save, Route } from "lucide-react";
 import { useGatewayRpc } from "@/hooks/useGatewayRpc";
+import { useAvailableModels } from "@/hooks/useAvailableModels";
 import {
   createAgentIdentityRead,
   createAgentIdentityWrite,
@@ -40,18 +41,6 @@ const TASK_TYPES = [
     label: "Summarization",
     description: "Condensing documents, threads, and content",
   },
-] as const;
-
-const MODEL_OPTIONS = [
-  { value: "", label: "Default (use agent model)" },
-  { value: "claude-sonnet-4-20250514", label: "Claude Sonnet 4" },
-  { value: "claude-opus-4-20250514", label: "Claude Opus 4" },
-  { value: "gpt-4o", label: "GPT-4o" },
-  { value: "gpt-4o-mini", label: "GPT-4o Mini" },
-  { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
-  { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
-  { value: "deepseek-r1", label: "DeepSeek R1" },
-  { value: "llama-3.3-70b", label: "Llama 3.3 70B" },
 ] as const;
 
 type TaskKey = (typeof TASK_TYPES)[number]["key"];
@@ -96,6 +85,15 @@ function formatRoutingMarkdown(routing: Record<TaskKey, string>): string {
 
 export function ModelRoutingEditor({ agentId }: ModelRoutingEditorProps) {
   const { request, connected } = useGatewayRpc();
+  const { models: availableModels } = useAvailableModels();
+
+  const dynamicModelOptions = [
+    { value: "", label: "Default (use agent model)" },
+    ...availableModels.map((m) => ({
+      value: m.modelId,
+      label: m.label,
+    })),
+  ];
 
   const [routing, setRouting] = useState<Record<TaskKey, string>>({
     research: "",
@@ -246,7 +244,7 @@ export function ModelRoutingEditor({ agentId }: ModelRoutingEditorProps) {
                 "dark:bg-input/30",
               )}
             >
-              {MODEL_OPTIONS.map((opt) => (
+              {dynamicModelOptions.map((opt) => (
                 <option
                   key={opt.value}
                   value={opt.value}

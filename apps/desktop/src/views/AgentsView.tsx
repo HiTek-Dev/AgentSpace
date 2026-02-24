@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Bot, Loader2, Plus, X } from "lucide-react";
 import { useGatewayRpc } from "@/hooks/useGatewayRpc";
+import { useAvailableModels } from "@/hooks/useAvailableModels";
 import {
   createConfigGet,
   createAgentCreate,
@@ -32,6 +33,8 @@ export function AgentsView() {
   const setCurrentView = useAppStore((s) => s.setCurrentView);
   const setAgentDetailId = useAppStore((s) => s.setAgentDetailId);
 
+  const { models: availableModels, loading: modelsLoading } = useAvailableModels();
+
   const [agents, setAgents] = useState<AgentConfig[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,9 +43,16 @@ export function AgentsView() {
 
   // Create form state
   const [newName, setNewName] = useState("");
-  const [newModel, setNewModel] = useState("claude-sonnet-4-20250514");
+  const [newModel, setNewModel] = useState("");
   const [newPreset, setNewPreset] = useState("balanced");
   const [newDescription, setNewDescription] = useState("");
+
+  // Auto-select first available model when models load
+  useEffect(() => {
+    if (availableModels.length > 0 && !newModel) {
+      setNewModel(availableModels[0]!.modelId);
+    }
+  }, [availableModels, newModel]);
 
   const fetchAgents = useCallback(async () => {
     if (!connected) return;
@@ -97,7 +107,7 @@ export function AgentsView() {
       if (res.success) {
         // Reset form and refresh
         setNewName("");
-        setNewModel("claude-sonnet-4-20250514");
+        setNewModel(availableModels.length > 0 ? availableModels[0]!.modelId : "");
         setNewPreset("balanced");
         setNewDescription("");
         setShowCreateForm(false);
@@ -211,30 +221,17 @@ export function AgentsView() {
                     "dark:bg-input/30",
                   )}
                 >
-                  <option value="claude-sonnet-4-20250514" className="bg-card">
-                    Claude Sonnet 4
-                  </option>
-                  <option value="claude-opus-4-20250514" className="bg-card">
-                    Claude Opus 4
-                  </option>
-                  <option value="gpt-4o" className="bg-card">
-                    GPT-4o
-                  </option>
-                  <option value="gpt-4o-mini" className="bg-card">
-                    GPT-4o Mini
-                  </option>
-                  <option value="gemini-2.5-pro" className="bg-card">
-                    Gemini 2.5 Pro
-                  </option>
-                  <option value="gemini-2.5-flash" className="bg-card">
-                    Gemini 2.5 Flash
-                  </option>
-                  <option value="deepseek-r1" className="bg-card">
-                    DeepSeek R1
-                  </option>
-                  <option value="llama-3.3-70b" className="bg-card">
-                    Llama 3.3 70B
-                  </option>
+                  {availableModels.length > 0 ? (
+                    availableModels.map((m) => (
+                      <option key={m.value} value={m.modelId} className="bg-card">
+                        {m.label}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" className="bg-card">
+                      {modelsLoading ? "Loading models..." : "No models available"}
+                    </option>
+                  )}
                 </select>
               </div>
 
@@ -352,7 +349,7 @@ export function AgentsView() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">Model</span>
                     <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
-                      {formatModelName(agent.model)}
+                      {availableModels.find((m) => m.modelId === agent.model)?.label ?? formatModelName(agent.model)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
@@ -375,16 +372,5 @@ export function AgentsView() {
 
 function formatModelName(model?: string): string {
   if (!model) return "Default";
-  // Shorten common model IDs for display
-  const map: Record<string, string> = {
-    "claude-sonnet-4-20250514": "Sonnet 4",
-    "claude-opus-4-20250514": "Opus 4",
-    "gpt-4o": "GPT-4o",
-    "gpt-4o-mini": "GPT-4o Mini",
-    "gemini-2.5-pro": "Gemini 2.5 Pro",
-    "gemini-2.5-flash": "Gemini 2.5 Flash",
-    "deepseek-r1": "DeepSeek R1",
-    "llama-3.3-70b": "Llama 3.3 70B",
-  };
-  return map[model] ?? model;
+  return model;
 }
